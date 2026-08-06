@@ -416,6 +416,69 @@
       </div>
     </div>
   </footer>
+  <!-- School Notice Write Modal (글쓰기 모달) -->
+  <div class="modal" id="school-write-modal" aria-hidden="true">
+    <div class="modal-backdrop" id="school-write-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="la la-edit"></i> 교회학교 소식 등록</h3>
+        <button class="modal-close" id="btn-close-school-write">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="school-write-form">
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="school-title" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">제목</label>
+            <input type="text" id="school-title" required placeholder="예: [유초등부] 여름성경학교 일정을 공지합니다." style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="school-dept" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">구분</label>
+            <select id="school-dept" required style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem; background-color: #fff;">
+              <option value="kids">유초등부 (Kids)</option>
+              <option value="hero">중고등부 (Hero)</option>
+              <option value="kfc">축구동아리 (K FC)</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="school-author" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">작성자</label>
+            <input type="text" id="school-author" required placeholder="예: 홍길동 교사" style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 25px;">
+            <label for="school-content" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">내용</label>
+            <textarea id="school-content" rows="8" required placeholder="상세 공지사항 내용을 입력해 주세요." style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem; line-height: 1.5; resize: vertical;"></textarea>
+          </div>
+          <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn btn-outline" id="btn-cancel-school-write" style="padding: 10px 20px;">취소</button>
+            <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">등록하기</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- School Notice Detail Modal (상세보기 모달) -->
+  <div class="modal" id="school-detail-modal" aria-hidden="true">
+    <div class="modal-backdrop" id="school-detail-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="school-detail-title" style="font-family: 'Gowun Batang', serif; font-weight: 700; color: var(--color-primary);">글 제목</h3>
+        <button class="modal-close" id="btn-close-school-detail">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-meta" style="font-size: 0.9rem; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding-bottom: 12px; margin-bottom: 20px; display: flex; gap: 15px;">
+          <span class="detail-dept" id="school-detail-dept"><i class="la la-tag"></i> 구분</span>
+          <span class="detail-author" id="school-detail-author"><i class="la la-user"></i> 작성자</span>
+          <span class="detail-date" id="school-detail-date"><i class="la la-calendar"></i> 날짜</span>
+        </div>
+        <div class="detail-content" id="school-detail-body" style="white-space: pre-wrap; font-size: 1.05rem; line-height: 1.8; color: var(--color-text-dark); max-height: 400px; overflow-y: auto; padding-right: 8px;">
+          상세 내용이 들어갑니다.
+        </div>
+        <div class="form-actions" style="display: flex; justify-content: flex-end; margin-top: 30px;">
+          <button type="button" class="btn btn-primary" id="btn-confirm-school-detail" style="padding: 10px 25px;">확인</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {

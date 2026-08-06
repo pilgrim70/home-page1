@@ -222,6 +222,28 @@
             </div>
           </div>
         </div>
+      <!-- 주보 게시판 (더빛교회 스타일) -->
+      <div class="jubo-board-container reveal" id="jubo-board-container" style="margin-top: 50px; border-top: 1px solid var(--color-border); padding-top: 40px;">
+        <div class="board-toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+          <h3 class="notice-title" style="margin: 0; font-size: 1.6rem; font-family: 'Gowun Batang', serif; font-weight: 700; color: var(--color-primary);"><i class="la la-file-alt"></i> 교회소식 주보</h3>
+          <button class="btn btn-write" id="btn-open-news-modal"><i class="la la-edit"></i> 글쓰기</button>
+        </div>
+        
+        <div class="jubo-table-wrapper" style="overflow-x: auto; background: var(--color-bg-card); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+          <table class="jubo-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--color-primary); background: rgba(27, 67, 50, 0.04);">
+                <th style="padding: 15px 20px; font-weight: 600; width: 80px; color: var(--color-primary-dark);">No</th>
+                <th style="padding: 15px 20px; font-weight: 600; color: var(--color-primary-dark);">제목</th>
+                <th style="padding: 15px 20px; font-weight: 600; width: 150px; text-align: right; color: var(--color-primary-dark);">작성시간</th>
+                <th style="padding: 15px 20px; font-weight: 600; width: 100px; text-align: center; color: var(--color-primary-dark);">관리</th>
+              </tr>
+            </thead>
+            <tbody id="jubo-list-body">
+              <!-- JS에서 동적으로 렌더링 -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>
@@ -290,6 +312,59 @@
       </div>
     </div>
   </footer>
+  <!-- News Write Modal (글쓰기 모달) -->
+  <div class="modal" id="news-write-modal" aria-hidden="true">
+    <div class="modal-backdrop" id="news-write-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="la la-edit"></i> 주보 및 교회소식 등록</h3>
+        <button class="modal-close" id="btn-close-news-write">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="news-write-form">
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="news-title" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">제목</label>
+            <input type="text" id="news-title" required placeholder="예: 2026년 8월 첫째 주 주보" style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="news-date" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">작성일자</label>
+            <input type="date" id="news-date" required style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 25px;">
+            <label for="news-content" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">본문 내용</label>
+            <textarea id="news-content" rows="8" required placeholder="주보의 광고 내용이나 예배 순서 데이터를 입력하세요." style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem; line-height: 1.5; resize: vertical;"></textarea>
+          </div>
+          <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn btn-outline" id="btn-cancel-news-write" style="padding: 10px 20px;">취소</button>
+            <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">등록하기</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- News Detail Modal (상세보기 모달) -->
+  <div class="modal" id="news-detail-modal" aria-hidden="true">
+    <div class="modal-backdrop" id="news-detail-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="news-detail-title" style="font-family: 'Gowun Batang', serif; font-weight: 700; color: var(--color-primary);">글 제목</h3>
+        <button class="modal-close" id="btn-close-news-detail">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-meta" style="font-size: 0.9rem; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding-bottom: 12px; margin-bottom: 20px;">
+          <span class="detail-date" id="news-detail-date"><i class="la la-calendar"></i> 작성시간</span>
+        </div>
+        <div class="detail-content" id="news-detail-body" style="white-space: pre-wrap; font-size: 1.05rem; line-height: 1.8; color: var(--color-text-dark); max-height: 400px; overflow-y: auto; padding-right: 8px;">
+          글 내용이 들어갑니다.
+        </div>
+        <div class="form-actions" style="display: flex; justify-content: flex-end; margin-top: 30px;">
+          <button type="button" class="btn btn-primary" id="btn-confirm-news-detail" style="padding: 10px 25px;">확인</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
