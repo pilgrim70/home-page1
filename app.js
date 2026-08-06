@@ -59,35 +59,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 4. Scroll Spy Navigation (Highlight current menu item)
-  const sections = document.querySelectorAll('section');
-  const navItems = document.querySelectorAll('.nav-menu.desktop .nav-item');
+  // 4. Multi-page GNB Active Handler (Based on URL pathname)
+  const navItems = document.querySelectorAll('.nav-menu.desktop .nav-item, .mobile-nav .nav-menu .nav-item');
+  const path = window.location.pathname;
+  let page = path.split('/').pop();
+  
+  // Default to index.html if empty
+  if (!page || page === '') {
+    page = 'index.html';
+  }
 
-  const options = {
-    root: null,
-    rootMargin: '-50% 0px -50% 0px', // Detect element when it spans the center half of the viewport
-    threshold: 0
-  };
+  // Remove active from all items first
+  navItems.forEach(item => item.classList.remove('active'));
 
-  const observerCallback = (entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.getAttribute('id');
+  navItems.forEach(item => {
+    const link = item.querySelector('a');
+    if (link) {
+      const href = link.getAttribute('href');
+      if (href) {
+        // Match base file names (e.g. intro.html from intro.html#servants)
+        const linkPage = href.split('#')[0];
         
-        // Remove active class from all header links
-        navItems.forEach(item => {
-          item.classList.remove('active');
-          const link = item.querySelector('a');
-          if (link && link.getAttribute('href') === `#${id}`) {
-            item.classList.add('active');
+        if (linkPage === page || (page === 'index.html' && linkPage === '')) {
+          item.classList.add('active');
+          
+          // Highlight parent dropdown if it's a child
+          const parentItem = item.closest('.has-dropdown');
+          if (parentItem) {
+            parentItem.classList.add('active');
           }
-        });
+        }
       }
-    });
-  };
-
-  const spyObserver = new IntersectionObserver(observerCallback, options);
-  sections.forEach(section => spyObserver.observe(section));
+    }
+  });
 
   // 5. Scroll Reveal Animation using Intersection Observer
   const revealElements = document.querySelectorAll('.reveal');
