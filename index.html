@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,10 +11,12 @@
   <link rel="apple-touch-icon" href="assets/icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
   <!-- LineAwesome Icons for Premium feel -->
-  <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+  <link rel="stylesheet"
+    href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
 </head>
+
 <body>
 
   <!-- Header Section -->
@@ -22,31 +25,78 @@
       <!-- Logo -->
       <a href="#hero" class="logo">
         <div class="logo-icon">
-          <!-- Custom Premium SVG Logo -->
-          <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 70 C 35 48, 65 48, 80 70" stroke="#c5a880" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.6"/>
-            <path d="M10 82 C 30 53, 70 53, 90 82" stroke="#c5a880" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.4"/>
-            <path d="M30 58 C 40 38, 60 38, 70 58" stroke="#c5a880" stroke-width="7" stroke-linecap="round" fill="none"/>
-            <rect x="45" y="12" width="10" height="70" rx="5" fill="#1b4332"/>
-            <rect x="20" y="30" width="60" height="10" rx="5" fill="#1b4332"/>
-            <circle cx="50" cy="35" r="5" fill="#d4af37"/>
+          <!-- Custom Premium SVG Logo Icon matching vertical original shape -->
+          <svg width="100%" height="100%" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Left Blue Panel -->
+            <path d="M 6 0 L 56 10 L 56 118 L 6 125 A 6 6 0 0 1 0 119 L 0 6 A 6 6 0 0 1 6 0 Z" fill="#0088E6" />
+            <!-- Right Lime Panel -->
+            <path d="M 58 18 L 94 8 A 6 6 0 0 1 100 14 L 100 142 A 6 6 0 0 1 94 148 L 58 118 Z" fill="#88C000" />
+            <!-- White Cross Cutout -->
+            <rect x="44" y="36" width="16" height="82" fill="#FFFFFF" />
+            <rect x="20" y="56" width="60" height="16" fill="#FFFFFF" />
           </svg>
         </div>
-        <div class="logo-text">
-          <span class="logo-title">관유중앙교회</span>
-          <span class="logo-sub">복의근원</span>
+        <div class="logo-text-group">
+          <div class="logo-main-row">
+            <span class="logo-tag">복의근원</span>
+            <span class="logo-title-group"><span class="logo-title-red">관유중앙</span><span
+                class="logo-title-black">교회</span></span>
+          </div>
+          <div class="logo-sub-row">
+            <span class="logo-denom">대 한 예 수 교 장 로 회</span>
+          </div>
         </div>
       </a>
 
       <!-- Desktop Navigation -->
       <nav class="nav-menu desktop">
         <div class="nav-item active"><a href="#hero" class="nav-link">홈</a></div>
-        <div class="nav-item"><a href="#intro" class="nav-link">교회소개</a></div>
-        <div class="nav-item"><a href="#worship" class="nav-link">예배안내</a></div>
-        <div class="nav-item"><a href="#sermons" class="nav-link">설교영상</a></div>
-        <div class="nav-item"><a href="#school" class="nav-link">교회학교</a></div>
-        <div class="nav-item"><a href="#news" class="nav-link">교회소식</a></div>
+        <div class="nav-item has-dropdown">
+          <a href="#intro" class="nav-link">교회소개 <i class="la la-angle-down dropdown-icon"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="#intro" class="dropdown-link"><i class="la la-church"></i> 교회소개</a></li>
+            <li><a href="#servants" class="dropdown-link"><i class="la la-user-friends"></i> 섬기는 사람들</a></li>
+            <li><a href="#offering" class="dropdown-link"><i class="la la-gift"></i> 온라인 헌금</a></li>
+            <li><a href="#location" class="dropdown-link"><i class="la la-map-marker"></i> 오시는 길</a></li>
+            <li><a href="#blessing" class="dropdown-link"><i class="la la-music"></i> 축복송/파송찬양</a></li>
+          </ul>
+        </div>
+        <div class="nav-item has-dropdown">
+          <a href="#sermons" class="nav-link">설교와 찬양 <i class="la la-angle-down dropdown-icon"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="#sermons" class="dropdown-link"><i class="la la-video"></i> 주일설교</a></li>
+            <li><a href="#worship" class="dropdown-link"><i class="la la-book-open"></i> 수요성경공부</a></li>
+            <li><a href="#blessing" class="dropdown-link"><i class="la la-music"></i> 주일찬양</a></li>
+            <li><a href="#worship" class="dropdown-link"><i class="la la-cloud-sun"></i> 새벽기도회</a></li>
+          </ul>
+        </div>
+        <div class="nav-item has-dropdown">
+          <a href="#school" class="nav-link">교회학교 <i class="la la-angle-down dropdown-icon"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="#school-kids" class="dropdown-link"><i class="la la-child"></i> 유초등부 (Kids)</a></li>
+            <li><a href="#school-hero" class="dropdown-link"><i class="la la-user-friends"></i> 중고등부 (Hero)</a></li>
+            <li><a href="#school-kfc" class="dropdown-link"><i class="la la-soccer-ball-o"></i> 축구동아리 (K FC)</a></li>
+          </ul>
+        </div>
+        <div class="nav-item has-dropdown">
+          <a href="#news" class="nav-link">교회소식 <i class="la la-angle-down dropdown-icon"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="#news" class="dropdown-link"><i class="la la-book-open"></i> 교회주보</a></li>
+            <li><a href="#news" class="dropdown-link"><i class="la la-bullhorn"></i> 교회광고</a></li>
+            <li><a href="#news" class="dropdown-link"><i class="la la-image"></i> 교회사진</a></li>
+            <li><a href="#worship" class="dropdown-link"><i class="la la-calendar"></i> 교회일정</a></li>
+            <li><a href="#location" class="dropdown-link"><i class="la la-envelope"></i> 교회문의</a></li>
+          </ul>
+        </div>
         <div class="nav-item"><a href="#location" class="nav-link">오시는길</a></div>
+        <div class="coupang-item">
+          <a href="https://link.coupang.com/a/e3vtVJWPbo" target="_blank" rel="noopener noreferrer" class="coupang-btn">
+            <i class="la la-shopping-cart"></i>
+            <span>쿠팡</span>
+            <span>바로가기</span>
+          </a>
+          <span class="coupang-sub-text">편안한 생활</span>
+        </div>
       </nav>
 
       <!-- Hamburger Menu Trigger (Mobile) -->
@@ -63,11 +113,42 @@
     <nav class="nav-menu">
       <div class="nav-item"><a href="#hero" class="nav-link mobile-link">홈</a></div>
       <div class="nav-item"><a href="#intro" class="nav-link mobile-link">교회소개</a></div>
-      <div class="nav-item"><a href="#worship" class="nav-link mobile-link">예배안내</a></div>
-      <div class="nav-item"><a href="#sermons" class="nav-link mobile-link">설교영상</a></div>
-      <div class="nav-item"><a href="#school" class="nav-link mobile-link">교회학교</a></div>
-      <div class="nav-item"><a href="#news" class="nav-link mobile-link">교회소식</a></div>
+      <div class="nav-item has-dropdown mobile-dropdown">
+        <a href="#sermons" class="nav-link mobile-link">설교와 찬양 <i class="la la-angle-down dropdown-icon"></i></a>
+        <ul class="dropdown-menu mobile-dropdown-menu">
+          <li><a href="#sermons" class="dropdown-link mobile-link">주일설교</a></li>
+          <li><a href="#worship" class="dropdown-link mobile-link">수요성경공부</a></li>
+          <li><a href="#blessing" class="dropdown-link mobile-link">주일찬양</a></li>
+          <li><a href="#worship" class="dropdown-link mobile-link">새벽기도회</a></li>
+        </ul>
+      </div>
+      <div class="nav-item has-dropdown mobile-dropdown">
+        <a href="#school" class="nav-link mobile-link">교회학교 <i class="la la-angle-down dropdown-icon"></i></a>
+        <ul class="dropdown-menu mobile-dropdown-menu">
+          <li><a href="#school-kids" class="dropdown-link mobile-link">유초등부 (Kids)</a></li>
+          <li><a href="#school-hero" class="dropdown-link mobile-link">중고등부 (Hero)</a></li>
+          <li><a href="#school-kfc" class="dropdown-link mobile-link">축구동아리 (K FC)</a></li>
+        </ul>
+      </div>
+      <div class="nav-item has-dropdown mobile-dropdown">
+        <a href="#news" class="nav-link mobile-link">교회소식 <i class="la la-angle-down dropdown-icon"></i></a>
+        <ul class="dropdown-menu mobile-dropdown-menu">
+          <li><a href="#news" class="dropdown-link mobile-link"><i class="la la-book-open"></i> 교회주보</a></li>
+          <li><a href="#news" class="dropdown-link mobile-link"><i class="la la-bullhorn"></i> 교회광고</a></li>
+          <li><a href="#news" class="dropdown-link mobile-link"><i class="la la-image"></i> 교회사진</a></li>
+          <li><a href="#worship" class="dropdown-link mobile-link"><i class="la la-calendar"></i> 교회일정</a></li>
+          <li><a href="#location" class="dropdown-link mobile-link"><i class="la la-envelope"></i> 교회문의</a></li>
+        </ul>
+      </div>
       <div class="nav-item"><a href="#location" class="nav-link mobile-link">오시는길</a></div>
+      <div class="coupang-item mobile">
+        <a href="https://link.coupang.com/a/e3vtVJWPbo" target="_blank" rel="noopener noreferrer" class="coupang-btn">
+          <i class="la la-shopping-cart"></i>
+          <span>쿠팡</span>
+          <span>바로가기</span>
+        </a>
+        <span class="coupang-sub-text">편안한 생활</span>
+      </div>
     </nav>
   </div>
 
@@ -75,25 +156,40 @@
   <section class="hero" id="hero">
     <div class="container hero-container">
       <div class="hero-content">
-        <span class="hero-subtitle">복의근원 관유중앙교회</span>
-        <h1 class="hero-title">생명의 말씀과<br>은혜가 넘치는 <span>복의 근원</span></h1>
-        <p class="hero-desc">우리는 하나님의 크신 사랑 안에서 세상의 복의 근원이 되어 복된 소식을 널리 나누고, 온 마음으로 이웃을 섬기는 따뜻한 믿음의 공동체입니다.</p>
-        
+        <h1 class="hero-title">
+          말씀과 성령으로<br>
+          <span>하나님 나라를 세우는 교회</span>
+        </h1>
+        <div class="hero-faith-box">
+          <p class="hero-faith-text">
+            <strong>복의근원 관유중앙교회는</strong><br>
+            살아계신 하나님의 말씀의 <span>실제성을 살며</span><br>
+            역사하시는 성령님으로 사역하고<br>
+            지역과 민족, 열방의<br>
+            <span>열국의 아비와 어미</span>가 되어<br>
+            하나님의 나라를 세우며<br>
+            하나님께 통치받는<br>
+            <strong>건강하고 아름다운 교회입니다.</strong>
+          </p>
+        </div>
+
         <!-- Quick Info Box -->
         <div class="hero-info-box">
           <div class="info-item">
             <span class="info-icon"><i class="la la-map-marker"></i></span>
-            <span class="info-text"><span class="info-label">주일 예배 장소:</span>파주시 회동길 349 더빛채플</span>
+            <span class="info-text"><span class="info-label">주일 예배 장소:</span>경기도 고양시 덕양구 통일로 1154번길 24-14 2층,
+              마사흐채플</span>
           </div>
           <div class="info-item">
             <span class="info-icon"><i class="la la-clock"></i></span>
-            <span class="info-text"><span class="info-label">주일 대예배:</span>오전 11:00</span>
+            <span class="info-text"><span class="info-label">주일낮예배:</span>오전 10:45</span>
           </div>
         </div>
 
         <div class="hero-actions">
           <a href="#worship" class="btn btn-primary">예배 참여하기 <i class="la la-arrow-right"></i></a>
-          <a href="#intro" class="btn btn-outline" style="border-color: #fff; color: #fff;">교회 소개 <i class="la la-info-circle"></i></a>
+          <a href="#intro" class="btn btn-outline" style="border-color: #fff; color: #fff;">교회 소개 <i
+              class="la la-info-circle"></i></a>
         </div>
       </div>
     </div>
@@ -123,10 +219,39 @@
         </div>
         <div class="intro-content reveal">
           <h3 class="intro-welcome">"행복한 예배, 따뜻한 교제, 성령의 위로가 살아 숨쉬는 곳으로 당신을 초대합니다."</h3>
+
+          <!-- 영원한 비전 Box -->
+          <div class="intro-vision-box">
+            <span class="vision-tag"><i class="la la-star"></i> 영원한 비전</span>
+            <h4 class="vision-title">하나님 나라! 하나님 통치!</h4>
+            <p class="vision-desc">
+              하나님만을 사랑하여 예배하는 바로 그 교회, 살아계신 하나님의 말씀과 성령님의 역사하심을 통해 사랑과 회복, 부흥과 번성이 있는 교회 공동체입니다.
+            </p>
+          </div>
+
           <p class="intro-details">
-            복의근원 관유중앙교회는 한 영혼을 천하보다 귀하게 여기시는 예수 그리스도의 마음으로 세워졌습니다. 우리는 매주 은혜로운 말씀과 뜨거운 찬양이 넘쳐나는 감동적인 예배를 추구하며, 삶의 무게에 지친 이들에게 참된 안식과 소망을 드리고자 합니다.<br><br>
+            복의근원 관유중앙교회는 한 영혼을 천하보다 귀하게 여기시는 예수 그리스도의 마음으로 세워졌습니다. 우리는 매주 은혜로운 말씀과 뜨거운 찬양이 넘쳐나는 감동적인 예배를 추구하며, 삶의 무게에 지친
+            이들에게 참된 안식과 소망을 드리고자 합니다.<br><br>
             성령의 거룩한 기름부으심 안에서 상처가 치유되고, 주님께서 주시는 세상의 모든 복을 이웃과 사회로 퍼뜨려나가는 생명의 물줄기가 되기를 소망합니다.
           </p>
+
+          <!-- 교회 개요 & 연락처 카드 -->
+          <div class="intro-info-card">
+            <div class="info-row">
+              <span class="info-key"><i class="la la-calendar"></i> 설립일자</span>
+              <span class="info-val">1981년 6월 28일</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key"><i class="la la-bullhorn"></i> 교회목표</span>
+              <span class="info-val">1) 300 예배자 &nbsp; 2) 24 목자 &nbsp; 3) 12 제자화 (제자 공동체)</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key"><i class="la la-phone"></i> 연락처</span>
+              <span class="info-val">담임목사: 010-3054-3283 &nbsp;|&nbsp; Fax: 0504-180-3283<br>e-mail:
+                acts20114@naver.com</span>
+            </div>
+          </div>
+
           <div>
             <a href="#location" class="btn btn-outline">오시는 길 안내 <i class="la la-map"></i></a>
           </div>
@@ -139,19 +264,115 @@
         <div class="value-card reveal reveal-delay-1">
           <div class="value-icon"><i class="la la-gift"></i></div>
           <h4 class="value-title">복의 근원</h4>
-          <p class="value-desc">우리는 하나님의 복을 마음에 머금는 것에 그치지 않고, 세상 속에서 그 축복을 널리 유통하는 거룩한 통로의 사명을 감당합니다.</p>
+          <p class="value-desc">아브라함처럼 복의근원이 되어 내가 누리는 하나님의 복을 내 안에만 머무르게 하지 않고, 세상 속에 그 복을 흘려 보냄으로 영혼을 살리고 세우는 복의통로의
+            사명을 감당합니다.</p>
         </div>
         <!-- Card 2 -->
         <div class="value-card reveal reveal-delay-2">
           <div class="value-icon"><i class="la la-tint"></i></div>
           <h4 class="value-title">관유 (기름부음)</h4>
-          <p class="value-desc">관유의 거룩한 기름부으심처럼, 삶의 현장과 모든 예배 가운데 성령의 위로와 능력, 생명력이 넘치는 신앙을 추구합니다.</p>
+          <p class="value-desc">관유는 거룩한 기름부으심이다. 히브리어로 마사흐(Masah)로서 기름부음을 받은자, 곧 예수 그리스도를 상징한다. 모든 예배와 삶의 모든 현장에서 성령님의
+            위로와 능력, 구원과 감격이 충만한 신앙을 추구합니다.</p>
         </div>
         <!-- Card 3 -->
         <div class="value-card reveal reveal-delay-3">
           <div class="value-icon"><i class="la la-users"></i></div>
           <h4 class="value-title">중앙 (교제와 나눔)</h4>
-          <p class="value-desc">상처 입은 영혼들이 모여 말씀으로 싸매어지고, 성도의 따뜻한 나눔을 통해 그리스도의 큰 사랑을 나누는 중심지가 됩니다.</p>
+          <p class="value-desc">예수님 중심의 신앙으로 사망과 어둠의 나라에 있는 영혼을 영광의 빛가운데로 이끌고, 상처입은 영혼들이 함께 예배드리며 회복되고, 고침받으며, 성도의 따듯한
+            나눔을 통해 그리스도의 큰 사랑을 나누는 중심지가 됩니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Servants Section (섬기는 사람들) -->
+  <section class="servants" id="servants">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Servants & Leaders</span>
+        <h2 class="section-title">섬기는 사람들</h2>
+        <p class="section-desc">예수 그리스도의 사랑과 겸손함으로 성도와 교회를 섬기는 사역자들을 소개합니다.</p>
+      </div>
+
+      <div class="servants-grid reveal">
+        <!-- Servant 1 -->
+        <div class="servant-card pastor-card">
+          <div class="servant-role-badge">담임목사</div>
+          <div class="servant-img">
+            <img src="assets/pastor.jpg" alt="송기운 담임목사">
+          </div>
+          <h3 class="servant-name">송기운 목사</h3>
+
+          <div class="pastor-bio-box">
+            <h4 class="bio-title"><i class="la la-graduation-cap"></i> 약력 및 섬김의 발자취</h4>
+            <p class="bio-edu">아세아연합신학대학원을 졸업하고 총신대학교신학대학원에서 신학을 공부하였습니다.</p>
+            <ul class="bio-list">
+              <li><strong>2004년 ~ 2011년 8월:</strong> 파주 예수로교회 (교육부서, 장년교구)</li>
+              <li><strong>2011년 9월 ~ 2013년 9월:</strong> 남양주 평화교회 (장년교구)</li>
+              <li><strong>2013년 10월 ~ 2017년 10월:</strong> 덕양구 새소망교회 (후임목사)</li>
+              <li><strong>2017년 10월 ~ 현재:</strong> 관유중앙교회 담임목사</li>
+            </ul>
+          </div>
+
+          <div class="servant-contact"><i class="la la-phone"></i> 010-3054-3283</div>
+        </div>
+
+        <!-- Servant 2 -->
+        <div class="servant-card servant-group-card">
+          <div class="servant-role-badge">주일학교 사역자</div>
+
+          <!-- Person 1 -->
+          <div class="servant-member">
+            <div class="servant-img">
+              <img src="assets/teacher1.jpg" alt="정해단 전도사">
+            </div>
+            <h3 class="servant-name">정해단 전도사</h3>
+            <span class="servant-member-role">유초등부 담당</span>
+            <p class="servant-message">어린이를 중심으로 사랑하며 말씀과 기도로 섬기는 교역자입니다.</p>
+          </div>
+
+          <div class="servant-member-divider"></div>
+
+          <!-- Person 2 -->
+          <div class="servant-member">
+            <div class="servant-img">
+              <img src="assets/teacher2.jpg" alt="민병희 전도사">
+            </div>
+            <h3 class="servant-name">민병희 전도사</h3>
+            <span class="servant-member-role">중고등부 담당</span>
+            <p class="servant-message">중고등부 예배와 교육을 담당하며 청소년들이 말씀 안에서 바르게 성장하도록 지도합니다.</p>
+          </div>
+
+          <div class="servant-contact"><i class="la la-heart"></i> 다음 세대 섬김이</div>
+        </div>
+
+        <!-- Servant 3 -->
+        <div class="servant-card servant-group-card">
+          <div class="servant-role-badge">시무장로</div>
+
+          <!-- Person 1 -->
+          <div class="servant-member">
+            <div class="servant-img">
+              <img src="assets/elder1.jpg" alt="장로 성함 1">
+            </div>
+            <h3 class="servant-name">장로 성함 1</h3>
+            <span class="servant-member-role">시무장로</span>
+            <p class="servant-message">교회를 위해 기도하며 성도들을 사랑으로 살피고 섬기는 시무장로입니다.</p>
+          </div>
+
+          <div class="servant-member-divider"></div>
+
+          <!-- Person 2 -->
+          <div class="servant-member">
+            <div class="servant-img">
+              <img src="assets/elder2.jpg" alt="장로 성함 2">
+            </div>
+            <h3 class="servant-name">장로 성함 2</h3>
+            <span class="servant-member-role">시무장로</span>
+            <p class="servant-message">예배와 교회의 온전한 세워짐을 위해 묵묵히 헌신하며 동역하는 시무장로입니다.</p>
+          </div>
+
+          <div class="servant-contact"><i class="la la-users"></i> 교회 기둥과 같은 섬김이</div>
         </div>
       </div>
     </div>
@@ -171,20 +392,16 @@
         <div class="worship-card reveal">
           <div class="worship-header">
             <span class="worship-name"><i class="la la-sun"></i> 주일 예배</span>
-            <span class="worship-badge">주일 대예배</span>
+            <span class="worship-badge">주일 낮예배</span>
           </div>
           <div class="worship-rows">
             <div class="worship-row">
-              <span class="worship-target">주일 오전 1부 예배</span>
-              <span class="worship-time">09:00 AM (본당)</span>
+              <span class="worship-target">주일낮예배</span>
+              <span class="worship-time">10:45 AM (마사흐채플)</span>
             </div>
             <div class="worship-row">
-              <span class="worship-target">주일 오전 2부 예배 (대예배)</span>
-              <span class="worship-time">11:00 AM (본당)</span>
-            </div>
-            <div class="worship-row">
-              <span class="worship-target">주일 오후 찬양 모임</span>
-              <span class="worship-time">02:00 PM (본당)</span>
+              <span class="worship-target">주일 오후 목장모임/전도</span>
+              <span class="worship-time">02:00 PM (목장별)</span>
             </div>
           </div>
         </div>
@@ -192,21 +409,16 @@
         <!-- Card 2 -->
         <div class="worship-card reveal">
           <div class="worship-header">
-            <span class="worship-name"><i class="la la-moon"></i> 평일 및 절기 예배</span>
-            <span class="worship-badge accent">기도회</span>
+            <span class="worship-name"><i class="la la-book-open"></i> 수요성경공부 및 금요기도회</span>
           </div>
           <div class="worship-rows">
             <div class="worship-row">
-              <span class="worship-target">수요 오전 예배</span>
-              <span class="worship-time">수요일 10:30 AM (소예배실)</span>
+              <span class="worship-target">수요성경공부</span>
+              <span class="worship-time">수요일 07:30 PM (마사흐채플)</span>
             </div>
             <div class="worship-row">
-              <span class="worship-target">수요 삼일 기도회</span>
-              <span class="worship-time">수요일 07:30 PM (본당)</span>
-            </div>
-            <div class="worship-row">
-              <span class="worship-target">금요 성령 기도회</span>
-              <span class="worship-time">금요일 08:30 PM (본당)</span>
+              <span class="worship-target">금요기도회</span>
+              <span class="worship-time">금요일 08:00 PM (마사흐채플)</span>
             </div>
           </div>
         </div>
@@ -214,13 +426,13 @@
         <!-- Card 3 -->
         <div class="worship-card reveal">
           <div class="worship-header">
-            <span class="worship-name"><i class="la la-cloud-sun"></i> 새벽 예배</span>
-            <span class="worship-badge">매일 새벽</span>
+            <span class="worship-name"><i class="la la-cloud-sun"></i> 새벽기도회</span>
+            <span class="worship-badge">(월-금)</span>
           </div>
           <div class="worship-rows">
             <div class="worship-row">
-              <span class="worship-target">새벽 특별 기도회 (월~금)</span>
-              <span class="worship-time">매주 월-금 05:30 AM (소예배실)</span>
+              <span class="worship-target">새벽기도회</span>
+              <span class="worship-time">05:30 AM (마사흐채플)</span>
             </div>
           </div>
         </div>
@@ -233,13 +445,48 @@
           </div>
           <div class="worship-rows">
             <div class="worship-row">
-              <span class="worship-target">유초등부 통합 예배</span>
-              <span class="worship-time">주일 오전 11:00 AM (교육관)</span>
+              <span class="worship-target">유초등부(KIDS)채플</span>
+              <span class="worship-time">주일 오전 09:00 AM (마사흐채플)</span>
             </div>
             <div class="worship-row">
-              <span class="worship-target">중고등부 파워 예배</span>
-              <span class="worship-time">주일 오전 09:30 AM (교육관)</span>
+              <span class="worship-target">중고등부(HERO)채플</span>
+              <span class="worship-time">주일 오전 09:00 AM (교육관, 1층)</span>
             </div>
+            <div class="worship-row">
+              <span class="worship-target">축구모임</span>
+              <span class="worship-time">주일 오후 04:30 PM (교회)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Online Offering Section (온라인 헌금) -->
+  <section class="offering" id="offering">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Online Offering</span>
+        <h2 class="section-title">온라인 헌금 안내</h2>
+        <p class="section-desc">온 마음과 정성을 다해 하나님께 드리는 거룩한 물질의 고백입니다.</p>
+      </div>
+
+      <div class="offering-card-container reveal">
+        <div class="offering-card">
+          <div class="offering-badge"><i class="la la-university"></i> 헌금 계좌 안내</div>
+          <div class="offering-bank-group">
+            <span class="bank-name">새마을금고</span>
+            <span class="account-num" id="account-number">9002-1830-6340-2</span>
+            <button class="btn-copy" onclick="copyAccount()"><i class="la la-copy"></i> 계좌복사</button>
+          </div>
+          <div class="offering-owner">예금주: 대한예수교장로회 관유중앙교회</div>
+          <div class="offering-guide-box">
+            <h4><i class="la la-info-circle"></i> 헌금 입금 시 유의사항</h4>
+            <ul>
+              <li><strong>십일조:</strong> 성함 + 십 (예: 홍길동십)</li>
+              <li><strong>감사헌금:</strong> 성함 + 감사 (예: 홍길동감사)</li>
+              <li><strong>선교/건축:</strong> 성함 + 선교 (예: 홍길동선교)</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -258,7 +505,9 @@
       <div class="sermon-player-container reveal">
         <!-- Main Video Frame -->
         <div class="sermon-video-wrapper">
-          <iframe id="mainSermonVideo" src="https://www.youtube.com/embed/z5D_B9I7l1Y?rel=0" title="주일대예배 설교" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <iframe id="mainSermonVideo" src="https://www.youtube.com/embed/z5D_B9I7l1Y?rel=0" title="주일대예배 설교"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
         </div>
 
         <!-- Playlist sidebar -->
@@ -299,54 +548,264 @@
     </div>
   </section>
 
-  <!-- Church School Section (교회 학교) -->
+  <!-- Blessing Song Section (축복송 / 파송찬양) -->
+  <section class="blessing" id="blessing">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Worship Praise</span>
+        <h2 class="section-title">축복송 & 파송찬양</h2>
+        <p class="section-desc">하나님의 크신 은혜와 축복을 서로에게 나누며 예배의 문을 여는 은혜로운 찬양입니다.</p>
+      </div>
+
+      <div class="blessing-grid reveal">
+        <!-- Blessing Song Card 1 -->
+        <div class="blessing-card">
+          <div class="blessing-header">
+            <span class="blessing-tag">대표 축복송</span>
+            <h3 class="blessing-title">"엠블레포"</h3>
+          </div>
+          <div class="blessing-desc">
+            <strong>"엠블레포"</strong>는 바라보다의 뜻입니다.
+            그러나 더 깊은 의미가 있는데 그냥 바라보는 게 아니라
+            포기하지 않는 사랑, 우리를 통해 끝까지 이루시는
+            신실하심으로 붙들어 주시는 시선으로 바라보는 것입니다.<br><br>
+            우리의 시선은 기대도 희망도 없어 보이지만
+            하나님은 그 사람을 통해 당신의 뜻을 반드시 이루시기에 바라보시는 시선입니다.
+            그 마음과 시선으로 서로 축복합시다.
+          </div>
+          <div class="blessing-lyrics">
+            "하나님의 눈으로 당신을 바라봅니다<br>
+            위대한 하나님의 사람<br>
+            하나님의 마음으로 당신을 축복합니다<br>
+            열방을 부요케 할 사람<br>
+            영혼을 구원케 할 사람"
+            <div class="lyrics-author" style="text-align: right; display: block; width: 100%;">작사/작곡 김영훈 (NCMN)</div>
+          </div>
+          <div class="blessing-footer">
+            <span class="song-info"><i class="la la-music"></i> 관유중앙교회 축복송</span>
+          </div>
+        </div>
+
+        <!-- Blessing Song Card 2 -->
+        <div class="blessing-card">
+          <div class="blessing-header">
+            <span class="blessing-tag">주일 파송찬양</span>
+            <h3 class="blessing-title">"성령의 사람"</h3>
+          </div>
+          <div class="blessing-lyrics">
+            <div class="lyrics-author"
+              style="text-align: right; display: block; width: 100%; margin-top: 0; margin-bottom: 12px;">작사/작곡 김영훈
+              (NCMN)</div>
+            "오직 성령이 너희에게 임하여<br>
+            너희가 권능을 받고<br>
+            예루살렘과 땅 끝까지<br>
+            주의 증인이 되리라<br><br>
+            주님의 영광 주의 나라 위하여<br>
+            우리를 부르신 주님<br>
+            우리를 통해 온 열방에<br>
+            생수의 강 흘러가리라~<br><br>
+            강물이 흘러가는 곳마다<br>
+            주의 나라가 회복되리라<br>
+            여호와의 영광이 온 땅에 가득하리라<br><br>
+            열방을 다스리라 열방을 통치하라<br>
+            이 땅에 하나님 나라 우릴 통해 임하소서"
+          </div>
+          <div class="blessing-footer">
+            <span class="song-info"><i class="la la-paper-plane"></i> 주일예배 파송 찬양</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Church School Section (교회 학교 - 게시판 아코디언 스타일) -->
   <section class="school" id="school">
     <div class="container">
       <div class="section-header reveal">
         <span class="section-tag">Next Generation</span>
         <h2 class="section-title">교회학교</h2>
-        <p class="section-desc">믿음의 든든한 반석 위에서 꿈을 펼쳐나갈 다음 세대 교육 부서입니다.</p>
+        <p class="section-desc">믿음의 든든한 반석 위에서 꿈을 펼쳐나갈 다음 세대 교육 부서와 활동 소식입니다. (행을 클릭하시면 상세 안내를 보실 수 있습니다)</p>
       </div>
 
-      <div class="school-grid">
-        <!-- Dept 1 -->
-        <div class="school-card reveal">
-          <div class="school-img">
-            <img src="assets/church-banner.png" alt="유초등부" style="filter: hue-rotate(60deg) saturate(0.8);">
+      <div class="school-board reveal">
+        <!-- Board Table Header -->
+        <div class="board-header">
+          <div class="col-num">번호</div>
+          <div class="col-dept">구분</div>
+          <div class="col-title">게시글 제목 및 안내</div>
+          <div class="col-time">예배/활동 시간</div>
+          <div class="col-status">상태</div>
+        </div>
+
+        <!-- Board Table Body -->
+        <div class="board-body">
+
+          <!-- Row 1: 유초등부(Kids) 채플 -->
+          <div class="board-row" id="school-kids">
+            <div class="board-summary">
+              <div class="col-num">1</div>
+              <div class="col-dept"><span class="badge badge-kids">Kids 채플</span></div>
+              <div class="col-title">
+                <span class="row-title">예수님을 알아가는 말씀 놀이터, 유초등부(Kids) 채플 예배 안내</span>
+                <span class="row-subtitle">찬양과 재미있는 활동으로 신앙의 첫걸음을 바르게 내딛습니다.</span>
+              </div>
+              <div class="col-time"><i class="la la-clock"></i> 주일 오전 9:00 (마사흐채플)</div>
+              <div class="col-status"><span class="status-active">예배중</span></div>
+            </div>
+            <div class="board-detail">
+              <div class="detail-container">
+                <div class="detail-image">
+                  <img src="assets/church-banner.png" alt="유초등부 채플" style="filter: hue-rotate(60deg) saturate(0.8);">
+                </div>
+                <div class="detail-info">
+                  <h4><i class="la la-graduation-cap"></i> 부서 안내 및 비전</h4>
+                  <p>예수님을 알아가는 흥미진진한 말씀 놀이터! 찬양과 재미있는 활동으로 신앙의 첫걸음을 바르게 내딛습니다. 매주 성령의 은혜 속에서 어린이들의 믿음이 무럭무럭 자라납니다.</p>
+                  <table class="detail-table">
+                    <tr>
+                      <th><i class="la la-user"></i> 대상</th>
+                      <td>5세 ~ 초등학교 6학년</td>
+                    </tr>
+                    <tr>
+                      <th><i class="la la-map-marker"></i> 장소</th>
+                      <td>본관 2층 마사흐채플</td>
+                    </tr>
+                    <tr>
+                      <th><i class="la la-calendar-check"></i> 시간</th>
+                      <td>매주 주일 오전 9:00 AM</td>
+                    </tr>
+                    <tr>
+                      <th><i class="la la-users"></i> 주요 활동</th>
+                      <td>성경 공부, 인형극, 찬양 율동, 연간 성경 캠프</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="school-info">
-            <span class="school-dept">어린이 부서</span>
-            <h3 class="school-name">유초등부 (유치~초등)</h3>
-            <p class="school-desc">예수님을 알아가는 흥미진진한 말씀 놀이터! 찬양과 재미있는 활동으로 신앙의 첫걸음을 바르게 내딛습니다.</p>
-            <div class="school-meta">시간: 주일 오전 11:00 (교육관 2층)</div>
+
+          <!-- Row 2: 중고등부(Hero) 채플 -->
+          <div class="board-row" id="school-hero">
+            <div class="board-summary">
+              <div class="col-num">2</div>
+              <div class="col-dept"><span class="badge badge-hero">Hero 채플</span></div>
+              <div class="col-title">
+                <span class="row-title">세상을 변화시키는 청소년 리더 양성, 중고등부(Hero) 채플 안내</span>
+                <span class="row-subtitle">비전과 정체성을 찾아가는 성장 터전, 청소년들을 위한 예배입니다.</span>
+              </div>
+              <div class="col-time"><i class="la la-clock"></i> 주일 오전 9:00 (교육관, 1층)</div>
+              <div class="col-status"><span class="status-active">예배중</span></div>
+            </div>
+            <div class="board-detail">
+              <div class="detail-container">
+                <div class="detail-image">
+                  <img src="assets/church-banner.png" alt="중고등부 채플" style="filter: hue-rotate(120deg) saturate(0.7);">
+                </div>
+                <div class="detail-info">
+                  <h4><i class="la la-rocket"></i> 부서 안내 및 비전</h4>
+                  <p>비전과 정체성을 찾아가는 성장 터전! 인격적인 만남과 깊이 있는 나눔으로 세상을 바꾸는 리더를 양성합니다. 친구들과 함께 찬양하고 말씀을 고민하며 건강한 자아를 확립해 나갑니다.
+                  </p>
+                  <table class="detail-table">
+                    <tr>
+                      <th><i class="la la-user"></i> 대상</th>
+                      <td>중학생 및 고등학생 (14세 ~ 19세)</td>
+                    </tr>
+                    <tr>
+                      <th><i class="la la-map-marker"></i> 장소</th>
+                      <td>교육관 1층 예배실</td>
+                    </tr>
+                    <tr>
+                      <th><i class="la la-calendar-check"></i> 시간</th>
+                      <td>매주 주일 오전 9:00 AM</td>
+                    </tr>
+                    <tr>
+                      <th><i class="la la-users"></i> 주요 활동</th>
+                      <td>제자 훈련, 소그룹 목장 모임, 청소년 찬양 집회, 문화 캠프</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3: KFC 축구동아리 -->
+          <div class="board-row" id="school-kfc">
+            <div class="board-summary">
+              <div class="col-num">3</div>
+              <div class="col-dept"><span class="badge badge-kfc">KFC 동아리</span></div>
+              <div class="col-title">
+                <span class="row-title">몸과 마음을 가꾸는 건강한 스포츠, KFC 청소년 축구동아리 회원 모집</span>
+                <span class="row-subtitle">스포츠를 통해 서로 친교하며 그리스도의 사랑을 몸소 나눕니다.</span>
+              </div>
+              <div class="col-time"><i class="la la-clock"></i> 격주 주일 오후 4:30 - 6:00 (2째주, 4째주)</div>
+              <div class="col-status"><span class="status-recruiting">모집중</span></div>
+            </div>
+            <div class="board-detail">
+              <div class="detail-container">
+                <div class="detail-image">
+                  <img src="assets/church-banner.png" alt="KFC 축구동아리" style="filter: hue-rotate(240deg) saturate(0.6);">
+                </div>
+                <div class="detail-info">
+                  <h4><i class="la la-soccer-ball-o"></i> 동아리 안내 및 활동 목표</h4>
+                  <p>KFC(KwanYu FootBall Club)는 축구라는 스포츠를 매개로 하여, 학생들이 몸과 마음을 건강하게 가꾸고 친교하며 그리스도의 사랑을 훈련하는 청소년 동아리입니다.
+                    초보자도 환영하며 즐겁게 훈련할 수 있습니다.</p>
+                  <table class="detail-table">
+                    <tr>
+                      <th><i class="la la-user"></i> 대상</th>
+                      <td>축구를 좋아하는 어린이, 청소년, 청년, 장년</td>
+                    </tr>
+                    <tr>
+                      <th><i class="la la-map-marker"></i> 장소</th>
+                      <td>내유동 인근 풋살장 및 지정 운동장</td>
+                    </tr>
+                    <tr>
+                      <th><i class="la la-calendar-check"></i> 시간</th>
+                      <td>격주 주일 오후 4:30 - 6:00 (2째주, 4째주)</td>
+                    </tr>
+                    <tr>
+                      <th><i class="la la-users"></i> 주요 활동</th>
+                      <td>기본기 및 체력 훈련, 팀 매치, 지역 친선 경기, 간식 및 친교 모임</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 교회학교 소식 게시판 -->
+        <div class="school-notice-container reveal" id="school-notice">
+          <div class="notice-header">
+            <h3 class="notice-title"><i class="la la-bullhorn"></i> 교회학교 소식 및 공지사항</h3>
+            <p class="notice-subtitle">각 부서의 실시간 소식과 중요 공지를 확인하고 글을 남겨보세요.</p>
+          </div>
+
+          <!-- 필터 및 글쓰기 버튼 -->
+          <div class="notice-toolbar">
+            <div class="notice-filters">
+              <button class="filter-btn active" data-filter="all">전체</button>
+              <button class="filter-btn" data-filter="kids">유초등부 (Kids)</button>
+              <button class="filter-btn" data-filter="hero">중고등부 (Hero)</button>
+              <button class="filter-btn" data-filter="kfc">축구동아리 (K FC)</button>
+            </div>
+            <button class="btn btn-write" id="btn-open-write-modal"><i class="la la-edit"></i> 글쓰기</button>
+          </div>
+
+          <!-- 게시판 테이블 목록 -->
+          <div class="notice-board">
+            <div class="notice-list-header">
+              <div class="col-notice-num">번호</div>
+              <div class="col-notice-dept">구분</div>
+              <div class="col-notice-title">제목</div>
+              <div class="col-notice-author">작성자</div>
+              <div class="col-notice-date">날짜</div>
+            </div>
+            <div class="notice-list-body" id="notice-list-body">
+              <!-- JS에서 동적으로 게시글 리스트가 렌더링됩니다. -->
+            </div>
           </div>
         </div>
 
-        <!-- Dept 2 -->
-        <div class="school-card reveal reveal-delay-1">
-          <div class="school-img">
-            <img src="assets/church-banner.png" alt="중고등부" style="filter: hue-rotate(120deg) saturate(0.7);">
-          </div>
-          <div class="school-info">
-            <span class="school-dept">청소년 부서</span>
-            <h3 class="school-name">중고등부 (중~고등)</h3>
-            <p class="school-desc">비전과 정체성을 찾아가는 성장 터전! 인격적인 만남과 깊이 있는 나눔으로 세상을 바꾸는 리더를 양성합니다.</p>
-            <div class="school-meta">시간: 주일 오전 09:30 (교육관 3층)</div>
-          </div>
-        </div>
-
-        <!-- Dept 3 -->
-        <div class="school-card reveal reveal-delay-2">
-          <div class="school-img">
-            <img src="assets/church-banner.png" alt="청년부" style="filter: hue-rotate(180deg) saturate(0.7);">
-          </div>
-          <div class="school-info">
-            <span class="school-dept">청년 대학부</span>
-            <h3 class="school-name">청년부 (Grace)</h3>
-            <p class="school-desc">말씀으로 고민을 풀고 사랑으로 묶인 공동체! 사회 속에서 그리스도인의 가치를 실천하는 생명력 넘치는 젊은이들입니다.</p>
-            <div class="school-meta">시간: 주일 오후 02:00 (비전홀)</div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -431,9 +890,11 @@
         <div class="map-container reveal">
           <div class="map-placeholder">
             <div class="map-placeholder-icon"><i class="la la-map-marked-alt"></i></div>
-            <div class="map-placeholder-title">파주시 회동길 349 (더빛채플)</div>
+            <div class="map-placeholder-title">경기도 고양시 덕양구 통일로 1154번길 24-14 2층 (마사흐채플)</div>
             <div class="map-placeholder-desc">성도 여러분과 처음 방문하시는 모든 분들을 사랑으로 맞이합니다.</div>
-            <a href="https://map.kakao.com/?q=파주시%20회동길%20349" target="_blank" class="btn btn-primary" style="margin-top: 10px; padding: 8px 20px; font-size: 0.85rem;">카카오맵에서 보기 <i class="la la-external-link-alt"></i></a>
+            <a href="https://map.kakao.com/?q=경기도%20고양시%20덕양구%20통일로%201154번길%2024-14" target="_blank"
+              class="btn btn-primary" style="margin-top: 10px; padding: 8px 20px; font-size: 0.85rem;">카카오맵에서 보기 <i
+                class="la la-external-link-alt"></i></a>
           </div>
         </div>
 
@@ -444,7 +905,7 @@
             <div class="loc-icon"><i class="la la-map-pin"></i></div>
             <div class="loc-details">
               <span class="loc-title">예배처소 주소</span>
-              <span class="loc-desc">경기도 파주시 회동길 349 더빛채플</span>
+              <span class="loc-desc">경기도 고양시 덕양구 통일로 1154번길 24-14 2층, 마사흐채플</span>
             </div>
           </div>
 
@@ -453,7 +914,11 @@
             <div class="loc-icon"><i class="la la-bus"></i></div>
             <div class="loc-details">
               <span class="loc-title">대중교통 안내</span>
-              <span class="loc-desc">합정역 1번 출구에서 좌석버스 2200번 탑승 후 '이채쇼핑몰' 역에서 하차, 도보 3분</span>
+              <span class="loc-desc" style="line-height: 1.6;">
+                • 삼송역, 연신내에서 내유동으로 오는 버스<br>
+                • 금촌, 봉일천에서 내유동 가는 버스<br>
+                👉 <strong>"윗내유동"</strong> 또는 <strong>"내유초"</strong>에서 하차, 도보 5분
+              </span>
             </div>
           </div>
 
@@ -461,8 +926,8 @@
           <div class="loc-card">
             <div class="loc-icon"><i class="la la-phone"></i></div>
             <div class="loc-details">
-              <span class="loc-title">대표 전화번호</span>
-              <span class="loc-desc">031-949-0000 (교회사무실)</span>
+              <span class="loc-title">대표 연락처</span>
+              <span class="loc-desc">010-3054-3283 (담임목사)</span>
             </div>
           </div>
         </div>
@@ -478,12 +943,15 @@
           <div class="footer-logo">
             <div class="logo-icon" style="width: 36px; height: 36px;">
               <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 70 C 35 48, 65 48, 80 70" stroke="#c5a880" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.6"/>
-                <path d="M10 82 C 30 53, 70 53, 90 82" stroke="#c5a880" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.4"/>
-                <path d="M30 58 C 40 38, 60 38, 70 58" stroke="#c5a880" stroke-width="7" stroke-linecap="round" fill="none"/>
-                <rect x="45" y="12" width="10" height="70" rx="5" fill="#ffffff"/>
-                <rect x="20" y="30" width="60" height="10" rx="5" fill="#ffffff"/>
-                <circle cx="50" cy="35" r="5" fill="#d4af37"/>
+                <path d="M20 70 C 35 48, 65 48, 80 70" stroke="#c5a880" stroke-width="5" stroke-linecap="round"
+                  fill="none" opacity="0.6" />
+                <path d="M10 82 C 30 53, 70 53, 90 82" stroke="#c5a880" stroke-width="4" stroke-linecap="round"
+                  fill="none" opacity="0.4" />
+                <path d="M30 58 C 40 38, 60 38, 70 58" stroke="#c5a880" stroke-width="7" stroke-linecap="round"
+                  fill="none" />
+                <rect x="45" y="12" width="10" height="70" rx="5" fill="#ffffff" />
+                <rect x="20" y="30" width="60" height="10" rx="5" fill="#ffffff" />
+                <circle cx="50" cy="35" r="5" fill="#d4af37" />
               </svg>
             </div>
             <div class="logo-text">
@@ -531,7 +999,6 @@
       </div>
     </div>
   </footer>
-
   <script src="app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
@@ -545,4 +1012,5 @@
     }
   </script>
 </body>
+
 </html>

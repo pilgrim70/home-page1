@@ -109,4 +109,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
   revealElements.forEach(el => revealObserver.observe(el));
+
+  // 6. Mobile Sub-menu Dropdown Toggle
+  const mobileDropdowns = document.querySelectorAll('.mobile-dropdown');
+  mobileDropdowns.forEach(dropdown => {
+    const mainLink = dropdown.querySelector('a.nav-link');
+    if (mainLink) {
+      mainLink.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          dropdown.classList.toggle('open');
+        }
+      });
+    }
+  });
+
+  // 8. Church School Accordion Board Toggle
+  const boardRows = document.querySelectorAll('.board-row');
+  boardRows.forEach(row => {
+    const summary = row.querySelector('.board-summary');
+    if (summary) {
+      summary.addEventListener('click', () => {
+        const isActive = row.classList.contains('active');
+        boardRows.forEach(r => r.classList.remove('active'));
+        if (!isActive) {
+          row.classList.add('active');
+        }
+      });
+    }
+  });
 });
+
+// 7. Copy Bank Account Number Helper Function
+window.copyAccount = function() {
+  const accountNum = document.getElementById('account-number');
+  if (accountNum) {
+    const text = accountNum.innerText.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('헌금 계좌번호 (' + text + ')가 복사되었습니다.');
+      }).catch(() => {
+        prompt('계좌번호를 복사하세요:', text);
+      });
+    } else {
+      prompt('계좌번호를 복사하세요:', text);
+    }
+  }
+};
