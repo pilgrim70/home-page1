@@ -132,13 +132,17 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // -- A. Default Mock Data (If LocalStorage is Empty) --
   const defaultNews = [
-    { id: 1, title: '에베소서, 로마서 말씀으로 고백하는 <방패기도문>입니다.', date: '2025-09-19', content: '에베소서, 로마서 말씀으로 고백하는 방패기도문 전문입니다.\n\n매일 아침 이 기도로 무장하여 승리하는 삶을 사시길 축복합니다.\n(본문 생략)' },
-    { id: 2, title: '2026년 8월 모바일 전도지', date: '2026-08-05', content: '2026년 8월 모바일 전도지입니다.\n\n이웃들에게 메신저로 전달하며 예수님의 사랑을 전해 보세요.' },
-    { id: 3, title: '2026년 8월 첫째 주 가정예배순서지', date: '2026-08-01', content: '2026년 8월 첫째 주 가정예배 순서지입니다.\n\n각 가정에서 경건하게 예배드릴 때 활용해 주시기 바랍니다.' },
-    { id: 4, title: '2026-08-02 더빛교회 주보', date: '2026-08-01', content: '2026년 8월 2일자 더빛교회 주보입니다.\n\n[예배 안내]\n1부 예배: 오전 9:00\n2부 예배: 오전 11:00\n\n[교회 소식]\n1. 다음 주일은 선교 헌금 작정일입니다.' },
-    { id: 5, title: '2026년 7월 넷째 주 가정예배순서지', date: '2026-07-25', content: '2026년 7월 넷째 주 가정예배 순서지입니다.' },
-    { id: 6, title: '2026-07-26 더빛교회 주보', date: '2026-07-25', content: '2026년 7월 26일자 더빛교회 주보입니다.' },
-    { id: 7, title: '2026년 7월 셋째 주 가정예배 순서지', date: '2026-07-22', content: '2026년 7월 셋째 주 가정예배 순서지입니다.' }
+    { id: 291, title: '2026- 07-05 더빛교회 주보', date: '2026-07-04', content: '2026년 7월 5일자 더빛교회 주보입니다.' },
+    { id: 292, title: '2026년 7월 모바일 전도지', date: '2026-07-08', content: '2026년 7월 모바일 전도지입니다.' },
+    { id: 293, title: '2026-07-12 더빛교회 주보', date: '2026-07-11', content: '2026년 7월 12일자 더빛교회 주보입니다.' },
+    { id: 294, title: '2026-07-19 교회 주보', date: '2026-07-22', content: '2026년 7월 19일자 교회 주보입니다.' },
+    { id: 295, title: '2026년 7월 셋째 주 가정예배 순서지', date: '2026-07-22', content: '2026년 7월 셋째 주 가정예배 순서지입니다.' },
+    { id: 296, title: '2026-07-26 더빛교회 주보', date: '2026-07-25', content: '2026년 7월 26일자 더빛교회 주보입니다.' },
+    { id: 297, title: '2026년 7월 넷째 주 가정예배순서지', date: '2026-07-25', content: '2026년 7월 넷째 주 가정예배 순서지입니다.' },
+    { id: 298, title: '2026-08-02 더빛교회 주보', date: '2026-08-01', content: '2026년 8월 2일자 더빛교회 주보입니다.' },
+    { id: 299, title: '2026년 8월 첫째 주 가정예배순서지', date: '2026-08-01', content: '2026년 8월 첫째 주 가정예배 순서지입니다.' },
+    { id: 300, title: '2026년 8월 모바일 전도지', date: '1일전', content: '2026년 8월 모바일 전도지입니다.' },
+    { id: 1, title: '에베소서, 로마서 말씀으로 고백하는 〈방패기도문〉입니다.', date: '2025-09-19', content: '에베소서, 로마서 말씀으로 고백하는 방패기도문 전문입니다.', isPinned: true }
   ];
 
   const defaultSchool = [
@@ -171,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Close modal helper
   function closeModal(modalEl) {
     if (modalEl) {
       modalEl.classList.remove('show');
@@ -194,6 +199,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let newsData = getBoardData('news_posts', defaultNews);
 
+    // Force update newsData to the new default mock data if it represents the older version of data (length < 11)
+    if (newsData.length < 11) {
+      newsData = defaultNews;
+      saveBoardData('news_posts', defaultNews);
+    }
+
     // Render news board function
     function renderNews() {
       juboListBody.innerHTML = '';
@@ -202,22 +213,34 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Render items (newest first)
-      newsData.slice().reverse().forEach((item, index) => {
+      // Separate pinned and normal posts (sort normal posts descending by ID)
+      const pinnedPosts = newsData.filter(p => p.isPinned);
+      const normalPosts = newsData.filter(p => !p.isPinned).sort((a, b) => b.id - a.id);
+      
+      const allSortedPosts = [...pinnedPosts, ...normalPosts];
+
+      allSortedPosts.forEach((item) => {
         const tr = document.createElement('tr');
-        const virtualNo = newsData.length - index;
+        
+        let noContent = '';
+        if (item.isPinned) {
+          tr.classList.add('pinned-row');
+          noContent = `<i class="la la-flag"></i>`;
+        } else {
+          noContent = item.id;
+        }
         
         tr.innerHTML = `
-          <td style="padding: 18px 20px; font-family: var(--font-en); font-weight: 500; color: var(--color-text-muted);">${virtualNo}</td>
-          <td class="title-cell" style="padding: 18px 20px; font-weight: 500; color: #333; cursor: pointer;">${item.title}</td>
-          <td class="date-cell" style="padding: 18px 20px; text-align: right; color: var(--color-text-muted); font-family: var(--font-en);">${item.date}</td>
-          <td class="action-cell" style="padding: 18px 20px; text-align: center;">
+          <td class="col-no">${noContent}</td>
+          <td class="col-title" style="padding-left: 20px;">${item.title}</td>
+          <td class="col-date">${item.date}</td>
+          <td class="col-action">
             <button class="btn-delete" data-id="${item.id}"><i class="la la-trash"></i></button>
           </td>
         `;
 
         // Click event on title to show details
-        tr.querySelector('.title-cell').addEventListener('click', () => {
+        tr.querySelector('.col-title').addEventListener('click', () => {
           document.getElementById('news-detail-title').innerText = item.title;
           document.getElementById('news-detail-date').innerHTML = `<i class="la la-calendar"></i> 작성일자: ${item.date}`;
           document.getElementById('news-detail-body').innerText = item.content || '본문 내용이 없습니다.';
@@ -264,8 +287,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const date = document.getElementById('news-date').value;
       const content = document.getElementById('news-content').value.trim();
 
+      // Find the next sequential ID
+      const normalPosts = newsData.filter(p => !p.isPinned);
+      const nextId = normalPosts.length > 0 ? Math.max(...normalPosts.map(p => p.id)) + 1 : 301;
+
       const newPost = {
-        id: Date.now(),
+        id: nextId,
         title: title,
         date: date,
         content: content

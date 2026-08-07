@@ -24,50 +24,46 @@
     <div class="container header-container">
       <!-- Logo -->
       <a href="index.html" class="logo">
-        <div class="logo-icon">
-          <!-- Custom Premium SVG Logo Icon matching vertical original shape -->
-          <svg width="100%" height="100%" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Left Blue Panel -->
-            <path d="M 6 0 L 56 10 L 56 118 L 6 125 A 6 6 0 0 1 0 119 L 0 6 A 6 6 0 0 1 6 0 Z" fill="#0088E6" />
-            <!-- Right Lime Panel -->
-            <path d="M 58 18 L 94 8 A 6 6 0 0 1 100 14 L 100 142 A 6 6 0 0 1 94 148 L 58 118 Z" fill="#88C000" />
-            <!-- White Cross Cutout -->
-            <rect x="44" y="36" width="16" height="82" fill="#FFFFFF" />
-            <rect x="20" y="56" width="60" height="16" fill="#FFFFFF" />
+        <div class="logo-icon" style="width: 38px; height: 38px;">
+          <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="44" y="10" width="12" height="80" rx="3" fill="var(--color-thelight-green)" />
+            <rect x="20" y="32" width="60" height="12" rx="3" fill="var(--color-thelight-green)" />
           </svg>
         </div>
         <div class="logo-text-group">
           <div class="logo-main-row">
-            <span class="logo-tag">복의근원</span>
-            <span class="logo-title-group"><span class="logo-title-red">관유중앙</span><span
-                class="logo-title-black">교회</span></span>
+            <span class="logo-title-black" style="font-size: 1.55rem; font-weight: 700; color: #000; font-family: var(--font-ko); letter-spacing: -0.5px;">더빛교회</span>
           </div>
-          <div class="logo-sub-row">
-            <span class="logo-denom">대 한 예 수 교 장 로 회</span>
+          <div class="logo-sub-row" style="justify-content: flex-start; margin-top: 1px;">
+            <span class="logo-denom" style="font-size: 0.72rem; font-weight: 500; color: #666; font-family: var(--font-en); letter-spacing: 0.5px;">The Light Church</span>
           </div>
         </div>
       </a>
 
       <!-- Desktop Navigation -->
       <nav class="nav-menu desktop">
-        <div class="nav-item active"><a href="index.html" class="nav-link">홈</a></div>
         <div class="nav-item has-dropdown">
-          <a href="intro.html" class="nav-link">교회소개 <i class="la la-angle-down dropdown-icon"></i></a>
+          <a href="intro.html" class="nav-link">더빛교회 <i class="la la-angle-down dropdown-icon"></i></a>
           <ul class="dropdown-menu">
             <li><a href="intro.html#intro" class="dropdown-link"><i class="la la-church"></i> 교회소개</a></li>
             <li><a href="intro.html#servants" class="dropdown-link"><i class="la la-user-friends"></i> 섬기는 사람들</a></li>
             <li><a href="intro.html#offering" class="dropdown-link"><i class="la la-gift"></i> 온라인 헌금</a></li>
             <li><a href="location.html#location" class="dropdown-link"><i class="la la-map-marker"></i> 오시는 길</a></li>
-            <li><a href="intro.html#blessing" class="dropdown-link"><i class="la la-music"></i> 축복송/파송찬양</a></li>
           </ul>
         </div>
         <div class="nav-item has-dropdown">
-          <a href="sermons.html" class="nav-link">설교와 찬양 <i class="la la-angle-down dropdown-icon"></i></a>
+          <a href="sermons.html" class="nav-link">예배와 설교 <i class="la la-angle-down dropdown-icon"></i></a>
           <ul class="dropdown-menu">
             <li><a href="sermons.html#sermons" class="dropdown-link"><i class="la la-video"></i> 주일설교</a></li>
             <li><a href="sermons.html#worship" class="dropdown-link"><i class="la la-book-open"></i> 수요성경공부</a></li>
-            <li><a href="intro.html#blessing" class="dropdown-link"><i class="la la-music"></i> 주일찬양</a></li>
             <li><a href="sermons.html#worship" class="dropdown-link"><i class="la la-cloud-sun"></i> 새벽기도회</a></li>
+          </ul>
+        </div>
+        <div class="nav-item has-dropdown">
+          <a href="sermons.html#worship" class="nav-link">말씀과 기도 <i class="la la-angle-down dropdown-icon"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="sermons.html#worship" class="dropdown-link"><i class="la la-book-open"></i> 성경 공부</a></li>
+            <li><a href="intro.html#blessing" class="dropdown-link"><i class="la la-music"></i> 축복송/찬양</a></li>
           </ul>
         </div>
         <div class="nav-item has-dropdown">
@@ -79,23 +75,19 @@
           </ul>
         </div>
         <div class="nav-item has-dropdown">
-          <a href="news.html" class="nav-link">교회소식 <i class="la la-angle-down dropdown-icon"></i></a>
+          <a href="location.html" class="nav-link">지역과 문화 <i class="la la-angle-down dropdown-icon"></i></a>
           <ul class="dropdown-menu">
-            <li><a href="news.html#news" class="dropdown-link"><i class="la la-book-open"></i> 교회주보</a></li>
-            <li><a href="news.html#news" class="dropdown-link"><i class="la la-bullhorn"></i> 교회광고</a></li>
-            <li><a href="news.html#news" class="dropdown-link"><i class="la la-image"></i> 교회사진</a></li>
-            <li><a href="sermons.html#worship" class="dropdown-link"><i class="la la-calendar"></i> 교회일정</a></li>
-            <li><a href="location.html#location" class="dropdown-link"><i class="la la-envelope"></i> 교회문의</a></li>
+            <li><a href="location.html#location" class="dropdown-link"><i class="la la-map-marker"></i> 오시는 길</a></li>
+            <li><a href="https://link.coupang.com/a/e3vtVJWPbo" target="_blank" rel="noopener noreferrer" class="dropdown-link"><i class="la la-shopping-cart"></i> 쿠팡 바로가기</a></li>
           </ul>
         </div>
-        <div class="nav-item"><a href="location.html" class="nav-link">오시는길</a></div>
-        <div class="coupang-item">
-          <a href="https://link.coupang.com/a/e3vtVJWPbo" target="_blank" rel="noopener noreferrer" class="coupang-btn">
-            <i class="la la-shopping-cart"></i>
-            <span>쿠팡</span>
-            <span>바로가기</span>
-          </a>
-          <span class="coupang-sub-text">편안한 생활</span>
+        <div class="nav-item has-dropdown">
+          <a href="news.html" class="nav-link">더빛소식 <i class="la la-angle-down dropdown-icon"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="news.html#news" class="dropdown-link"><i class="la la-file-alt"></i> 교회소식 주보</a></li>
+            <li><a href="news.html#news" class="dropdown-link"><i class="la la-bullhorn"></i> 공지사항</a></li>
+            <li><a href="news.html#news" class="dropdown-link"><i class="la la-image"></i> 포토 갤러리</a></li>
+          </ul>
         </div>
       </nav>
 
@@ -111,15 +103,28 @@
   <!-- Mobile Drawer Menu -->
   <div class="mobile-nav" id="mobile-nav">
     <nav class="nav-menu">
-      <div class="nav-item"><a href="index.html" class="nav-link mobile-link">홈</a></div>
-      <div class="nav-item"><a href="intro.html" class="nav-link mobile-link">교회소개</a></div>
       <div class="nav-item has-dropdown mobile-dropdown">
-        <a href="sermons.html" class="nav-link mobile-link">설교와 찬양 <i class="la la-angle-down dropdown-icon"></i></a>
+        <a href="intro.html" class="nav-link mobile-link">더빛교회 <i class="la la-angle-down dropdown-icon"></i></a>
+        <ul class="dropdown-menu mobile-dropdown-menu">
+          <li><a href="intro.html#intro" class="dropdown-link mobile-link">교회소개</a></li>
+          <li><a href="intro.html#servants" class="dropdown-link mobile-link">섬기는 사람들</a></li>
+          <li><a href="intro.html#offering" class="dropdown-link mobile-link">온라인 헌금</a></li>
+          <li><a href="location.html#location" class="dropdown-link mobile-link">오시는 길</a></li>
+        </ul>
+      </div>
+      <div class="nav-item has-dropdown mobile-dropdown">
+        <a href="sermons.html" class="nav-link mobile-link">예배와 설교 <i class="la la-angle-down dropdown-icon"></i></a>
         <ul class="dropdown-menu mobile-dropdown-menu">
           <li><a href="sermons.html#sermons" class="dropdown-link mobile-link">주일설교</a></li>
           <li><a href="sermons.html#worship" class="dropdown-link mobile-link">수요성경공부</a></li>
-          <li><a href="intro.html#blessing" class="dropdown-link mobile-link">주일찬양</a></li>
           <li><a href="sermons.html#worship" class="dropdown-link mobile-link">새벽기도회</a></li>
+        </ul>
+      </div>
+      <div class="nav-item has-dropdown mobile-dropdown">
+        <a href="sermons.html#worship" class="nav-link mobile-link">말씀과 기도 <i class="la la-angle-down dropdown-icon"></i></a>
+        <ul class="dropdown-menu mobile-dropdown-menu">
+          <li><a href="sermons.html#worship" class="dropdown-link mobile-link">성경 공부</a></li>
+          <li><a href="intro.html#blessing" class="dropdown-link mobile-link">축복송/찬양</a></li>
         </ul>
       </div>
       <div class="nav-item has-dropdown mobile-dropdown">
@@ -131,23 +136,19 @@
         </ul>
       </div>
       <div class="nav-item has-dropdown mobile-dropdown">
-        <a href="news.html" class="nav-link mobile-link">교회소식 <i class="la la-angle-down dropdown-icon"></i></a>
+        <a href="location.html" class="nav-link mobile-link">지역과 문화 <i class="la la-angle-down dropdown-icon"></i></a>
         <ul class="dropdown-menu mobile-dropdown-menu">
-          <li><a href="news.html#news" class="dropdown-link mobile-link">교회주보</a></li>
-          <li><a href="news.html#news" class="dropdown-link mobile-link">교회광고</a></li>
-          <li><a href="news.html#news" class="dropdown-link mobile-link">교회사진</a></li>
-          <li><a href="sermons.html#worship" class="dropdown-link mobile-link">교회일정</a></li>
-          <li><a href="location.html#location" class="dropdown-link mobile-link">교회문의</a></li>
+          <li><a href="location.html#location" class="dropdown-link mobile-link">오시는 길</a></li>
+          <li><a href="https://link.coupang.com/a/e3vtVJWPbo" target="_blank" rel="noopener noreferrer" class="dropdown-link mobile-link">쿠팡 바로가기</a></li>
         </ul>
       </div>
-      <div class="nav-item"><a href="location.html" class="nav-link mobile-link">오시는길</a></div>
-      <div class="coupang-item mobile">
-        <a href="https://link.coupang.com/a/e3vtVJWPbo" target="_blank" rel="noopener noreferrer" class="coupang-btn">
-          <i class="la la-shopping-cart"></i>
-          <span>쿠팡</span>
-          <span>바로가기</span>
-        </a>
-        <span class="coupang-sub-text">편안한 생활</span>
+      <div class="nav-item has-dropdown mobile-dropdown">
+        <a href="news.html" class="nav-link mobile-link">더빛소식 <i class="la la-angle-down dropdown-icon"></i></a>
+        <ul class="dropdown-menu mobile-dropdown-menu">
+          <li><a href="news.html#news" class="dropdown-link mobile-link">교회소식 주보</a></li>
+          <li><a href="news.html#news" class="dropdown-link mobile-link">공지사항</a></li>
+          <li><a href="news.html#news" class="dropdown-link mobile-link">포토 갤러리</a></li>
+        </ul>
       </div>
     </nav>
   </div>
@@ -239,8 +240,8 @@
               </svg>
             </div>
             <div class="logo-text">
-              <span class="logo-title" style="color: #fff;">관유중앙교회</span>
-              <span class="logo-sub" style="color: rgba(255,255,255,0.6)">복의근원</span>
+              <span class="logo-title" style="color: #fff;">더빛교회</span>
+              <span class="logo-sub" style="color: rgba(255,255,255,0.6)">The Light Church</span>
             </div>
           </div>
           <p class="footer-desc">우리는 지역사회의 치유와 회복을 이끌고 세상을 복음화하는 선교적 사명을 감당하며, 늘 기도로 준비하는 신실한 성도들의 믿음 공동체입니다.</p>
@@ -274,7 +275,7 @@
       </div>
 
       <div class="footer-bottom">
-        <span class="copyright">© 2026 복의근원 관유중앙교회. All Rights Reserved.</span>
+        <span class="copyright">© 2026 더빛교회. All Rights Reserved.</span>
         <div class="social-links">
           <a href="#" class="social-icon" aria-label="YouTube"><i class="la la-youtube"></i></a>
           <a href="#" class="social-icon" aria-label="Instagram"><i class="la la-instagram"></i></a>

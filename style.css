@@ -14,6 +14,10 @@
   --color-border: rgba(0, 0, 0, 0.08);
   --color-border-light: rgba(255, 255, 255, 0.25);
   
+  --color-thelight-green: #388e3c; /* The Light Church Vivid Green */
+  --color-thelight-green-light: #4caf50;
+  --color-thelight-green-dark: #2e7d32;
+  
   --font-ko: 'Noto Sans KR', sans-serif;
   --font-en: 'Outfit', sans-serif;
   
@@ -176,14 +180,13 @@ button {
   width: 100%;
   z-index: 1000;
   transition: var(--transition);
-  border-bottom: 1px solid transparent;
+  border-bottom: 2px solid var(--color-thelight-green);
+  background-color: #ffffff;
 }
 
 .header.scrolled {
-  background-color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--color-border);
+  background-color: #ffffff;
+  border-bottom: 2px solid var(--color-thelight-green);
   box-shadow: var(--shadow-sm);
 }
 
@@ -296,14 +299,14 @@ button {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: var(--color-primary-light);
+  background-color: var(--color-thelight-green);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-link:hover {
-  color: var(--color-primary-light);
+  color: var(--color-thelight-green);
 }
 
 .nav-link:hover::after {
@@ -317,13 +320,13 @@ button {
 
 /* Active Nav Item */
 .nav-item.active .nav-link {
-  color: var(--color-primary);
+  color: var(--color-thelight-green);
   font-weight: 700;
 }
 
 .nav-item.active .nav-link::after {
   transform: scaleX(1);
-  background-color: var(--color-accent-light);
+  background-color: var(--color-thelight-green);
 }
 
 /* Nav Dropdown Styles */
@@ -2549,4 +2552,197 @@ section {
   .modal-body {
     padding: 16px;
   }
+}
+
+/* --- 더빛교회 리디자인 추가 스타일 --- */
+
+/* 헤더 및 로고 보강 */
+.header .logo-icon svg rect,
+.header .logo-icon svg path {
+  fill: var(--color-thelight-green) !important;
+}
+
+.menu-btn span {
+  background-color: var(--color-thelight-green) !important;
+}
+
+/* 스크린샷 스타일의 교회 소식 게시판 */
+.news-center-container {
+  max-width: 1000px;
+  margin: 60px auto 100px auto;
+  padding: 0 20px;
+}
+
+.news-page-title {
+  text-align: center;
+  font-family: 'Gowun Batang', serif;
+  font-weight: 700;
+  font-size: 2.2rem;
+  color: #000000;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  letter-spacing: -0.5px;
+}
+
+.clean-jubo-table-wrapper {
+  width: 100%;
+  margin-top: 30px;
+}
+
+.clean-jubo-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.clean-jubo-table thead tr {
+  border-top: 1.5px solid #222222;
+  border-bottom: 1.5px solid #222222;
+}
+
+.clean-jubo-table th {
+  padding: 14px 15px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #333333;
+}
+
+.clean-jubo-table th.col-no {
+  width: 80px;
+  text-align: left;
+}
+
+.clean-jubo-table th.col-title {
+  text-align: center;
+}
+
+.clean-jubo-table th.col-date {
+  width: 150px;
+  text-align: right;
+}
+
+.clean-jubo-table tbody tr {
+  border-bottom: 1px solid #eaeaea;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease;
+}
+
+.clean-jubo-table tbody tr:hover {
+  background-color: #fcfcfc;
+}
+
+.clean-jubo-table tbody tr.pinned-row {
+  background-color: #f7f7f7 !important;
+}
+
+.clean-jubo-table td {
+  padding: 16px 15px;
+  font-size: 0.95rem;
+  color: #333333;
+  vertical-align: middle;
+}
+
+.clean-jubo-table td.col-no {
+  font-family: var(--font-en);
+  color: #555555;
+  text-align: left;
+}
+
+.clean-jubo-table td.col-no i {
+  font-size: 1.1rem;
+  color: #666666; /* 회색 핀/깃발 아이콘 */
+}
+
+.clean-jubo-table td.col-title {
+  color: #111111;
+  font-weight: 400;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.clean-jubo-table td.col-title:hover {
+  color: var(--color-thelight-green);
+}
+
+.clean-jubo-table td.col-date {
+  text-align: right;
+  color: #888888;
+  font-size: 0.9rem;
+}
+
+/* 관리 기능 미니멀 스타일 */
+.clean-jubo-table td.col-action {
+  text-align: center;
+  width: 60px;
+}
+
+.clean-jubo-table .btn-delete {
+  padding: 4px;
+  font-size: 1.1rem;
+  color: #ccc;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.clean-jubo-table tr:hover .btn-delete {
+  color: #e63946;
+}
+
+/* 글쓰기 버튼 미니멀화 */
+.news-admin-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-news-write-minimal {
+  font-size: 0.85rem;
+  color: #666666;
+  border: 1px solid #cccccc;
+  padding: 6px 14px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.btn-news-write-minimal:hover {
+  color: var(--color-thelight-green);
+  border-color: var(--color-thelight-green);
+  background-color: rgba(56, 142, 60, 0.05);
+}
+
+/* 모달 제목 및 테마 색상 덮어쓰기 */
+.modal-title, .modal-close:hover {
+  color: var(--color-thelight-green) !important;
+}
+
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+  border-color: var(--color-thelight-green) !important;
+  box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.1) !important;
+}
+
+.btn-primary {
+  background-color: var(--color-thelight-green) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-thelight-green-dark) !important;
+}
+
+.btn-outline {
+  border-color: var(--color-thelight-green) !important;
+  color: var(--color-thelight-green) !important;
+}
+
+.btn-outline:hover {
+  background-color: var(--color-thelight-green) !important;
+  color: #ffffff !important;
 }
