@@ -208,6 +208,14 @@ button {
   align-items: center;
   gap: 12px;
   text-decoration: none;
+  height: 50px;
+}
+
+.logo img {
+  height: 47px;
+  max-height: 47px;
+  width: auto;
+  display: block;
 }
 
 .logo-icon {
