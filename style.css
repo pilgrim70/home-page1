@@ -208,12 +208,12 @@ button {
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  height: 50px;
+  height: 56px;
 }
 
 .logo img {
-  height: 47px;
-  max-height: 47px;
+  height: 52px;
+  max-height: 52px;
   width: auto;
   display: block;
 }
