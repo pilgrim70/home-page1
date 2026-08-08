@@ -1,4 +1,4 @@
-const CACHE_NAME = 'church-app-v2';
+const CACHE_NAME = 'church-app-v4';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -15,6 +15,7 @@ self.addEventListener('install', event => {
         return cache.addAll(urlsToCache);
       })
   );
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
@@ -29,9 +30,16 @@ self.addEventListener('activate', event => {
       );
     })
   );
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', event => {
+  // Bypass cache on localhost/127.0.0.1 for local development
+  if (event.request.url.includes('localhost') || event.request.url.includes('127.0.0.1')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {

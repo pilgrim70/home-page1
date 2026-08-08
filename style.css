@@ -2746,3 +2746,258 @@ section {
   background-color: var(--color-thelight-green) !important;
   color: #ffffff !important;
 }
+
+/* 교회학교 게시판 스타일링 */
+.school-notice-container {
+  max-width: 1000px;
+  margin: 60px auto 100px auto;
+  padding: 0 20px;
+}
+
+.school-notice-header-group {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 40px;
+}
+
+.school-notice-title {
+  font-family: 'Gowun Batang', serif;
+  font-weight: 700;
+  font-size: 2.2rem;
+  color: #000000;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.school-notice-subtitle {
+  font-size: 0.95rem;
+  color: #666666;
+}
+
+.notice-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid #222222;
+  padding-bottom: 14px;
+  margin-bottom: 10px;
+}
+
+.notice-filters {
+  display: flex;
+  gap: 15px;
+}
+
+.filter-btn {
+  border: none;
+  background: none;
+  padding: 6px 4px;
+  font-size: 0.95rem;
+  color: #666666;
+  font-family: var(--font-ko);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.filter-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 0;
+  height: 2.5px;
+  background-color: var(--color-thelight-green);
+  transition: width 0.2s ease;
+}
+
+.filter-btn:hover {
+  color: var(--color-thelight-green);
+}
+
+.filter-btn.active {
+  color: var(--color-thelight-green);
+  font-weight: 600;
+}
+
+.filter-btn.active::after {
+  width: 100%;
+}
+
+/* 부서 구분 배지(Badge) 스타일 */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 20px;
+  text-align: center;
+  font-family: var(--font-ko);
+}
+
+.badge-kids {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-hero {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.badge-kfc {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+/* =========================================
+   미니멀 & 클린 파일 첨부 및 다운로드 스타일 (사용자 레퍼런스 완벽 적용)
+========================================= */
+/* 등록 폼 내 파일 선택 버튼 */
+.clean-file-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-file-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: #f1f3f5;
+  color: #495057;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-file-select:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+  color: #212529;
+}
+
+.file-select-status {
+  font-size: 0.85rem;
+  color: #868e96;
+}
+
+/* 모달 내 첨부파일 미리보기 (등록 시) */
+.clean-file-selected-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+
+.clean-file-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.clean-file-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #343a40;
+}
+
+.clean-file-size {
+  font-size: 0.78rem;
+  color: #868e96;
+  margin-top: 2px;
+}
+
+.btn-clean-file-remove {
+  background: none;
+  border: none;
+  color: #adb5bd;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  transition: color 0.2s ease;
+}
+
+.btn-clean-file-remove:hover {
+  color: #fa5252;
+}
+
+/* 상세 보기 모달 내 다운로드 바 (사용자 레퍼런스 이미지 완벽 구현) */
+.ref-download-section {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.ref-download-guide {
+  font-size: 0.88rem;
+  color: #333333;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+.ref-download-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f8f8;
+  border: 1px solid #ebebeb;
+  border-radius: 3px;
+  padding: 12px 18px;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.ref-download-bar:hover {
+  background-color: #f0f0f0;
+}
+
+.ref-download-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.ref-download-bullet {
+  color: #555;
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.ref-download-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.ref-download-name {
+  font-size: 0.92rem;
+  color: #444444;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.ref-download-size {
+  font-size: 0.78rem;
+  color: #999999;
+  margin-top: 2px;
+}
+
+.ref-download-icon {
+  color: #777777;
+  font-size: 1.3rem;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.ref-download-bar:hover .ref-download-icon {
+  color: #222222;
+  transform: translateY(1px);
+}
+

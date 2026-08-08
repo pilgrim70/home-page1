@@ -132,14 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // -- A. Default Mock Data (If LocalStorage is Empty) --
   const defaultNews = [
-    { id: 291, title: '2026- 07-05 더빛교회 주보', date: '2026-07-04', content: '2026년 7월 5일자 더빛교회 주보입니다.' },
+    { id: 291, title: '2026- 07-05 관유중앙교회 주보', date: '2026-07-04', content: '2026년 7월 5일자 관유중앙교회 주보입니다.' },
     { id: 292, title: '2026년 7월 모바일 전도지', date: '2026-07-08', content: '2026년 7월 모바일 전도지입니다.' },
-    { id: 293, title: '2026-07-12 더빛교회 주보', date: '2026-07-11', content: '2026년 7월 12일자 더빛교회 주보입니다.' },
+    { id: 293, title: '2026-07-12 관유중앙교회 주보', date: '2026-07-11', content: '2026년 7월 12일자 관유중앙교회 주보입니다.' },
     { id: 294, title: '2026-07-19 교회 주보', date: '2026-07-22', content: '2026년 7월 19일자 교회 주보입니다.' },
     { id: 295, title: '2026년 7월 셋째 주 가정예배 순서지', date: '2026-07-22', content: '2026년 7월 셋째 주 가정예배 순서지입니다.' },
-    { id: 296, title: '2026-07-26 더빛교회 주보', date: '2026-07-25', content: '2026년 7월 26일자 더빛교회 주보입니다.' },
+    { id: 296, title: '2026-07-26 관유중앙교회 주보', date: '2026-07-25', content: '2026년 7월 26일자 관유중앙교회 주보입니다.' },
     { id: 297, title: '2026년 7월 넷째 주 가정예배순서지', date: '2026-07-25', content: '2026년 7월 넷째 주 가정예배 순서지입니다.' },
-    { id: 298, title: '2026-08-02 더빛교회 주보', date: '2026-08-01', content: '2026년 8월 2일자 더빛교회 주보입니다.' },
+    { id: 298, title: '2026-08-02 관유중앙교회 주보', date: '2026-08-01', content: '2026년 8월 2일자 관유중앙교회 주보입니다.' },
     { id: 299, title: '2026년 8월 첫째 주 가정예배순서지', date: '2026-08-01', content: '2026년 8월 첫째 주 가정예배 순서지입니다.' },
     { id: 300, title: '2026년 8월 모바일 전도지', date: '1일전', content: '2026년 8월 모바일 전도지입니다.' },
     { id: 1, title: '에베소서, 로마서 말씀으로 고백하는 〈방패기도문〉입니다.', date: '2025-09-19', content: '에베소서, 로마서 말씀으로 고백하는 방패기도문 전문입니다.', isPinned: true }
@@ -185,7 +185,166 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- B. Church Notice (Jubo) Board Logic (news.html) ---
+  // --- C. Clean & Minimal File Attachment Helper ---
+  function setupFileUpload(browseBtnId, inputId, statusId, previewId, titleInputId, contentInputId) {
+    const browseBtn = document.getElementById(browseBtnId);
+    const fileInput = document.getElementById(inputId);
+    const statusText = document.getElementById(statusId);
+    const previewContainer = document.getElementById(previewId);
+    const titleInput = document.getElementById(titleInputId);
+    const contentInput = document.getElementById(contentInputId);
+
+    let attachedFile = null;
+
+    function resetAttachedFile() {
+      attachedFile = null;
+      if (fileInput) fileInput.value = '';
+      if (statusText) {
+        statusText.innerText = '선택된 파일 없음';
+        statusText.style.color = '#868e96';
+      }
+      if (previewContainer) {
+        previewContainer.innerHTML = '';
+        previewContainer.style.display = 'none';
+      }
+    }
+
+    function handleFile(file) {
+      if (!file) return;
+
+      const isImage = file.type.startsWith('image/');
+      const isText = file.type === 'text/plain' || file.name.endsWith('.txt');
+      const isPdf = file.type === 'application/pdf' || file.name.endsWith('.pdf');
+
+      // Auto-fill title if empty or default placeholder
+      if (titleInput && (!titleInput.value.trim() || titleInput.value.trim().startsWith('예:'))) {
+        const cleanName = file.name.replace(/\.[^/.]+$/, "");
+        titleInput.value = cleanName;
+      }
+
+      if (isText) {
+        const textReader = new FileReader();
+        textReader.onload = function(e) {
+          if (contentInput && !contentInput.value.trim()) {
+            contentInput.value = e.target.result;
+          }
+        };
+        textReader.readAsText(file);
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        const sizeFormatted = (file.size < 1024 * 1024) 
+          ? (file.size / 1024).toFixed(1) + ' KB'
+          : (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+        attachedFile = {
+          name: file.name,
+          size: sizeFormatted,
+          type: file.type || 'application/octet-stream',
+          dataUrl: dataUrl,
+          isImage: isImage,
+          isPdf: isPdf
+        };
+
+        if (statusText) {
+          statusText.innerText = `선택됨: ${file.name} (${sizeFormatted})`;
+          statusText.style.color = '#2b8a3e';
+          statusText.style.fontWeight = '500';
+        }
+
+        if (previewContainer) {
+          previewContainer.innerHTML = `
+            <div class="clean-file-selected-bar">
+              <div class="clean-file-info">
+                <span class="clean-file-name"><i class="la la-file"></i> ${file.name}</span>
+                <span class="clean-file-size">${sizeFormatted}</span>
+              </div>
+              <button type="button" class="btn-clean-file-remove" title="파일 취소">&times;</button>
+            </div>
+          `;
+          previewContainer.style.display = 'block';
+
+          previewContainer.querySelector('.btn-clean-file-remove').addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            resetAttachedFile();
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    if (browseBtn && fileInput) {
+      browseBtn.addEventListener('click', async () => {
+        if (window.showOpenFilePicker) {
+          try {
+            const [fileHandle] = await window.showOpenFilePicker({
+              multiple: false
+            });
+            const file = await fileHandle.getFile();
+            handleFile(file);
+            return;
+          } catch (err) {
+            if (err.name !== 'AbortError') {
+              fileInput.click();
+            }
+            return;
+          }
+        }
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleFile(e.target.files[0]);
+        }
+      });
+    }
+
+    return {
+      getAttachedFile: () => attachedFile,
+      resetAttachedFile: resetAttachedFile
+    };
+  }
+
+  // Render detail attachment in clean reference format
+  function renderDetailAttachment(containerEl, attachment) {
+    if (!containerEl) return;
+    if (!attachment || !attachment.dataUrl) {
+      containerEl.innerHTML = '';
+      containerEl.style.display = 'none';
+      return;
+    }
+
+    let imagePreviewHtml = '';
+    if (attachment.isImage) {
+      imagePreviewHtml = `
+        <div style="margin-bottom: 15px; text-align: center;">
+          <img src="${attachment.dataUrl}" alt="${attachment.name}" style="max-width: 100%; max-height: 400px; border-radius: 4px; border: 1px solid #eee;">
+        </div>
+      `;
+    }
+
+    containerEl.innerHTML = `
+      ${imagePreviewHtml}
+      <div class="ref-download-guide">첨부된 자료는 아래 파일을 다운로드하세요.</div>
+      <a href="${attachment.dataUrl}" download="${attachment.name}" class="ref-download-bar" title="클릭하여 다운로드">
+        <div class="ref-download-left">
+          <span class="ref-download-bullet">•</span>
+          <div class="ref-download-meta">
+            <div class="ref-download-name">${attachment.name}</div>
+            <div class="ref-download-size">${attachment.size || ''}</div>
+          </div>
+        </div>
+        <i class="la la-arrow-down ref-download-icon"></i>
+      </a>
+    `;
+    containerEl.style.display = 'block';
+  }
+
+  // --- D. Church Notice (Jubo) Board Logic (news.html) ---
   const juboListBody = document.getElementById('jubo-list-body');
   if (juboListBody) {
     const newsModalWrite = document.getElementById('news-write-modal');
@@ -197,15 +356,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnConfirmNewsDetail = document.getElementById('btn-confirm-news-detail');
     const newsWriteForm = document.getElementById('news-write-form');
 
+    const newsUploader = setupFileUpload(
+      'btn-browse-news-file',
+      'news-file-input',
+      'news-file-status',
+      'news-file-preview-container',
+      'news-title',
+      'news-content'
+    );
+
     let newsData = getBoardData('news_posts', defaultNews);
 
-    // Force update newsData to the new default mock data if it represents the older version of data (length < 11)
     if (newsData.length < 11) {
       newsData = defaultNews;
       saveBoardData('news_posts', defaultNews);
     }
 
-    // Render news board function
     function renderNews() {
       juboListBody.innerHTML = '';
       if (newsData.length === 0) {
@@ -213,10 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Separate pinned and normal posts (sort normal posts descending by ID)
       const pinnedPosts = newsData.filter(p => p.isPinned);
       const normalPosts = newsData.filter(p => !p.isPinned).sort((a, b) => b.id - a.id);
-      
       const allSortedPosts = [...pinnedPosts, ...normalPosts];
 
       allSortedPosts.forEach((item) => {
@@ -229,25 +393,26 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           noContent = item.id;
         }
+
+        const clipBadge = item.file ? `<i class="la la-paperclip" style="color: var(--color-primary); margin-left: 6px; font-weight: bold;" title="첨부자료 있음"></i>` : '';
         
         tr.innerHTML = `
           <td class="col-no">${noContent}</td>
-          <td class="col-title" style="padding-left: 20px;">${item.title}</td>
+          <td class="col-title" style="padding-left: 20px;">${item.title}${clipBadge}</td>
           <td class="col-date">${item.date}</td>
           <td class="col-action">
             <button class="btn-delete" data-id="${item.id}"><i class="la la-trash"></i></button>
           </td>
         `;
 
-        // Click event on title to show details
         tr.querySelector('.col-title').addEventListener('click', () => {
           document.getElementById('news-detail-title').innerText = item.title;
           document.getElementById('news-detail-date').innerHTML = `<i class="la la-calendar"></i> 작성일자: ${item.date}`;
-          document.getElementById('news-detail-body').innerText = item.content || '본문 내용이 없습니다.';
+          document.getElementById('news-detail-body').innerText = item.content || (item.file ? '' : '본문 내용이 없습니다.');
+          renderDetailAttachment(document.getElementById('news-detail-attachment'), item.file);
           openModal(newsModalDetail);
         });
 
-        // Click event on delete button
         tr.querySelector('.btn-delete').addEventListener('click', (e) => {
           e.stopPropagation();
           if (confirm('이 글을 삭제하시겠습니까?')) {
@@ -261,12 +426,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Modal Triggers
     if (btnOpenNewsWrite) {
       btnOpenNewsWrite.addEventListener('click', () => {
-        // Reset and set default date to today
         newsWriteForm.reset();
         document.getElementById('news-date').value = new Date().toISOString().substring(0, 10);
+        newsUploader.resetAttachedFile();
         openModal(newsModalWrite);
       });
     }
@@ -276,18 +440,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCloseNewsDetail) btnCloseNewsDetail.addEventListener('click', () => closeModal(newsModalDetail));
     if (btnConfirmNewsDetail) btnConfirmNewsDetail.addEventListener('click', () => closeModal(newsModalDetail));
 
-    // Backdrop click to close
     document.getElementById('news-write-backdrop').addEventListener('click', () => closeModal(newsModalWrite));
     document.getElementById('news-detail-backdrop').addEventListener('click', () => closeModal(newsModalDetail));
 
-    // Form Submit
     newsWriteForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const title = document.getElementById('news-title').value.trim();
       const date = document.getElementById('news-date').value;
       const content = document.getElementById('news-content').value.trim();
+      const attachedFile = newsUploader.getAttachedFile();
 
-      // Find the next sequential ID
       const normalPosts = newsData.filter(p => !p.isPinned);
       const nextId = normalPosts.length > 0 ? Math.max(...normalPosts.map(p => p.id)) + 1 : 301;
 
@@ -295,7 +457,8 @@ document.addEventListener('DOMContentLoaded', () => {
         id: nextId,
         title: title,
         date: date,
-        content: content
+        content: content,
+        file: attachedFile
       };
 
       newsData.push(newPost);
@@ -307,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderNews();
   }
 
-  // --- C. Church School Notice Board Logic (school.html) ---
+  // --- E. Church School Notice Board Logic (school.html) ---
   const schoolListBody = document.getElementById('notice-list-body');
   if (schoolListBody) {
     const schoolModalWrite = document.getElementById('school-write-modal');
@@ -320,10 +483,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const schoolWriteForm = document.getElementById('school-write-form');
     const filterBtns = document.querySelectorAll('.notice-filters .filter-btn');
 
+    const schoolUploader = setupFileUpload(
+      'btn-browse-school-file',
+      'school-file-input',
+      'school-file-status',
+      'school-file-preview-container',
+      'school-title',
+      'school-content'
+    );
+
     let schoolData = getBoardData('school_posts', defaultSchool);
     let currentFilter = 'all';
 
-    // Get Department Korean Name
     function getDeptKoName(dept) {
       switch(dept) {
         case 'kids': return '유초등부';
@@ -333,47 +504,47 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Render school board function
     function renderSchool() {
       schoolListBody.innerHTML = '';
       const filteredData = schoolData.filter(item => currentFilter === 'all' || item.dept === currentFilter);
 
       if (filteredData.length === 0) {
         schoolListBody.innerHTML = `
-          <div style="text-align: center; padding: 40px; color: var(--color-text-muted); width: 100%; grid-column: 1 / -1;">
-            등록된 공지사항이 없습니다.
-          </div>
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+              등록된 공지사항이 없습니다.
+            </td>
+          </tr>
         `;
         return;
       }
 
       filteredData.slice().reverse().forEach((item, index) => {
-        const itemEl = document.createElement('div');
-        itemEl.className = 'notice-list-row board-row';
+        const tr = document.createElement('tr');
+        const clipBadge = item.file ? `<i class="la la-paperclip" style="color: var(--color-primary); margin-left: 6px; font-weight: bold;" title="첨부자료 있음"></i>` : '';
         
-        itemEl.innerHTML = `
-          <div class="col-notice-num" style="font-family: var(--font-en); font-weight: 500;">${filteredData.length - index}</div>
-          <div class="col-notice-dept"><span class="badge badge-${item.dept}">${getDeptKoName(item.dept)}</span></div>
-          <div class="col-notice-title" style="cursor: pointer; font-weight: 500;">${item.title}</div>
-          <div class="col-notice-author">${item.author}</div>
-          <div class="col-notice-date" style="font-family: var(--font-en); color: var(--color-text-muted);">${item.date}</div>
-          <div style="flex: 0 0 60px; display: flex; justify-content: center; align-items: center;">
-            <button class="btn-delete" data-id="${item.id}" style="padding: 2px 8px; margin-left: auto;"><i class="la la-trash"></i></button>
-          </div>
+        tr.innerHTML = `
+          <td class="col-no" style="text-align: left;">${filteredData.length - index}</td>
+          <td class="col-dept" style="text-align: center;"><span class="badge badge-${item.dept}">${getDeptKoName(item.dept)}</span></td>
+          <td class="col-title" style="text-align: left; padding-left: 20px;">${item.title}${clipBadge}</td>
+          <td class="col-author" style="text-align: center; font-weight: 500;">${item.author}</td>
+          <td class="col-date" style="text-align: right;">${item.date}</td>
+          <td class="col-action">
+            <button class="btn-delete" data-id="${item.id}"><i class="la la-trash"></i></button>
+          </td>
         `;
 
-        // Click to view details
-        itemEl.querySelector('.col-notice-title').addEventListener('click', () => {
+        tr.querySelector('.col-title').addEventListener('click', () => {
           document.getElementById('school-detail-title').innerText = item.title;
           document.getElementById('school-detail-dept').innerHTML = `<i class="la la-tag"></i> 부서: ${getDeptKoName(item.dept)}`;
           document.getElementById('school-detail-author').innerHTML = `<i class="la la-user"></i> 작성자: ${item.author}`;
-          document.getElementById('school-detail-date').innerHTML = `<i class="la la-calendar"></i> 작성일: ${item.date}`;
-          document.getElementById('school-detail-body').innerText = item.content || '내용이 없습니다.';
+          document.getElementById('school-detail-date').innerHTML = `<i class="la la-calendar"></i> 날짜: ${item.date}`;
+          document.getElementById('school-detail-body').innerText = item.content || (item.file ? '' : '상세 내용이 없습니다.');
+          renderDetailAttachment(document.getElementById('school-detail-attachment'), item.file);
           openModal(schoolModalDetail);
         });
 
-        // Delete button click
-        itemEl.querySelector('.btn-delete').addEventListener('click', (e) => {
+        tr.querySelector('.btn-delete').addEventListener('click', (e) => {
           e.stopPropagation();
           if (confirm('이 글을 삭제하시겠습니까?')) {
             schoolData = schoolData.filter(p => p.id !== item.id);
@@ -382,24 +553,14 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
-        schoolListBody.appendChild(itemEl);
+        schoolListBody.appendChild(tr);
       });
     }
 
-    // Filter events
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.getAttribute('data-filter');
-        renderSchool();
-      });
-    });
-
-    // Modal triggers
     if (btnOpenSchoolWrite) {
       btnOpenSchoolWrite.addEventListener('click', () => {
         schoolWriteForm.reset();
+        schoolUploader.resetAttachedFile();
         openModal(schoolModalWrite);
       });
     }
@@ -412,21 +573,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('school-write-backdrop').addEventListener('click', () => closeModal(schoolModalWrite));
     document.getElementById('school-detail-backdrop').addEventListener('click', () => closeModal(schoolModalDetail));
 
-    // Submit form
     schoolWriteForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const title = document.getElementById('school-title').value.trim();
       const dept = document.getElementById('school-dept').value;
       const author = document.getElementById('school-author').value.trim();
       const content = document.getElementById('school-content').value.trim();
+      const attachedFile = schoolUploader.getAttachedFile();
+
+      const nextId = schoolData.length > 0 ? Math.max(...schoolData.map(p => p.id)) + 1 : 1;
 
       const newPost = {
-        id: Date.now(),
+        id: nextId,
         title: title,
         dept: dept,
         author: author,
         date: new Date().toISOString().substring(0, 10),
-        content: content
+        content: content,
+        file: attachedFile
       };
 
       schoolData.push(newPost);
@@ -435,7 +599,15 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSchool();
     });
 
-    renderSchool();
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderSchool();
+      });
+    });
+
   }
 });
 

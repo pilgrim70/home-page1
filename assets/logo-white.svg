@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 110" width="100%" height="100%">
+  <!-- Symbol: Open doors and White Cross -->
+  <g id="logo-symbol">
+    <!-- Left Blue Door -->
+    <path d="M 12 8 L 48 18 L 48 82 L 12 92 Z" fill="#008dd5" />
+    <!-- Right Green Door -->
+    <path d="M 52 19 L 88 27 L 88 91 L 52 83 Z" fill="#83c024" />
+    <!-- White Cross (Overlaying Negative Space) -->
+    <!-- Vertical member -->
+    <rect x="44" y="26" width="12" height="58" fill="#ffffff" />
+    <!-- Horizontal member -->
+    <rect x="34" y="46" width="32" height="12" fill="#ffffff" />
+  </g>
+
+  <!-- Typography (All White/Light for Dark Footers) -->
+  <g id="logo-text" font-family="'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif">
+    <!-- "복의근원" in light teal/mint -->
+    <text x="105" y="32" fill="#80e5d9" font-size="16" font-weight="700" letter-spacing="-0.5px">복의근원</text>
+    
+    <!-- "관유중앙교회" in pure white -->
+    <text x="180" y="54" fill="#ffffff" font-size="34" font-weight="800" letter-spacing="-1px">관유중앙</text>
+    <text x="305" y="54" fill="#ffffff" font-size="34" font-weight="800" letter-spacing="-1px">교회</text>
+    
+    <!-- "대한예수교장로회" in light gray -->
+    <text x="260" y="86" fill="#cccccc" font-size="15" font-weight="500" letter-spacing="3.5px">대한예수교장로회</text>
+  </g>
+</svg>
