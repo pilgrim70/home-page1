@@ -440,6 +440,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (juboListBody) {
     const newsModalWrite = document.getElementById('news-write-modal');
     const newsModalDetail = document.getElementById('news-detail-modal');
+    const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+    const btnCancelDelete = document.getElementById('btn-cancel-delete');
+    const btnConfirmDelete = document.getElementById('btn-confirm-delete');
+    const deleteConfirmBackdrop = document.getElementById('delete-confirm-backdrop');
+    const btnDeleteNewsDetail = document.getElementById('btn-delete-news-detail');
+
     const btnOpenNewsWrite = document.getElementById('btn-open-news-modal');
     const btnCloseNewsWrite = document.getElementById('btn-close-news-write');
     const btnCancelNewsWrite = document.getElementById('btn-cancel-news-write');
@@ -450,6 +456,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableWrapper = document.getElementById('news-table-wrapper');
     const galleryWrapper = document.getElementById('photo-gallery-grid-wrapper');
     const galleryGrid = document.getElementById('photo-gallery-grid');
+
+    let currentOpenDetailId = null;
+    let pendingDeleteId = null;
 
     const newsUploader = setupFileUpload(
       'btn-browse-news-file',
@@ -506,6 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openDetail(item) {
+      currentOpenDetailId = item.id;
       const cat = item.category || 'news';
       document.getElementById('news-detail-title').innerText = item.title;
       document.getElementById('news-detail-category').innerHTML = `<i class="la la-tag"></i> 구분: ${getCategoryKoName(cat)}`;
@@ -514,6 +524,57 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('news-detail-body').innerText = item.content || (item.file ? '' : '상세 내용이 없습니다.');
       renderDetailAttachment(document.getElementById('news-detail-attachment'), item.file);
       openModal(newsModalDetail);
+    }
+
+    function requestDelete(id) {
+      pendingDeleteId = id;
+      if (deleteConfirmModal) {
+        openModal(deleteConfirmModal);
+      } else {
+        if (confirm('정말 이 글을 삭제하시겠습니까?\n[확인]을 누르면 삭제되고, [취소]를 누르면 유지됩니다.')) {
+          executeDelete(id);
+        }
+      }
+    }
+
+    function executeDelete(id) {
+      newsData = newsData.filter(p => String(p.id) !== String(id));
+      saveBoardData('news_posts_v3', newsData);
+      if (deleteConfirmModal) closeModal(deleteConfirmModal);
+      if (newsModalDetail) closeModal(newsModalDetail);
+      pendingDeleteId = null;
+      currentOpenDetailId = null;
+      renderNews();
+    }
+
+    if (btnConfirmDelete) {
+      btnConfirmDelete.addEventListener('click', () => {
+        if (pendingDeleteId !== null) {
+          executeDelete(pendingDeleteId);
+        }
+      });
+    }
+
+    if (btnCancelDelete) {
+      btnCancelDelete.addEventListener('click', () => {
+        pendingDeleteId = null;
+        if (deleteConfirmModal) closeModal(deleteConfirmModal);
+      });
+    }
+
+    if (deleteConfirmBackdrop) {
+      deleteConfirmBackdrop.addEventListener('click', () => {
+        pendingDeleteId = null;
+        if (deleteConfirmModal) closeModal(deleteConfirmModal);
+      });
+    }
+
+    if (btnDeleteNewsDetail) {
+      btnDeleteNewsDetail.addEventListener('click', () => {
+        if (currentOpenDetailId !== null) {
+          requestDelete(currentOpenDetailId);
+        }
+      });
     }
 
     function renderNews() {
@@ -555,6 +616,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="gallery-card-thumb">
                 <img src="${thumbImg}" alt="${item.title}" loading="lazy">
                 <span class="gallery-card-badge"><i class="la la-image"></i> 포토갤러리</span>
+                <button type="button" class="gallery-card-delete-btn" title="사진 삭제" data-id="${item.id}">
+                  <i class="la la-trash"></i>
+                </button>
               </div>
               <div class="gallery-card-content">
                 <div>
@@ -571,6 +635,14 @@ document.addEventListener('DOMContentLoaded', () => {
             card.addEventListener('click', () => {
               openDetail(item);
             });
+
+            const delBtn = card.querySelector('.gallery-card-delete-btn');
+            if (delBtn) {
+              delBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                requestDelete(item.id);
+              });
+            }
 
             galleryGrid.appendChild(card);
           });
@@ -619,14 +691,13 @@ document.addEventListener('DOMContentLoaded', () => {
             openDetail(item);
           });
 
-          tr.querySelector('.btn-delete').addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (confirm('이 글을 삭제하시겠습니까?')) {
-              newsData = newsData.filter(p => p.id !== item.id);
-              saveBoardData('news_posts_v3', newsData);
-              renderNews();
-            }
-          });
+          const trDelBtn = tr.querySelector('.btn-delete');
+          if (trDelBtn) {
+            trDelBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              requestDelete(item.id);
+            });
+          }
 
           juboListBody.appendChild(tr);
         });
