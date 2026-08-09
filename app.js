@@ -612,10 +612,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 7. Copy Bank Account Number Helper Function
-window.copyAccount = function() {
-  const accountNum = document.getElementById('account-number');
-  if (accountNum) {
-    const text = accountNum.innerText.trim();
+window.copyAccount = function(customNum) {
+  const text = customNum || (document.getElementById('account-number') ? document.getElementById('account-number').innerText.trim() : '');
+  if (text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(() => {
         alert('헌금 계좌번호 (' + text + ')가 복사되었습니다.');

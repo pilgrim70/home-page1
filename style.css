@@ -2206,21 +2206,114 @@ section {
 }
 
 .offering-guide-box h4 {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-primary);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
-.offering-guide-box ul {
+.offering-guide-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  font-size: 0.92rem;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.offering-guide-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.offering-item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+}
+
+.offering-type-badge {
+  font-weight: 700;
+  color: var(--color-primary);
+  background: rgba(27, 67, 50, 0.09);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.offering-item-bank {
+  font-weight: 700;
   color: var(--color-text-dark);
+}
+
+.offering-item-acc {
+  font-family: var(--font-en);
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.5px;
+}
+
+.offering-item-owner {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+.btn-copy-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: rgba(27, 67, 50, 0.06);
+  border: 1px solid rgba(27, 67, 50, 0.18);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-copy-sm:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.offering-guide-message {
+  border-top: 1px dashed var(--color-border);
+  padding-top: 16px;
+  text-align: center;
+}
+
+.offering-guide-message p {
+  font-size: 0.95rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .offering-guide-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .btn-copy-sm {
+    align-self: flex-end;
+  }
 }
 
 /* Blessing Song Section (축복송 / 입례송) */
