@@ -2218,77 +2218,93 @@ section {
 .offering-guide-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 14px;
+  margin-bottom: 22px;
 }
 
-.offering-guide-item {
+.offering-account-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  transition: var(--transition);
+}
+
+.offering-account-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.offering-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.offering-card-body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
-  padding: 14px 18px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
   gap: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  flex-wrap: wrap;
+  padding-left: 2px;
 }
 
-.offering-item-info {
+.offering-card-acc-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
   font-size: 0.95rem;
 }
 
-.offering-type-badge {
-  font-weight: 700;
-  color: var(--color-primary);
-  background: rgba(27, 67, 50, 0.09);
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.88rem;
-  white-space: nowrap;
-}
-
-.offering-item-bank {
+.offering-card-bank {
   font-weight: 700;
   color: var(--color-text-dark);
 }
 
-.offering-item-acc {
+.offering-card-num {
   font-family: var(--font-en);
   font-weight: 700;
+  font-size: 1.12rem;
   color: var(--color-primary);
   letter-spacing: 0.5px;
 }
 
-.offering-item-owner {
-  font-size: 0.88rem;
+.offering-card-owner {
+  font-size: 0.9rem;
   color: var(--color-text-muted);
 }
 
-.btn-copy-sm {
+.btn-copy-account {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  font-size: 0.82rem;
+  gap: 6px;
+  padding: 7px 16px;
+  font-size: 0.84rem;
   font-weight: 700;
   color: var(--color-primary);
   background: rgba(27, 67, 50, 0.06);
-  border: 1px solid rgba(27, 67, 50, 0.18);
-  border-radius: 14px;
+  border: 1px solid rgba(27, 67, 50, 0.2);
+  border-radius: 20px;
   cursor: pointer;
   transition: var(--transition);
   white-space: nowrap;
 }
 
-.btn-copy-sm:hover {
+.btn-copy-account:hover {
   background: var(--color-primary);
   color: #ffffff;
   border-color: var(--color-primary);
+  transform: translateY(-1px);
 }
 
 .offering-guide-message {
@@ -2306,12 +2322,12 @@ section {
 }
 
 @media (max-width: 600px) {
-  .offering-guide-item {
+  .offering-card-body {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
   }
-  .btn-copy-sm {
+  .btn-copy-account {
     align-self: flex-end;
   }
 }
