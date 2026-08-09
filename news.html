@@ -71,9 +71,9 @@
         <div class="nav-item has-dropdown">
           <a href="news.html" class="nav-link">관유소식 <i class="la la-angle-down dropdown-icon"></i></a>
           <ul class="dropdown-menu">
-            <li><a href="news.html#news" class="dropdown-link"><i class="la la-file-alt"></i> 교회소식 주보</a></li>
-            <li><a href="news.html#news" class="dropdown-link"><i class="la la-bullhorn"></i> 공지사항</a></li>
-            <li><a href="news.html#news" class="dropdown-link"><i class="la la-image"></i> 포토 갤러리</a></li>
+            <li><a href="news.html?tab=news" class="dropdown-link"><i class="la la-bullhorn"></i> 교회소식</a></li>
+            <li><a href="news.html?tab=jubo" class="dropdown-link"><i class="la la-file-alt"></i> 주보</a></li>
+            <li><a href="news.html?tab=gallery" class="dropdown-link"><i class="la la-image"></i> 포토갤러리</a></li>
           </ul>
         </div>
       </nav>
@@ -132,27 +132,49 @@
       <div class="nav-item has-dropdown mobile-dropdown">
         <a href="news.html" class="nav-link mobile-link">관유소식 <i class="la la-angle-down dropdown-icon"></i></a>
         <ul class="dropdown-menu mobile-dropdown-menu">
-          <li><a href="news.html#news" class="dropdown-link mobile-link">교회소식 주보</a></li>
-          <li><a href="news.html#news" class="dropdown-link mobile-link">공지사항</a></li>
-          <li><a href="news.html#news" class="dropdown-link mobile-link">포토 갤러리</a></li>
+          <li><a href="news.html?tab=news" class="dropdown-link mobile-link">교회소식</a></li>
+          <li><a href="news.html?tab=jubo" class="dropdown-link mobile-link">주보</a></li>
+          <li><a href="news.html?tab=gallery" class="dropdown-link mobile-link">포토갤러리</a></li>
         </ul>
       </div>
     </nav>
   </div>
 
-  <!-- News & Gallery Section (교회 소식) -->
-  <section class="news" id="news" style="padding-top: 60px; min-height: 70vh;">
+  <!-- News & Gallery Section (관유소식 게시판) -->
+  <section class="news" id="news" style="padding-top: 40px; min-height: 75vh;">
     <div class="news-center-container">
-      <h2 class="news-page-title">교회소식 주보</h2>
       
-      <div class="clean-jubo-table-wrapper">
+      <!-- 헤더 그룹 -->
+      <div class="school-notice-header-group" style="margin-top: 20px; margin-bottom: 35px;">
+        <h2 class="school-notice-title" id="news-section-title">관유소식</h2>
+        <p class="school-notice-subtitle">교회소식, 주간 주보, 포토갤러리를 확인하고 자료를 업로드 및 다운로드할 수 있습니다.</p>
+      </div>
+
+      <!-- 탭 필터 및 글쓰기 버튼 -->
+      <div class="notice-toolbar">
+        <div class="notice-filters" id="news-tab-filters">
+          <button class="filter-btn active" data-filter="all">전체</button>
+          <button class="filter-btn" data-filter="news">교회소식</button>
+          <button class="filter-btn" data-filter="jubo">주보</button>
+          <button class="filter-btn" data-filter="gallery">포토갤러리</button>
+        </div>
+        <!-- 미니멀 글쓰기 버튼 -->
+        <button class="btn-news-write-minimal" id="btn-open-news-modal">
+          <i class="la la-edit"></i> 글쓰기
+        </button>
+      </div>
+      
+      <!-- 테이블 목록 뷰 (전체 / 교회소식 / 주보 탭) -->
+      <div class="clean-jubo-table-wrapper" id="news-table-wrapper" style="overflow-x: auto;">
         <table class="clean-jubo-table">
           <thead>
             <tr>
-              <th class="col-no">No</th>
+              <th class="col-no" style="width: 70px; text-align: left;">No</th>
+              <th class="col-dept" style="width: 120px; text-align: center;">구분</th>
               <th class="col-title" style="text-align: left; padding-left: 20px;">제목</th>
-              <th class="col-date">작성시간</th>
-              <th class="col-action"></th>
+              <th class="col-author" style="width: 120px; text-align: center;">작성자</th>
+              <th class="col-date" style="width: 130px; text-align: right;">작성시간</th>
+              <th class="col-action" style="width: 60px;"></th>
             </tr>
           </thead>
           <tbody id="jubo-list-body">
@@ -161,12 +183,13 @@
         </table>
       </div>
 
-      <!-- 미니멀 글쓰기 버튼 -->
-      <div class="news-admin-actions">
-        <button class="btn-news-write-minimal" id="btn-open-news-modal">
-          <i class="la la-edit"></i> 글쓰기
-        </button>
+      <!-- 포토갤러리 전용 그리드 뷰 (포토갤러리 탭) -->
+      <div class="photo-gallery-grid-wrapper" id="photo-gallery-grid-wrapper" style="display: none; margin-top: 25px;">
+        <div class="photo-gallery-grid" id="photo-gallery-grid">
+          <!-- JS에서 동적으로 포토 카드 렌더링 -->
+        </div>
       </div>
+
     </div>
   </section>
 
@@ -218,19 +241,32 @@
       </div>
     </div>
   </footer>
-  <!-- News Write Modal (글쓰기 모달) -->
+
+  <!-- News Write Modal (글쓰기 모달 - 교회소식/주보/포토갤러리 업로드) -->
   <div class="modal" id="news-write-modal" aria-hidden="true">
     <div class="modal-backdrop" id="news-write-backdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title"><i class="la la-edit"></i> 주보 및 교회소식 등록</h3>
+        <h3 class="modal-title"><i class="la la-edit"></i> 게시글 등록</h3>
         <button class="modal-close" id="btn-close-news-write">&times;</button>
       </div>
       <div class="modal-body">
         <form id="news-write-form">
           <div class="form-group" style="margin-bottom: 20px;">
             <label for="news-title" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">제목</label>
-            <input type="text" id="news-title" required placeholder="예: 2026년 8월 첫째 주 주보" style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem;">
+            <input type="text" id="news-title" required placeholder="예: 2026년 8월 둘째 주 관유중앙교회 주보" style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="news-category" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">구분</label>
+            <select id="news-category" required style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem; background-color: #fff;">
+              <option value="news">교회소식</option>
+              <option value="jubo">주보</option>
+              <option value="gallery">포토갤러리</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="news-author" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">작성자</label>
+            <input type="text" id="news-author" required placeholder="예: 교회 행정실 / 미디어팀" style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem;">
           </div>
           <div class="form-group" style="margin-bottom: 20px;">
             <label for="news-date" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">작성일자</label>
@@ -238,7 +274,7 @@
           </div>
           <div class="form-group" style="margin-bottom: 20px;">
             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">
-              <i class="la la-paperclip"></i> 주보 및 자료 파일 첨부
+              <i class="la la-paperclip"></i> 자료 및 사진 파일 첨부 (업로드/다운로드)
             </label>
             <div class="clean-file-input-wrapper">
               <button type="button" class="btn-file-select" id="btn-browse-news-file">
@@ -252,7 +288,7 @@
 
           <div class="form-group" style="margin-bottom: 25px;">
             <label for="news-content" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-primary-dark);">본문 내용</label>
-            <textarea id="news-content" rows="6" placeholder="주보의 광고 내용이나 예배 순서 데이터를 입력하세요. (파일 첨부 시 생략 가능)" style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem; line-height: 1.5; resize: vertical;"></textarea>
+            <textarea id="news-content" rows="6" placeholder="상세 공지 내용, 주보 광고 내용, 사진 설명 등을 입력해 주세요. (파일 첨부 시 생략 가능)" style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem; line-height: 1.5; resize: vertical;"></textarea>
           </div>
           <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
             <button type="button" class="btn btn-outline" id="btn-cancel-news-write" style="padding: 10px 20px;">취소</button>
@@ -263,7 +299,7 @@
     </div>
   </div>
 
-  <!-- News Detail Modal (상세보기 모달) -->
+  <!-- News Detail Modal (상세보기 및 다운로드 모달) -->
   <div class="modal" id="news-detail-modal" aria-hidden="true">
     <div class="modal-backdrop" id="news-detail-backdrop"></div>
     <div class="modal-content">
@@ -272,8 +308,10 @@
         <button class="modal-close" id="btn-close-news-detail">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="detail-meta" style="font-size: 0.9rem; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding-bottom: 12px; margin-bottom: 20px;">
-          <span class="detail-date" id="news-detail-date"><i class="la la-calendar"></i> 작성시간</span>
+        <div class="detail-meta" style="font-size: 0.9rem; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); padding-bottom: 12px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
+          <span class="detail-dept" id="news-detail-category"><i class="la la-tag"></i> 구분: 교회소식</span>
+          <span class="detail-author" id="news-detail-author"><i class="la la-user"></i> 작성자: 관리자</span>
+          <span class="detail-date" id="news-detail-date"><i class="la la-calendar"></i> 작성일자: 2026-08-09</span>
         </div>
         <div class="detail-content" id="news-detail-body" style="white-space: pre-wrap; font-size: 1.05rem; line-height: 1.8; color: var(--color-text-dark); max-height: 400px; overflow-y: auto; padding-right: 8px;">
           글 내용이 들어갑니다.

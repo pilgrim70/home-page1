@@ -132,17 +132,108 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // -- A. Default Mock Data (If LocalStorage is Empty) --
   const defaultNews = [
-    { id: 291, title: '2026- 07-05 관유중앙교회 주보', date: '2026-07-04', content: '2026년 7월 5일자 관유중앙교회 주보입니다.' },
-    { id: 292, title: '2026년 7월 모바일 전도지', date: '2026-07-08', content: '2026년 7월 모바일 전도지입니다.' },
-    { id: 293, title: '2026-07-12 관유중앙교회 주보', date: '2026-07-11', content: '2026년 7월 12일자 관유중앙교회 주보입니다.' },
-    { id: 294, title: '2026-07-19 교회 주보', date: '2026-07-22', content: '2026년 7월 19일자 교회 주보입니다.' },
-    { id: 295, title: '2026년 7월 셋째 주 가정예배 순서지', date: '2026-07-22', content: '2026년 7월 셋째 주 가정예배 순서지입니다.' },
-    { id: 296, title: '2026-07-26 관유중앙교회 주보', date: '2026-07-25', content: '2026년 7월 26일자 관유중앙교회 주보입니다.' },
-    { id: 297, title: '2026년 7월 넷째 주 가정예배순서지', date: '2026-07-25', content: '2026년 7월 넷째 주 가정예배 순서지입니다.' },
-    { id: 298, title: '2026-08-02 관유중앙교회 주보', date: '2026-08-01', content: '2026년 8월 2일자 관유중앙교회 주보입니다.' },
-    { id: 299, title: '2026년 8월 첫째 주 가정예배순서지', date: '2026-08-01', content: '2026년 8월 첫째 주 가정예배 순서지입니다.' },
-    { id: 300, title: '2026년 8월 모바일 전도지', date: '1일전', content: '2026년 8월 모바일 전도지입니다.' },
-    { id: 1, title: '에베소서, 로마서 말씀으로 고백하는 〈방패기도문〉입니다.', date: '2025-09-19', content: '에베소서, 로마서 말씀으로 고백하는 방패기도문 전문입니다.', isPinned: true }
+    {
+      id: 1,
+      title: '에베소서, 로마서 말씀으로 고백하는 〈방패기도문〉입니다.',
+      category: 'news',
+      author: '교회 행정실',
+      date: '2025-09-19',
+      content: '에베소서와 로마서 말씀으로 고백하는 방패기도문 전문입니다. 매일 믿음으로 선포하시기 바랍니다.',
+      isPinned: true
+    },
+    {
+      id: 304,
+      title: '2026 전교인 여름 수련회 은혜의 현장 사진 스케치',
+      category: 'gallery',
+      author: '미디어팀',
+      date: '2026-08-05',
+      content: '성령의 뜨거운 임재와 은혜로운 교제가 넘쳤던 2026 전교인 여름 수련회 현장 사진입니다.',
+      file: {
+        name: 'summer_retreat_2026.png',
+        size: '1.03 MB',
+        type: 'image/png',
+        dataUrl: 'assets/summer-banner.png',
+        isImage: true
+      }
+    },
+    {
+      id: 303,
+      title: '2026년 8월 모바일 전도지 배포 안내',
+      category: 'news',
+      author: '선교부',
+      date: '2026-08-08',
+      content: '2026년 8월 모바일 전도지입니다. 주변 이웃들에게 생명의 복음을 널리 전해주세요.'
+    },
+    {
+      id: 302,
+      title: '2026-08-02 관유중앙교회 주보',
+      category: 'jubo',
+      author: '예배부',
+      date: '2026-08-01',
+      content: '2026년 8월 2일 관유중앙교회 주보입니다.'
+    },
+    {
+      id: 301,
+      title: '2026년 8월 첫째 주 가정예배순서지',
+      category: 'jubo',
+      author: '예배부',
+      date: '2026-08-01',
+      content: '2026년 8월 첫째 주 가정예배 순서지입니다.'
+    },
+    {
+      id: 300,
+      title: '주일 대예배 찬양과 은혜로운 예배 모습',
+      category: 'gallery',
+      author: '미디어팀',
+      date: '2026-07-27',
+      content: '하나님께 영광 올려드리는 주일 대예배와 찬양팀의 아름다운 찬양 모습입니다.',
+      file: {
+        name: 'sunday_worship.png',
+        size: '620 KB',
+        type: 'image/png',
+        dataUrl: 'assets/church-banner.png',
+        isImage: true
+      }
+    },
+    {
+      id: 299,
+      title: '2026-07-26 관유중앙교회 주보',
+      category: 'jubo',
+      author: '예배부',
+      date: '2026-07-25',
+      content: '2026년 7월 26일 관유중앙교회 주보입니다.'
+    },
+    {
+      id: 298,
+      title: '2026년 7월 넷째 주 가정예배순서지',
+      category: 'jubo',
+      author: '예배부',
+      date: '2026-07-25',
+      content: '2026년 7월 넷째 주 가정예배 순서지입니다.'
+    },
+    {
+      id: 297,
+      title: '교회학교 여름성경학교 축복의 순간',
+      category: 'gallery',
+      author: '교회학교',
+      date: '2026-07-15',
+      content: '어린이들의 웃음과 기도가 가득했던 여름성경학교 은혜의 현장 사진입니다.',
+      file: {
+        name: 'vbs_kids_photo.jpg',
+        size: '213 KB',
+        type: 'image/jpeg',
+        dataUrl: 'assets/teacher2.jpg',
+        isImage: true
+      }
+    },
+    {
+      id: 296,
+      title: '2026년 하반기 구역 사역 및 정기 심방 일정 공지',
+      category: 'news',
+      author: '교회 행정실',
+      date: '2026-07-10',
+      content: '2026년 하반기 구역 모임 및 정기 심방 일정을 안내해 드립니다.'
+    }
   ];
 
   const defaultSchool = [
@@ -344,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
     containerEl.style.display = 'block';
   }
 
-  // --- D. Church Notice (Jubo) Board Logic (news.html) ---
+  // --- D. Church Notice, Jubo & Photo Gallery Board Logic (news.html) ---
   const juboListBody = document.getElementById('jubo-list-body');
   if (juboListBody) {
     const newsModalWrite = document.getElementById('news-write-modal');
@@ -355,6 +446,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCloseNewsDetail = document.getElementById('btn-close-news-detail');
     const btnConfirmNewsDetail = document.getElementById('btn-confirm-news-detail');
     const newsWriteForm = document.getElementById('news-write-form');
+    const filterTabBtns = document.querySelectorAll('#news-tab-filters .filter-btn');
+    const tableWrapper = document.getElementById('news-table-wrapper');
+    const galleryWrapper = document.getElementById('photo-gallery-grid-wrapper');
+    const galleryGrid = document.getElementById('photo-gallery-grid');
 
     const newsUploader = setupFileUpload(
       'btn-browse-news-file',
@@ -365,71 +460,166 @@ document.addEventListener('DOMContentLoaded', () => {
       'news-content'
     );
 
-    let newsData = getBoardData('news_posts', defaultNews);
+    let newsData = getBoardData('news_posts_v2', defaultNews);
 
-    if (newsData.length < 11) {
-      newsData = defaultNews;
-      saveBoardData('news_posts', defaultNews);
+    // Initial Active Tab resolution (supports URL parameters ?tab=news, ?tab=jubo, ?tab=gallery or hash)
+    let currentNewsTab = 'all';
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialTab = urlParams.get('tab');
+    if (initialTab && ['news', 'jubo', 'gallery', 'all'].includes(initialTab)) {
+      currentNewsTab = initialTab;
+    } else if (window.location.hash) {
+      const hash = window.location.hash.replace('#', '');
+      if (['news', 'jubo', 'gallery'].includes(hash)) {
+        currentNewsTab = hash;
+      }
+    }
+
+    function getCategoryKoName(cat) {
+      switch(cat) {
+        case 'news': return '교회소식';
+        case 'jubo': return '주보';
+        case 'gallery': return '포토갤러리';
+        default: return '교회소식';
+      }
+    }
+
+    function openDetail(item) {
+      const cat = item.category || 'news';
+      document.getElementById('news-detail-title').innerText = item.title;
+      document.getElementById('news-detail-category').innerHTML = `<i class="la la-tag"></i> 구분: ${getCategoryKoName(cat)}`;
+      document.getElementById('news-detail-author').innerHTML = `<i class="la la-user"></i> 작성자: ${item.author || '관리자'}`;
+      document.getElementById('news-detail-date').innerHTML = `<i class="la la-calendar"></i> 작성일자: ${item.date}`;
+      document.getElementById('news-detail-body').innerText = item.content || (item.file ? '' : '상세 내용이 없습니다.');
+      renderDetailAttachment(document.getElementById('news-detail-attachment'), item.file);
+      openModal(newsModalDetail);
     }
 
     function renderNews() {
-      juboListBody.innerHTML = '';
-      if (newsData.length === 0) {
-        juboListBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--color-text-muted);">등록된 주보나 소식이 없습니다.</td></tr>`;
-        return;
-      }
-
-      const pinnedPosts = newsData.filter(p => p.isPinned);
-      const normalPosts = newsData.filter(p => !p.isPinned).sort((a, b) => b.id - a.id);
-      const allSortedPosts = [...pinnedPosts, ...normalPosts];
-
-      allSortedPosts.forEach((item) => {
-        const tr = document.createElement('tr');
-        
-        let noContent = '';
-        if (item.isPinned) {
-          tr.classList.add('pinned-row');
-          noContent = `<i class="la la-flag"></i>`;
+      // 1. Update filter tab button active state
+      filterTabBtns.forEach(btn => {
+        if (btn.dataset.filter === currentNewsTab) {
+          btn.classList.add('active');
         } else {
-          noContent = item.id;
+          btn.classList.remove('active');
+        }
+      });
+
+      const filtered = newsData.filter(item => {
+        const cat = item.category || 'news';
+        if (currentNewsTab === 'all') return true;
+        return cat === currentNewsTab;
+      });
+
+      if (currentNewsTab === 'gallery') {
+        // Show Photo Gallery Grid
+        if (tableWrapper) tableWrapper.style.display = 'none';
+        if (galleryWrapper) galleryWrapper.style.display = 'block';
+        if (galleryGrid) {
+          galleryGrid.innerHTML = '';
+          if (filtered.length === 0) {
+            galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--color-text-muted);">등록된 사진이 없습니다. [글쓰기] 버튼을 눌러 새 사진을 등록해 보세요.</div>`;
+            return;
+          }
+
+          filtered.slice().sort((a, b) => b.id - a.id).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'gallery-card';
+            
+            const thumbImg = item.file && item.file.isImage && item.file.dataUrl
+              ? item.file.dataUrl
+              : 'assets/church-banner.png';
+            
+            card.innerHTML = `
+              <div class="gallery-card-thumb">
+                <img src="${thumbImg}" alt="${item.title}" loading="lazy">
+                <span class="gallery-card-badge"><i class="la la-image"></i> 포토갤러리</span>
+              </div>
+              <div class="gallery-card-content">
+                <div>
+                  <h3 class="gallery-card-title">${item.title}</h3>
+                  <p class="gallery-card-desc">${item.content || '사진을 클릭하여 원본을 확인하고 다운로드하세요.'}</p>
+                </div>
+                <div class="gallery-card-meta">
+                  <span class="gallery-card-author"><i class="la la-user"></i> ${item.author || '미디어팀'}</span>
+                  <span class="gallery-card-date">${item.date}</span>
+                </div>
+              </div>
+            `;
+
+            card.addEventListener('click', () => {
+              openDetail(item);
+            });
+
+            galleryGrid.appendChild(card);
+          });
+        }
+      } else {
+        // Show Table List for all / news / jubo
+        if (galleryWrapper) galleryWrapper.style.display = 'none';
+        if (tableWrapper) tableWrapper.style.display = 'block';
+        juboListBody.innerHTML = '';
+
+        if (filtered.length === 0) {
+          juboListBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--color-text-muted);">등록된 게시글이 없습니다.</td></tr>`;
+          return;
         }
 
-        const clipBadge = item.file ? `<i class="la la-paperclip" style="color: var(--color-primary); margin-left: 6px; font-weight: bold;" title="첨부자료 있음"></i>` : '';
-        
-        tr.innerHTML = `
-          <td class="col-no">${noContent}</td>
-          <td class="col-title" style="padding-left: 20px;">${item.title}${clipBadge}</td>
-          <td class="col-date">${item.date}</td>
-          <td class="col-action">
-            <button class="btn-delete" data-id="${item.id}"><i class="la la-trash"></i></button>
-          </td>
-        `;
+        const pinnedPosts = filtered.filter(p => p.isPinned);
+        const normalPosts = filtered.filter(p => !p.isPinned).sort((a, b) => b.id - a.id);
+        const allSortedPosts = [...pinnedPosts, ...normalPosts];
 
-        tr.querySelector('.col-title').addEventListener('click', () => {
-          document.getElementById('news-detail-title').innerText = item.title;
-          document.getElementById('news-detail-date').innerHTML = `<i class="la la-calendar"></i> 작성일자: ${item.date}`;
-          document.getElementById('news-detail-body').innerText = item.content || (item.file ? '' : '본문 내용이 없습니다.');
-          renderDetailAttachment(document.getElementById('news-detail-attachment'), item.file);
-          openModal(newsModalDetail);
-        });
-
-        tr.querySelector('.btn-delete').addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (confirm('이 글을 삭제하시겠습니까?')) {
-            newsData = newsData.filter(p => p.id !== item.id);
-            saveBoardData('news_posts', newsData);
-            renderNews();
+        allSortedPosts.forEach((item) => {
+          const tr = document.createElement('tr');
+          const cat = item.category || 'news';
+          
+          let noContent = '';
+          if (item.isPinned) {
+            tr.classList.add('pinned-row');
+            noContent = `<i class="la la-flag"></i>`;
+          } else {
+            noContent = item.id;
           }
-        });
 
-        juboListBody.appendChild(tr);
-      });
+          const clipBadge = item.file ? `<i class="la la-paperclip" style="color: var(--color-thelight-green); margin-left: 6px; font-weight: bold;" title="첨부자료 있음"></i>` : '';
+          
+          tr.innerHTML = `
+            <td class="col-no">${noContent}</td>
+            <td class="col-dept" style="text-align: center;"><span class="badge badge-${cat}">${getCategoryKoName(cat)}</span></td>
+            <td class="col-title" style="padding-left: 20px;">${item.title}${clipBadge}</td>
+            <td class="col-author" style="text-align: center; font-weight: 500;">${item.author || '관리자'}</td>
+            <td class="col-date">${item.date}</td>
+            <td class="col-action">
+              <button class="btn-delete" data-id="${item.id}" title="삭제"><i class="la la-trash"></i></button>
+            </td>
+          `;
+
+          tr.querySelector('.col-title').addEventListener('click', () => {
+            openDetail(item);
+          });
+
+          tr.querySelector('.btn-delete').addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm('이 글을 삭제하시겠습니까?')) {
+              newsData = newsData.filter(p => p.id !== item.id);
+              saveBoardData('news_posts_v2', newsData);
+              renderNews();
+            }
+          });
+
+          juboListBody.appendChild(tr);
+        });
+      }
     }
 
     if (btnOpenNewsWrite) {
       btnOpenNewsWrite.addEventListener('click', () => {
         newsWriteForm.reset();
         document.getElementById('news-date').value = new Date().toISOString().substring(0, 10);
+        if (currentNewsTab !== 'all' && document.getElementById('news-category')) {
+          document.getElementById('news-category').value = currentNewsTab;
+        }
+        document.getElementById('news-author').value = currentNewsTab === 'gallery' ? '미디어팀' : '교회 행정실';
         newsUploader.resetAttachedFile();
         openModal(newsModalWrite);
       });
@@ -446,25 +636,36 @@ document.addEventListener('DOMContentLoaded', () => {
     newsWriteForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const title = document.getElementById('news-title').value.trim();
+      const category = document.getElementById('news-category').value;
+      const author = document.getElementById('news-author').value.trim() || '관리자';
       const date = document.getElementById('news-date').value;
       const content = document.getElementById('news-content').value.trim();
       const attachedFile = newsUploader.getAttachedFile();
 
       const normalPosts = newsData.filter(p => !p.isPinned);
-      const nextId = normalPosts.length > 0 ? Math.max(...normalPosts.map(p => p.id)) + 1 : 301;
+      const nextId = normalPosts.length > 0 ? Math.max(...normalPosts.map(p => p.id)) + 1 : 305;
 
       const newPost = {
         id: nextId,
         title: title,
+        category: category,
+        author: author,
         date: date,
         content: content,
         file: attachedFile
       };
 
-      newsData.push(newPost);
-      saveBoardData('news_posts', newsData);
+      newsData.unshift(newPost);
+      saveBoardData('news_posts_v2', newsData);
       closeModal(newsModalWrite);
       renderNews();
+    });
+
+    filterTabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentNewsTab = btn.dataset.filter;
+        renderNews();
+      });
     });
 
     renderNews();
