@@ -2677,24 +2677,47 @@ section {
 }
 
 .clean-jubo-table th {
-  padding: 14px 15px;
-  font-weight: 500;
+  padding: 14px 12px;
+  font-weight: 600;
   font-size: 0.95rem;
   color: #333333;
+  vertical-align: middle;
 }
 
-.clean-jubo-table th.col-no {
-  width: 80px;
+.clean-jubo-table th.col-no,
+.clean-jubo-table td.col-no {
+  width: 70px;
   text-align: left;
 }
 
-.clean-jubo-table th.col-title {
+.clean-jubo-table th.col-dept,
+.clean-jubo-table td.col-dept {
+  width: 110px;
   text-align: center;
 }
 
-.clean-jubo-table th.col-date {
-  width: 150px;
+.clean-jubo-table th.col-title,
+.clean-jubo-table td.col-title {
+  text-align: left;
+  padding-left: 20px;
+}
+
+.clean-jubo-table th.col-author,
+.clean-jubo-table td.col-author {
+  width: 110px;
+  text-align: center;
+}
+
+.clean-jubo-table th.col-date,
+.clean-jubo-table td.col-date {
+  width: 120px;
   text-align: right;
+}
+
+.clean-jubo-table th.col-action,
+.clean-jubo-table td.col-action {
+  width: 50px;
+  text-align: center;
 }
 
 .clean-jubo-table tbody tr {
@@ -2712,7 +2735,7 @@ section {
 }
 
 .clean-jubo-table td {
-  padding: 16px 15px;
+  padding: 16px 12px;
   font-size: 0.95rem;
   color: #333333;
   vertical-align: middle;
@@ -2721,7 +2744,6 @@ section {
 .clean-jubo-table td.col-no {
   font-family: var(--font-en);
   color: #555555;
-  text-align: left;
 }
 
 .clean-jubo-table td.col-no i {
@@ -2729,9 +2751,13 @@ section {
   color: #666666; /* 회색 핀/깃발 아이콘 */
 }
 
+.clean-jubo-table td.col-dept {
+  padding: 16px 6px;
+}
+
 .clean-jubo-table td.col-title {
   color: #111111;
-  font-weight: 400;
+  font-weight: 500;
   cursor: pointer;
   transition: color 0.2s ease;
 }
@@ -2740,18 +2766,18 @@ section {
   color: var(--color-thelight-green);
 }
 
+.clean-jubo-table td.col-author {
+  color: #555555;
+  font-weight: 500;
+}
+
 .clean-jubo-table td.col-date {
-  text-align: right;
   color: #888888;
   font-size: 0.9rem;
+  font-family: var(--font-en);
 }
 
 /* 관리 기능 미니멀 스타일 */
-.clean-jubo-table td.col-action {
-  text-align: center;
-  width: 60px;
-}
-
 .clean-jubo-table .btn-delete {
   padding: 4px;
   font-size: 1.1rem;

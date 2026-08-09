@@ -460,7 +460,28 @@ document.addEventListener('DOMContentLoaded', () => {
       'news-content'
     );
 
-    let newsData = getBoardData('news_posts_v2', defaultNews);
+    let newsData = getBoardData('news_posts_v3', defaultNews);
+
+    // Sanitize any data to guarantee category and author exist
+    newsData = newsData.map(item => {
+      let cat = item.category;
+      if (!cat) {
+        const titleLower = (item.title || '').toLowerCase();
+        if (titleLower.includes('주보') || titleLower.includes('순서지')) {
+          cat = 'jubo';
+        } else if (titleLower.includes('사진') || titleLower.includes('수련회') || titleLower.includes('스케치') || (item.file && item.file.isImage)) {
+          cat = 'gallery';
+        } else {
+          cat = 'news';
+        }
+      }
+      return {
+        ...item,
+        category: cat,
+        author: item.author || (cat === 'gallery' ? '미디어팀' : (cat === 'jubo' ? '예배부' : '교회 행정실'))
+      };
+    });
+    saveBoardData('news_posts_v3', newsData);
 
     // Initial Active Tab resolution (supports URL parameters ?tab=news, ?tab=jubo, ?tab=gallery or hash)
     let currentNewsTab = 'all';
@@ -602,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation();
             if (confirm('이 글을 삭제하시겠습니까?')) {
               newsData = newsData.filter(p => p.id !== item.id);
-              saveBoardData('news_posts_v2', newsData);
+              saveBoardData('news_posts_v3', newsData);
               renderNews();
             }
           });
@@ -656,7 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       newsData.unshift(newPost);
-      saveBoardData('news_posts_v2', newsData);
+      saveBoardData('news_posts_v3', newsData);
       closeModal(newsModalWrite);
       renderNews();
     });
