@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="assets/icon.png?v=4">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
   <!-- LineAwesome Icons for Premium feel -->
   <link rel="stylesheet"
     href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
@@ -467,14 +467,22 @@
           상세 내용이 들어갑니다.
         </div>
         <div id="school-detail-attachment" class="ref-download-section" style="display: none;"></div>
-        <div class="form-actions" style="display: flex; justify-content: flex-end; margin-top: 30px;">
-          <button type="button" class="btn btn-primary" id="btn-confirm-school-detail" style="padding: 10px 25px;">확인</button>
+        <div class="form-actions" style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; gap: 10px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-outline" id="btn-delete-school-detail" style="padding: 10px 18px; color: #dc2626; border-color: #fca5a5; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="la la-trash"></i> 글 삭제
+          </button>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn btn-outline" id="btn-edit-school-detail" style="padding: 10px 20px; color: var(--color-thelight-green); border-color: var(--color-thelight-green); font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="la la-edit"></i> 수정
+            </button>
+            <button type="button" class="btn btn-primary" id="btn-confirm-school-detail" style="padding: 10px 25px; font-weight: 600;">확인</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=9"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

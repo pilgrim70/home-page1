@@ -394,9 +394,41 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    function setExistingFile(fileObj) {
+      if (!fileObj) {
+        resetAttachedFile();
+        return;
+      }
+      attachedFile = fileObj;
+      if (statusText) {
+        statusText.innerText = `현재 첨부됨: ${fileObj.name} (${fileObj.size || ''})`;
+        statusText.style.color = '#2b8a3e';
+        statusText.style.fontWeight = '500';
+      }
+      if (previewContainer) {
+        previewContainer.innerHTML = `
+          <div class="clean-file-selected-bar">
+            <div class="clean-file-info">
+              <span class="clean-file-name"><i class="la la-file"></i> ${fileObj.name}</span>
+              <span class="clean-file-size">${fileObj.size || ''}</span>
+            </div>
+            <button type="button" class="btn-clean-file-remove" title="첨부파일 삭제">&times;</button>
+          </div>
+        `;
+        previewContainer.style.display = 'block';
+
+        previewContainer.querySelector('.btn-clean-file-remove').addEventListener('click', (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          resetAttachedFile();
+        });
+      }
+    }
+
     return {
       getAttachedFile: () => attachedFile,
-      resetAttachedFile: resetAttachedFile
+      resetAttachedFile: resetAttachedFile,
+      setExistingFile: setExistingFile
     };
   }
 
@@ -440,11 +472,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (juboListBody) {
     const newsModalWrite = document.getElementById('news-write-modal');
     const newsModalDetail = document.getElementById('news-detail-modal');
+    const newsModalTitle = document.getElementById('news-write-modal-title');
+    const btnSubmitNewsForm = document.getElementById('btn-submit-news-form');
     const deleteConfirmModal = document.getElementById('delete-confirm-modal');
     const btnCancelDelete = document.getElementById('btn-cancel-delete');
     const btnConfirmDelete = document.getElementById('btn-confirm-delete');
     const deleteConfirmBackdrop = document.getElementById('delete-confirm-backdrop');
     const btnDeleteNewsDetail = document.getElementById('btn-delete-news-detail');
+    const btnEditNewsDetail = document.getElementById('btn-edit-news-detail');
 
     const btnOpenNewsWrite = document.getElementById('btn-open-news-modal');
     const btnCloseNewsWrite = document.getElementById('btn-close-news-write');
@@ -459,6 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentOpenDetailId = null;
     let pendingDeleteId = null;
+    let editingPostId = null;
 
     const newsUploader = setupFileUpload(
       'btn-browse-news-file',
@@ -574,6 +610,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentOpenDetailId !== null) {
           requestDelete(currentOpenDetailId);
         }
+      });
+    }
+
+    // 수정 버튼 클릭 시 기존 내용 및 첨부파일을 폼에 불러와 수정 모드 실행
+    if (btnEditNewsDetail) {
+      btnEditNewsDetail.addEventListener('click', () => {
+        if (currentOpenDetailId === null) return;
+        const item = newsData.find(p => String(p.id) === String(currentOpenDetailId));
+        if (!item) return;
+
+        editingPostId = item.id;
+        closeModal(newsModalDetail);
+
+        if (newsModalTitle) {
+          newsModalTitle.innerHTML = '<i class="la la-edit"></i> 게시글 수정';
+        }
+        if (btnSubmitNewsForm) {
+          btnSubmitNewsForm.innerText = '수정 완료';
+        }
+
+        document.getElementById('news-title').value = item.title;
+        document.getElementById('news-category').value = item.category || 'news';
+        document.getElementById('news-author').value = item.author || '관리자';
+        document.getElementById('news-date').value = item.date;
+        document.getElementById('news-content').value = item.content || '';
+
+        newsUploader.setExistingFile(item.file);
+        openModal(newsModalWrite);
       });
     }
 
@@ -706,7 +770,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnOpenNewsWrite) {
       btnOpenNewsWrite.addEventListener('click', () => {
+        editingPostId = null;
         newsWriteForm.reset();
+        if (newsModalTitle) {
+          newsModalTitle.innerHTML = '<i class="la la-edit"></i> 게시글 등록';
+        }
+        if (btnSubmitNewsForm) {
+          btnSubmitNewsForm.innerText = '등록하기';
+        }
         document.getElementById('news-date').value = new Date().toISOString().substring(0, 10);
         if (currentNewsTab !== 'all' && document.getElementById('news-category')) {
           document.getElementById('news-category').value = currentNewsTab;
@@ -734,20 +805,39 @@ document.addEventListener('DOMContentLoaded', () => {
       const content = document.getElementById('news-content').value.trim();
       const attachedFile = newsUploader.getAttachedFile();
 
-      const normalPosts = newsData.filter(p => !p.isPinned);
-      const nextId = normalPosts.length > 0 ? Math.max(...normalPosts.map(p => p.id)) + 1 : 305;
+      if (editingPostId !== null) {
+        // 수정 모드 (기존 데이터 업데이트)
+        const index = newsData.findIndex(p => String(p.id) === String(editingPostId));
+        if (index !== -1) {
+          newsData[index] = {
+            ...newsData[index],
+            title: title,
+            category: category,
+            author: author,
+            date: date,
+            content: content,
+            file: attachedFile
+          };
+        }
+        editingPostId = null;
+      } else {
+        // 신규 등록 모드
+        const normalPosts = newsData.filter(p => !p.isPinned);
+        const nextId = normalPosts.length > 0 ? Math.max(...normalPosts.map(p => p.id)) + 1 : 305;
 
-      const newPost = {
-        id: nextId,
-        title: title,
-        category: category,
-        author: author,
-        date: date,
-        content: content,
-        file: attachedFile
-      };
+        const newPost = {
+          id: nextId,
+          title: title,
+          category: category,
+          author: author,
+          date: date,
+          content: content,
+          file: attachedFile
+        };
 
-      newsData.unshift(newPost);
+        newsData.unshift(newPost);
+      }
+
       saveBoardData('news_posts_v3', newsData);
       closeModal(newsModalWrite);
       renderNews();
