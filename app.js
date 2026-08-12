@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
       date: '2026-06-14',
       preacher: '담임목사 송기운',
       scripture: '창세기 12:1-3',
-      series: '주일대예배',
+      series: '주일낮예배',
       videoId: 'z5D_B9I7l1Y',
       youtubeUrl: 'https://www.youtube.com/watch?v=z5D_B9I7l1Y'
     },
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       date: '2026-06-07',
       preacher: '담임목사 송기운',
       scripture: '시편 133:1-3',
-      series: '주일대예배',
+      series: '주일낮예배',
       videoId: '8fD5PjS5tQ4',
       youtubeUrl: 'https://www.youtube.com/watch?v=8fD5PjS5tQ4'
     },
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       date: '2026-05-31',
       preacher: '담임목사 송기운',
       scripture: '이사야 61:1-3',
-      series: '주일대예배',
+      series: '주일낮예배',
       videoId: 'W8744U1mE6Q',
       youtubeUrl: 'https://www.youtube.com/watch?v=W8744U1mE6Q'
     }
@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (sermonFormSubmit) sermonFormSubmit.innerHTML = '<i class="la la-check"></i> 수정 완료';
       document.getElementById('sermon-form-title').value = editItem.title || '';
       document.getElementById('sermon-form-date').value = editItem.date || '';
-      document.getElementById('sermon-form-series').value = editItem.series || '주일대예배';
+      document.getElementById('sermon-form-series').value = editItem.series || '주일낮예배';
       document.getElementById('sermon-form-preacher').value = editItem.preacher || '';
       document.getElementById('sermon-form-scripture').value = editItem.scripture || '';
       document.getElementById('sermon-form-youtube').value = editItem.youtubeUrl || `https://www.youtube.com/watch?v=${editItem.videoId}`;
