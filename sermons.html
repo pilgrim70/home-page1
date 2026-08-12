@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="assets/icon.png?v=4">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=10">
   <!-- LineAwesome Icons for Premium feel -->
   <link rel="stylesheet"
     href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
@@ -232,60 +232,156 @@
     </div>
   </section>
 
-  <!-- Sermons Section (설교 영상) -->
+  <!-- Sermons Section (설교 영상) - Dynamic Board System -->
   <section class="sermons" id="sermons">
     <div class="container">
       <div class="section-header reveal">
         <span class="section-tag">Recent Sermon</span>
         <h2 class="section-title">최신 설교 말씀</h2>
-        <p class="section-desc">주일 대예배에 선포된 생명력 있는 은혜의 말씀을 다시 들을 수 있습니다.</p>
+        <p class="section-desc">주일 대예배에 선포된 생명력 있는 은혜의 말씀을 다시 들을 수 있습니다.<br>설교를 클릭하면 말씀을 바로 들으실 수 있습니다.</p>
       </div>
 
       <div class="sermon-player-container reveal">
         <!-- Main Video Frame -->
         <div class="sermon-video-wrapper">
-          <iframe id="mainSermonVideo" src="https://www.youtube.com/embed/z5D_B9I7l1Y?rel=0" title="주일대예배 설교"
+          <iframe id="mainSermonVideo" src="" title="주일대예배 설교"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen></iframe>
         </div>
 
-        <!-- Playlist sidebar -->
+        <!-- Playlist sidebar (dynamically rendered) -->
         <div class="sermon-playlist">
-          <h3 class="sermon-playlist-title">최근 설교 목록</h3>
-          <!-- Item 1 (Active) -->
-          <div class="playlist-item active" data-video-id="z5D_B9I7l1Y">
-            <div class="playlist-thumb">
-              <img src="https://img.youtube.com/vi/z5D_B9I7l1Y/hqdefault.jpg" alt="설교 썸네일">
-            </div>
-            <div class="playlist-info">
-              <h4 class="playlist-title">[주일대예배] 복의 근원이 되는 거룩한 삶의 기쁨</h4>
-              <span class="playlist-date">2026-06-14</span>
-            </div>
+          <div class="sermon-playlist-header">
+            <h3 class="sermon-playlist-title">최근 설교 목록</h3>
+            <button class="btn-sermon-write" id="btn-sermon-write" title="설교 등록">
+              <i class="la la-plus"></i> 글쓰기
+            </button>
           </div>
-          <!-- Item 2 -->
-          <div class="playlist-item" data-video-id="8fD5PjS5tQ4">
-            <div class="playlist-thumb">
-              <img src="https://img.youtube.com/vi/8fD5PjS5tQ4/hqdefault.jpg" alt="설교 썸네일">
-            </div>
-            <div class="playlist-info">
-              <h4 class="playlist-title">[주일대예배] 관유(기름부으심)의 능력과 평화의 공동체</h4>
-              <span class="playlist-date">2026-06-07</span>
-            </div>
-          </div>
-          <!-- Item 3 -->
-          <div class="playlist-item" data-video-id="W8744U1mE6Q">
-            <div class="playlist-thumb">
-              <img src="https://img.youtube.com/vi/W8744U1mE6Q/hqdefault.jpg" alt="설교 썸네일">
-            </div>
-            <div class="playlist-info">
-              <h4 class="playlist-title">[주일대예배] 위로와 치유, 상처 입은 마음을 만지시는 하나님</h4>
-              <span class="playlist-date">2026-05-31</span>
-            </div>
+          <div id="sermon-playlist-items">
+            <!-- Dynamically rendered by JS -->
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Sermon Write/Edit Modal -->
+  <div class="sermon-write-modal" id="sermon-write-modal">
+    <div class="sermon-write-backdrop" id="sermon-write-backdrop"></div>
+    <div class="sermon-write-content">
+      <div class="sermon-write-header">
+        <h3 id="sermon-write-modal-title"><i class="la la-edit"></i> 설교 등록</h3>
+        <button class="sermon-write-close" id="sermon-write-close" aria-label="닫기"><i class="la la-times"></i></button>
+      </div>
+      <form id="sermon-write-form" class="sermon-write-form">
+        <div class="sermon-form-group">
+          <label for="sermon-form-title"><i class="la la-heading"></i> 설교 제목</label>
+          <input type="text" id="sermon-form-title" placeholder="예: 복의 근원이 되는 거룩한 삶의 기쁨" required>
+        </div>
+        <div class="sermon-form-row">
+          <div class="sermon-form-group">
+            <label for="sermon-form-date"><i class="la la-calendar"></i> 설교 날짜</label>
+            <input type="date" id="sermon-form-date" required>
+          </div>
+          <div class="sermon-form-group">
+            <label for="sermon-form-series"><i class="la la-tag"></i> 구분</label>
+            <select id="sermon-form-series">
+              <option value="주일대예배">주일대예배</option>
+              <option value="수요성경공부">수요성경공부</option>
+              <option value="금요기도회">금요기도회</option>
+              <option value="새벽기도회">새벽기도회</option>
+              <option value="특별집회">특별집회</option>
+            </select>
+          </div>
+        </div>
+        <div class="sermon-form-row">
+          <div class="sermon-form-group">
+            <label for="sermon-form-preacher"><i class="la la-user"></i> 설교자</label>
+            <input type="text" id="sermon-form-preacher" placeholder="예: 담임목사 송기운" value="담임목사 송기운">
+          </div>
+          <div class="sermon-form-group">
+            <label for="sermon-form-scripture"><i class="la la-book"></i> 성경 구절</label>
+            <input type="text" id="sermon-form-scripture" placeholder="예: 창세기 12:1-3">
+          </div>
+        </div>
+        <div class="sermon-form-group">
+          <label for="sermon-form-youtube"><i class="la la-youtube"></i> YouTube 링크</label>
+          <input type="text" id="sermon-form-youtube" placeholder="YouTube 영상 URL을 붙여넣으세요" required>
+          <div class="youtube-preview" id="youtube-preview">
+            <p class="youtube-preview-msg"><i class="la la-info-circle"></i> YouTube 링크를 입력하면 미리보기가 표시됩니다.</p>
+          </div>
+        </div>
+        <div class="sermon-form-actions">
+          <button type="button" class="btn btn-outline" id="sermon-form-cancel">취소</button>
+          <button type="submit" class="btn btn-primary" id="sermon-form-submit"><i class="la la-check"></i> 등록하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sermon Detail Modal -->
+  <div class="sermon-detail-modal" id="sermon-detail-modal">
+    <div class="sermon-detail-backdrop" id="sermon-detail-backdrop"></div>
+    <div class="sermon-detail-content">
+      <button class="sermon-detail-close" id="sermon-detail-close" aria-label="닫기"><i class="la la-times"></i></button>
+
+      <!-- Embedded YouTube Video -->
+      <div class="sermon-detail-video">
+        <iframe id="sermonDetailVideo" src="" title="설교 영상"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+
+      <!-- Sermon Info -->
+      <div class="sermon-detail-info">
+        <span class="sermon-detail-series" id="sermon-detail-series"></span>
+        <h2 class="sermon-detail-title" id="sermon-detail-title"></h2>
+
+        <div class="sermon-detail-meta">
+          <div class="sermon-meta-item">
+            <i class="la la-user"></i>
+            <span id="sermon-detail-preacher"></span>
+          </div>
+          <div class="sermon-meta-item">
+            <i class="la la-book"></i>
+            <span id="sermon-detail-scripture"></span>
+          </div>
+          <div class="sermon-meta-item">
+            <i class="la la-calendar"></i>
+            <span id="sermon-detail-date"></span>
+          </div>
+        </div>
+
+        <div class="sermon-detail-actions">
+          <a class="btn btn-primary sermon-yt-btn" id="sermon-yt-link" href="#" target="_blank" rel="noopener noreferrer">
+            <i class="la la-youtube"></i> YouTube에서 보기
+          </a>
+          <button class="btn btn-outline sermon-share-btn" id="sermon-share-btn">
+            <i class="la la-share-alt"></i> 링크 복사
+          </button>
+          <button class="btn btn-outline sermon-edit-btn" id="sermon-edit-btn">
+            <i class="la la-pen"></i> 수정
+          </button>
+          <button class="btn btn-outline sermon-delete-btn" id="sermon-delete-btn">
+            <i class="la la-trash"></i> 삭제
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sermon Delete Confirm Modal -->
+  <div class="sermon-delete-confirm" id="sermon-delete-confirm">
+    <div class="sermon-delete-confirm-backdrop" id="sermon-delete-confirm-backdrop"></div>
+    <div class="sermon-delete-confirm-box">
+      <h4><i class="la la-exclamation-triangle"></i> 설교 삭제</h4>
+      <p>이 설교를 정말 삭제하시겠습니까?<br>삭제된 설교는 복구할 수 없습니다.</p>
+      <div class="sermon-delete-confirm-actions">
+        <button class="btn btn-outline" id="sermon-delete-cancel">취소</button>
+        <button class="btn btn-primary" id="sermon-delete-ok" style="background:#c4302b;">삭제</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer Section -->
   <footer class="footer">
@@ -335,7 +431,7 @@
       </div>
     </div>
   </footer>
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=10"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
