@@ -429,19 +429,74 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="playlist-date">${sermon.date}</span>
         </div>
       `;
+
+      // 상세보기 버튼 (수정/삭제용)
+      const detailBtn = document.createElement('button');
+      detailBtn.className = 'playlist-detail-btn';
+      detailBtn.innerHTML = '<i class="la la-ellipsis-v"></i>';
+      detailBtn.title = '수정/삭제';
+      detailBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openSermonDetail(sermon);
+      });
+      item.appendChild(detailBtn);
+
       item.addEventListener('click', () => {
         // Update active state
         sermonPlaylistContainer.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
         item.classList.add('active');
-        // Update main player
+        // Update main player - 메인 플레이어에서 바로 재생
         if (mainVideo && sermon.videoId) {
           mainVideo.src = `https://www.youtube.com/embed/${sermon.videoId}?rel=0&autoplay=1`;
         }
-        // Open detail modal
-        openSermonDetail(sermon);
+        // Update sermon info below player
+        updateSermonInfoBar(sermon);
+        // Scroll to main player
+        const playerEl = document.querySelector('.sermon-player-container');
+        if (playerEl) {
+          playerEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       });
       sermonPlaylistContainer.appendChild(item);
     });
+
+    // Show info for first sermon
+    if (sermons.length > 0) {
+      updateSermonInfoBar(sermons[0]);
+    }
+  }
+
+  // Sermon info bar below main player
+  function updateSermonInfoBar(sermon) {
+    let infoBar = document.getElementById('sermon-info-bar');
+    if (!infoBar) {
+      // Create info bar dynamically after the player
+      const playerContainer = document.querySelector('.sermon-player-container');
+      if (!playerContainer) return;
+      infoBar = document.createElement('div');
+      infoBar.id = 'sermon-info-bar';
+      infoBar.className = 'sermon-info-bar';
+      playerContainer.parentNode.insertBefore(infoBar, playerContainer.nextSibling);
+    }
+    infoBar.innerHTML = `
+      <div class="sermon-info-bar-inner">
+        <div class="sermon-info-bar-left">
+          <span class="sermon-info-bar-series">${sermon.series || '설교'}</span>
+          <h3 class="sermon-info-bar-title">${sermon.title}</h3>
+          <div class="sermon-info-bar-meta">
+            <span><i class="la la-user"></i> ${sermon.preacher || ''}</span>
+            <span><i class="la la-book"></i> ${sermon.scripture || ''}</span>
+            <span><i class="la la-calendar"></i> ${sermon.date || ''}</span>
+          </div>
+        </div>
+        <div class="sermon-info-bar-actions">
+          <a href="https://www.youtube.com/watch?v=${sermon.videoId}" target="_blank" rel="noopener noreferrer" class="btn btn-sm sermon-yt-small-btn">
+            <i class="la la-youtube"></i> YouTube
+          </a>
+        </div>
+      </div>
+    `;
+  }
   }
 
   // Initial render
