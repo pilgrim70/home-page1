@@ -1212,12 +1212,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (galleryGrid) {
           galleryGrid.innerHTML = '';
-          if (filteredGallery.length === 0) {
-            galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--color-text-muted);">등록된 사진이 없습니다. [글쓰기] 버튼을 눌러 새 사진을 등록해 보세요.</div>`;
-            return;
-          }
-
-          filteredGallery.slice().sort((a, b) => b.id - a.id).forEach(item => {
+          
+          const createCard = (item) => {
             const card = document.createElement('div');
             card.className = 'gallery-card';
             
@@ -1252,9 +1248,55 @@ document.addEventListener('DOMContentLoaded', () => {
               if (e.target.closest('.gallery-card-delete-btn')) return;
               openDetail(item);
             });
+            return card;
+          };
 
-            galleryGrid.appendChild(card);
-          });
+          if (currentGallerySubTab === 'all') {
+            const categories = [
+              { id: 'gallery_school', title: '주일학교' },
+              { id: 'gallery_event', title: '교회행사' },
+              { id: 'gallery_newfamily', title: '새가족등록' }
+            ];
+
+            categories.forEach(catInfo => {
+              const heading = document.createElement('h3');
+              heading.className = 'gallery-category-heading';
+              heading.innerHTML = `&bull; ${catInfo.title}`;
+              heading.style.gridColumn = '1 / -1';
+              heading.style.marginTop = '20px';
+              heading.style.marginBottom = '-10px';
+              heading.style.fontSize = '1.25rem';
+              heading.style.fontWeight = 'bold';
+              heading.style.color = 'var(--color-primary-dark)';
+              heading.style.borderBottom = '1px solid var(--color-border)';
+              heading.style.paddingBottom = '8px';
+              galleryGrid.appendChild(heading);
+
+              const categoryPhotos = newsData.filter(item => item.category === catInfo.id).sort((a, b) => b.id - a.id);
+              
+              if (categoryPhotos.length > 0) {
+                // 최근 사진 1개만 표시
+                const recentItem = categoryPhotos[0];
+                galleryGrid.appendChild(createCard(recentItem));
+              } else {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.style.gridColumn = '1 / -1';
+                emptyDiv.style.color = 'var(--color-text-muted)';
+                emptyDiv.style.padding = '10px 0';
+                emptyDiv.textContent = '최근 등록된 사진이 없습니다.';
+                galleryGrid.appendChild(emptyDiv);
+              }
+            });
+          } else {
+            if (filteredGallery.length === 0) {
+              galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--color-text-muted);">등록된 사진이 없습니다. [글쓰기] 버튼을 눌러 새 사진을 등록해 보세요.</div>`;
+              return;
+            }
+
+            filteredGallery.slice().sort((a, b) => b.id - a.id).forEach(item => {
+              galleryGrid.appendChild(createCard(item));
+            });
+          }
         }
 
         // 갤러리 그리드 이벤트 위임 (삭제 버튼 클릭 처리)
