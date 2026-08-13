@@ -394,10 +394,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // -- Render Sermon Playlist --
+  let currentSermonTab = 'all';
+
+  const sermonTabFilters = document.querySelectorAll('#sermon-tab-filters .filter-btn');
+  if (sermonTabFilters.length > 0) {
+    sermonTabFilters.forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentSermonTab = btn.dataset.filter;
+        sermonTabFilters.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderSermonPlaylist();
+      });
+    });
+  }
+
   function renderSermonPlaylist() {
     if (!sermonPlaylistContainer) return;
-    const sermons = getSermonData();
+    const allSermons = getSermonData();
     
+    // Filter by currentSermonTab
+    const sermons = allSermons.filter(s => currentSermonTab === 'all' || s.series === currentSermonTab);
+
     // Sort by date descending
     sermons.sort((a, b) => new Date(b.date) - new Date(a.date));
 
