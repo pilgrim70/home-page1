@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="assets/icon.png?v=4">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=12">
   <!-- LineAwesome Icons for Premium feel -->
   <link rel="stylesheet"
     href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
@@ -265,7 +265,7 @@
               <div class="col-num">3</div>
               <div class="col-dept"><span class="badge badge-kfc">KFC 동아리</span></div>
               <div class="col-title">
-                <span class="row-title">몸과 마음을 가꾸는 건강한 스포츠, KFC 청소년 축구동아리 회원 모집</span>
+                <span class="row-title">KFC 유소년-청소년-청년 축구동아리 회원 모집</span>
                 <span class="row-subtitle">스포츠를 통해 서로 친교하며 그리스도의 사랑을 몸소 나눕니다.</span>
               </div>
               <div class="col-time"><i class="la la-clock"></i> 격주 주일 오후 4:30 - 6:00 (2째주, 4째주)</div>
@@ -403,7 +403,7 @@
     <div class="modal-backdrop" id="school-write-backdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title"><i class="la la-edit"></i> 교회학교 소식 등록</h3>
+        <h3 class="modal-title" id="school-write-modal-title"><i class="la la-edit"></i> 교회학교 소식 등록</h3>
         <button class="modal-close" id="btn-close-school-write">&times;</button>
       </div>
       <div class="modal-body">
@@ -433,7 +433,7 @@
                 <i class="la la-folder-open"></i> 내 컴퓨터에서 파일 찾기
               </button>
               <span class="file-select-status" id="school-file-status">선택된 파일 없음</span>
-              <input type="file" id="school-file-input" accept="*/*" style="display: none;">
+              <input type="file" id="school-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.hwp,.txt" style="display: none;">
             </div>
             <div id="school-file-preview-container" style="display: none;"></div>
           </div>
@@ -444,7 +444,7 @@
           </div>
           <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
             <button type="button" class="btn btn-outline" id="btn-cancel-school-write" style="padding: 10px 20px;">취소</button>
-            <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">등록하기</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-school-form" style="padding: 10px 20px;">등록하기</button>
           </div>
         </form>
       </div>
@@ -484,7 +484,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=15"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

@@ -429,74 +429,19 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="playlist-date">${sermon.date}</span>
         </div>
       `;
-
-      // 상세보기 버튼 (수정/삭제용)
-      const detailBtn = document.createElement('button');
-      detailBtn.className = 'playlist-detail-btn';
-      detailBtn.innerHTML = '<i class="la la-ellipsis-v"></i>';
-      detailBtn.title = '수정/삭제';
-      detailBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openSermonDetail(sermon);
-      });
-      item.appendChild(detailBtn);
-
       item.addEventListener('click', () => {
         // Update active state
         sermonPlaylistContainer.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
         item.classList.add('active');
-        // Update main player - 메인 플레이어에서 바로 재생
+        // Update main player
         if (mainVideo && sermon.videoId) {
           mainVideo.src = `https://www.youtube.com/embed/${sermon.videoId}?rel=0&autoplay=1`;
         }
-        // Update sermon info below player
-        updateSermonInfoBar(sermon);
-        // Scroll to main player
-        const playerEl = document.querySelector('.sermon-player-container');
-        if (playerEl) {
-          playerEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        // Open detail modal
+        openSermonDetail(sermon);
       });
       sermonPlaylistContainer.appendChild(item);
     });
-
-    // Show info for first sermon
-    if (sermons.length > 0) {
-      updateSermonInfoBar(sermons[0]);
-    }
-  }
-
-  // Sermon info bar below main player
-  function updateSermonInfoBar(sermon) {
-    let infoBar = document.getElementById('sermon-info-bar');
-    if (!infoBar) {
-      // Create info bar dynamically after the player
-      const playerContainer = document.querySelector('.sermon-player-container');
-      if (!playerContainer) return;
-      infoBar = document.createElement('div');
-      infoBar.id = 'sermon-info-bar';
-      infoBar.className = 'sermon-info-bar';
-      playerContainer.parentNode.insertBefore(infoBar, playerContainer.nextSibling);
-    }
-    infoBar.innerHTML = `
-      <div class="sermon-info-bar-inner">
-        <div class="sermon-info-bar-left">
-          <span class="sermon-info-bar-series">${sermon.series || '설교'}</span>
-          <h3 class="sermon-info-bar-title">${sermon.title}</h3>
-          <div class="sermon-info-bar-meta">
-            <span><i class="la la-user"></i> ${sermon.preacher || ''}</span>
-            <span><i class="la la-book"></i> ${sermon.scripture || ''}</span>
-            <span><i class="la la-calendar"></i> ${sermon.date || ''}</span>
-          </div>
-        </div>
-        <div class="sermon-info-bar-actions">
-          <a href="https://www.youtube.com/watch?v=${sermon.videoId}" target="_blank" rel="noopener noreferrer" class="btn btn-sm sermon-yt-small-btn">
-            <i class="la la-youtube"></i> YouTube
-          </a>
-        </div>
-      </div>
-    `;
-  }
   }
 
   // Initial render
@@ -556,8 +501,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
-  revealElements.forEach(el => revealObserver.observe(el));
+  // 스크립트가 정상적으로 실행된 경우에만 애니메이션 대기 상태를 적용한다.
+  // 오류나 미지원 브라우저에서도 본문 콘텐츠는 그대로 표시된다.
+  if ('IntersectionObserver' in window) {
+    revealElements.forEach(el => el.classList.add('reveal-pending'));
+    const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
+    revealElements.forEach(el => revealObserver.observe(el));
+  }
 
   // 6. Mobile Sub-menu Dropdown Toggle
   const mobileDropdowns = document.querySelectorAll('.mobile-dropdown');
@@ -1145,15 +1095,20 @@ document.addEventListener('DOMContentLoaded', () => {
               openDetail(item);
             });
 
-            const delBtn = card.querySelector('.gallery-card-delete-btn');
-            if (delBtn) {
-              delBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                requestDelete(item.id);
-              });
-            }
-
             galleryGrid.appendChild(card);
+          });
+        }
+
+        // 갤러리 그리드 이벤트 위임 (삭제 버튼 클릭 처리)
+        if (galleryGrid && !galleryGrid.dataset.delegated) {
+          galleryGrid.dataset.delegated = 'true';
+          galleryGrid.addEventListener('click', (e) => {
+            const delBtn = e.target.closest('.gallery-card-delete-btn');
+            if (delBtn) {
+              e.preventDefault();
+              e.stopPropagation();
+              requestDelete(delBtn.dataset.id);
+            }
           });
         }
       } else {
@@ -1192,7 +1147,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <td class="col-author" style="text-align: center; font-weight: 500;">${item.author || '관리자'}</td>
             <td class="col-date">${item.date}</td>
             <td class="col-action">
-              <button class="btn-delete" data-id="${item.id}" title="삭제"><i class="la la-trash"></i></button>
+              <button type="button" class="btn-delete news-post-delete" data-id="${item.id}" title="삭제" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
             </td>
           `;
 
@@ -1200,18 +1155,20 @@ document.addEventListener('DOMContentLoaded', () => {
             openDetail(item);
           });
 
-          const trDelBtn = tr.querySelector('.btn-delete');
-          if (trDelBtn) {
-            trDelBtn.addEventListener('click', (e) => {
-              e.stopPropagation();
-              requestDelete(item.id);
-            });
-          }
-
           juboListBody.appendChild(tr);
         });
       }
     }
+
+    // 테이블 목록 이벤트 위임 (삭제 버튼 클릭 처리)
+    juboListBody.addEventListener('click', (e) => {
+      const delBtn = e.target.closest('.news-post-delete');
+      if (delBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        requestDelete(delBtn.dataset.id);
+      }
+    });
 
     if (btnOpenNewsWrite) {
       btnOpenNewsWrite.addEventListener('click', () => {
@@ -1308,7 +1265,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCancelSchoolWrite = document.getElementById('btn-cancel-school-write');
     const btnCloseSchoolDetail = document.getElementById('btn-close-school-detail');
     const btnConfirmSchoolDetail = document.getElementById('btn-confirm-school-detail');
+    const btnDeleteSchoolDetail = document.getElementById('btn-delete-school-detail');
+    const btnEditSchoolDetail = document.getElementById('btn-edit-school-detail');
     const schoolWriteForm = document.getElementById('school-write-form');
+    const schoolWriteModalTitle = document.getElementById('school-write-modal-title');
+    const btnSubmitSchoolForm = document.getElementById('btn-submit-school-form');
     const filterBtns = document.querySelectorAll('.notice-filters .filter-btn');
 
     const schoolUploader = setupFileUpload(
@@ -1322,6 +1283,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let schoolData = getBoardData('school_posts', defaultSchool);
     let currentFilter = 'all';
+    let currentSchoolDetailId = null;
+    let editingSchoolId = null;
+
+    function deleteSchoolPost(id) {
+      schoolData = schoolData.filter(post => String(post.id) !== String(id));
+      saveBoardData('school_posts', schoolData);
+      if (String(currentSchoolDetailId) === String(id)) {
+        closeModal(schoolModalDetail);
+        currentSchoolDetailId = null;
+      }
+      renderSchool();
+    }
+
+    function openSchoolDetail(item) {
+      currentSchoolDetailId = item.id;
+      document.getElementById('school-detail-title').innerText = item.title;
+      document.getElementById('school-detail-dept').innerHTML = `<i class="la la-tag"></i> 부서: ${getDeptKoName(item.dept)}`;
+      document.getElementById('school-detail-author').innerHTML = `<i class="la la-user"></i> 작성자: ${item.author}`;
+      document.getElementById('school-detail-date').innerHTML = `<i class="la la-calendar"></i> 날짜: ${item.date}`;
+      document.getElementById('school-detail-body').innerText = item.content || (item.file ? '' : '상세 내용이 없습니다.');
+      renderDetailAttachment(document.getElementById('school-detail-attachment'), item.file);
+      openModal(schoolModalDetail);
+    }
+
+    function openSchoolWrite(item = null) {
+      schoolWriteForm.reset();
+
+      if (item) {
+        editingSchoolId = item.id;
+        document.getElementById('school-title').value = item.title || '';
+        document.getElementById('school-dept').value = item.dept || 'kids';
+        document.getElementById('school-author').value = item.author || '';
+        document.getElementById('school-content').value = item.content || '';
+        schoolUploader.setExistingFile(item.file || null);
+        if (schoolWriteModalTitle) schoolWriteModalTitle.innerHTML = '<i class="la la-edit"></i> 교회학교 소식 수정';
+        if (btnSubmitSchoolForm) btnSubmitSchoolForm.textContent = '수정 저장';
+      } else {
+        editingSchoolId = null;
+        schoolUploader.resetAttachedFile();
+        if (schoolWriteModalTitle) schoolWriteModalTitle.innerHTML = '<i class="la la-edit"></i> 교회학교 소식 등록';
+        if (btnSubmitSchoolForm) btnSubmitSchoolForm.textContent = '등록하기';
+      }
+
+      openModal(schoolModalWrite);
+    }
 
     function getDeptKoName(dept) {
       switch(dept) {
@@ -1358,38 +1364,29 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="col-author" style="text-align: center; font-weight: 500;">${item.author}</td>
           <td class="col-date" style="text-align: right;">${item.date}</td>
           <td class="col-action">
-            <button class="btn-delete" data-id="${item.id}"><i class="la la-trash"></i></button>
+            <button type="button" class="btn-delete school-post-delete" data-id="${item.id}" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
           </td>
         `;
 
-        tr.querySelector('.col-title').addEventListener('click', () => {
-          document.getElementById('school-detail-title').innerText = item.title;
-          document.getElementById('school-detail-dept').innerHTML = `<i class="la la-tag"></i> 부서: ${getDeptKoName(item.dept)}`;
-          document.getElementById('school-detail-author').innerHTML = `<i class="la la-user"></i> 작성자: ${item.author}`;
-          document.getElementById('school-detail-date').innerHTML = `<i class="la la-calendar"></i> 날짜: ${item.date}`;
-          document.getElementById('school-detail-body').innerText = item.content || (item.file ? '' : '상세 내용이 없습니다.');
-          renderDetailAttachment(document.getElementById('school-detail-attachment'), item.file);
-          openModal(schoolModalDetail);
-        });
-
-        tr.querySelector('.btn-delete').addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (confirm('이 글을 삭제하시겠습니까?')) {
-            schoolData = schoolData.filter(p => p.id !== item.id);
-            saveBoardData('school_posts', schoolData);
-            renderSchool();
-          }
-        });
+        tr.querySelector('.col-title').addEventListener('click', () => openSchoolDetail(item));
 
         schoolListBody.appendChild(tr);
       });
     }
 
+    // 동적으로 다시 그려지는 목록에서도 항상 삭제 버튼이 동작하도록 이벤트를 위임한다.
+    schoolListBody.addEventListener('click', (event) => {
+      const deleteButton = event.target.closest('.school-post-delete');
+      if (!deleteButton) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      deleteSchoolPost(deleteButton.dataset.id);
+    });
+
     if (btnOpenSchoolWrite) {
       btnOpenSchoolWrite.addEventListener('click', () => {
-        schoolWriteForm.reset();
-        schoolUploader.resetAttachedFile();
-        openModal(schoolModalWrite);
+        openSchoolWrite();
       });
     }
 
@@ -1397,6 +1394,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCancelSchoolWrite) btnCancelSchoolWrite.addEventListener('click', () => closeModal(schoolModalWrite));
     if (btnCloseSchoolDetail) btnCloseSchoolDetail.addEventListener('click', () => closeModal(schoolModalDetail));
     if (btnConfirmSchoolDetail) btnConfirmSchoolDetail.addEventListener('click', () => closeModal(schoolModalDetail));
+    if (btnDeleteSchoolDetail) btnDeleteSchoolDetail.addEventListener('click', () => {
+      if (currentSchoolDetailId !== null) deleteSchoolPost(currentSchoolDetailId);
+    });
+    if (btnEditSchoolDetail) btnEditSchoolDetail.addEventListener('click', () => {
+      const item = schoolData.find(post => String(post.id) === String(currentSchoolDetailId));
+      if (!item) return;
+      closeModal(schoolModalDetail);
+      openSchoolWrite(item);
+    });
 
     document.getElementById('school-write-backdrop').addEventListener('click', () => closeModal(schoolModalWrite));
     document.getElementById('school-detail-backdrop').addEventListener('click', () => closeModal(schoolModalDetail));
@@ -1409,20 +1415,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const content = document.getElementById('school-content').value.trim();
       const attachedFile = schoolUploader.getAttachedFile();
 
-      const nextId = schoolData.length > 0 ? Math.max(...schoolData.map(p => p.id)) + 1 : 1;
+      if (editingSchoolId !== null) {
+        const index = schoolData.findIndex(post => String(post.id) === String(editingSchoolId));
+        if (index !== -1) {
+          schoolData[index] = {
+            ...schoolData[index], title, dept, author, content, file: attachedFile
+          };
+        }
+      } else {
+        const nextId = schoolData.length > 0 ? Math.max(...schoolData.map(p => p.id)) + 1 : 1;
+        schoolData.push({
+          id: nextId, title, dept, author,
+          date: new Date().toISOString().substring(0, 10), content, file: attachedFile
+        });
+      }
 
-      const newPost = {
-        id: nextId,
-        title: title,
-        dept: dept,
-        author: author,
-        date: new Date().toISOString().substring(0, 10),
-        content: content,
-        file: attachedFile
-      };
-
-      schoolData.push(newPost);
       saveBoardData('school_posts', schoolData);
+      editingSchoolId = null;
       closeModal(schoolModalWrite);
       renderSchool();
     });
@@ -1435,6 +1444,9 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSchool();
       });
     });
+
+    // 페이지를 열 때 저장된 게시글을 즉시 목록에 표시한다.
+    renderSchool();
 
   }
 });
