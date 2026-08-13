@@ -663,7 +663,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function saveBoardData(key, data) {
-    localStorage.setItem(key, JSON.stringify(data));
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+      console.warn('localStorage save warning (QuotaExceededError):', e);
+      try {
+        // Clear heavy base64 dataUrl images from old items if quota is exceeded
+        const cleaned = data.map((item, index) => {
+          if (index > 1 && item.file && item.file.dataUrl && item.file.dataUrl.length > 50000) {
+            return {
+              ...item,
+              file: {
+                ...item.file,
+                dataUrl: 'assets/church-banner.png'
+              }
+            };
+          }
+          return item;
+        });
+        localStorage.setItem(key, JSON.stringify(cleaned));
+      } catch (e2) {
+        console.error('Failed to save to localStorage even after cleaning:', e2);
+      }
+    }
   }
 
   // UI Modal Control Helpers
@@ -735,42 +757,108 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const reader = new FileReader();
       reader.onload = function(e) {
-        const dataUrl = e.target.result;
-        const sizeFormatted = (file.size < 1024 * 1024) 
-          ? (file.size / 1024).toFixed(1) + ' KB'
-          : (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+        const rawDataUrl = e.target.result;
 
-        attachedFile = {
-          name: file.name,
-          size: sizeFormatted,
-          type: file.type || 'application/octet-stream',
-          dataUrl: dataUrl,
-          isImage: isImage,
-          isPdf: isPdf
-        };
+        if (isImage) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1000;
+            const MAX_HEIGHT = 1000;
+            let width = img.width;
+            let height = img.height;
 
-        if (statusText) {
-          statusText.innerText = `선택됨: ${file.name} (${sizeFormatted})`;
-          statusText.style.color = '#2b8a3e';
-          statusText.style.fontWeight = '500';
-        }
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height = Math.round((height * MAX_WIDTH) / width);
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width = Math.round((width * MAX_HEIGHT) / height);
+                height = MAX_HEIGHT;
+              }
+            }
 
-        if (previewContainer) {
-          previewContainer.innerHTML = `
-            <div class="clean-file-selected-bar">
-              <div class="clean-file-info">
-                <span class="clean-file-name"><i class="la la-file"></i> ${file.name}</span>
-                <span class="clean-file-size">${sizeFormatted}</span>
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+            const sizeKb = (compressedDataUrl.length / 1024).toFixed(1) + ' KB';
+
+            attachedFile = {
+              name: file.name,
+              size: sizeKb,
+              type: 'image/jpeg',
+              dataUrl: compressedDataUrl,
+              isImage: true,
+              isPdf: false
+            };
+
+            if (statusText) {
+              statusText.innerText = `선택됨: ${file.name} (${sizeKb})`;
+              statusText.style.color = '#2b8a3e';
+              statusText.style.fontWeight = '500';
+            }
+
+            if (previewContainer) {
+              previewContainer.innerHTML = `
+                <div class="clean-file-selected-bar">
+                  <div class="clean-file-info">
+                    <span class="clean-file-name"><i class="la la-file"></i> ${file.name}</span>
+                    <span class="clean-file-size">${sizeKb}</span>
+                  </div>
+                  <button type="button" class="btn-clean-file-remove" title="파일 취소">&times;</button>
+                </div>
+              `;
+              previewContainer.style.display = 'block';
+
+              previewContainer.querySelector('.btn-clean-file-remove').addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                resetAttachedFile();
+              });
+            }
+          };
+          img.src = rawDataUrl;
+        } else {
+          const sizeFormatted = (file.size < 1024 * 1024) 
+            ? (file.size / 1024).toFixed(1) + ' KB'
+            : (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+          attachedFile = {
+            name: file.name,
+            size: sizeFormatted,
+            type: file.type || 'application/octet-stream',
+            dataUrl: rawDataUrl,
+            isImage: false,
+            isPdf: isPdf
+          };
+
+          if (statusText) {
+            statusText.innerText = `선택됨: ${file.name} (${sizeFormatted})`;
+            statusText.style.color = '#2b8a3e';
+            statusText.style.fontWeight = '500';
+          }
+
+          if (previewContainer) {
+            previewContainer.innerHTML = `
+              <div class="clean-file-selected-bar">
+                <div class="clean-file-info">
+                  <span class="clean-file-name"><i class="la la-file"></i> ${file.name}</span>
+                  <span class="clean-file-size">${sizeFormatted}</span>
+                </div>
+                <button type="button" class="btn-clean-file-remove" title="파일 취소">&times;</button>
               </div>
-              <button type="button" class="btn-clean-file-remove" title="파일 취소">&times;</button>
-            </div>
-          `;
-          previewContainer.style.display = 'block';
+            `;
+            previewContainer.style.display = 'block';
 
-          previewContainer.querySelector('.btn-clean-file-remove').addEventListener('click', (ev) => {
-            ev.stopPropagation();
-            resetAttachedFile();
-          });
+            previewContainer.querySelector('.btn-clean-file-remove').addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              resetAttachedFile();
+            });
+          }
         }
       };
 
@@ -1160,7 +1248,8 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             `;
 
-            card.addEventListener('click', () => {
+            card.addEventListener('click', (e) => {
+              if (e.target.closest('.gallery-card-delete-btn')) return;
               openDetail(item);
             });
 
