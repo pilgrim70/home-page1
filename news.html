@@ -74,7 +74,9 @@
           <ul class="dropdown-menu">
             <li><a href="news.html?tab=news" class="dropdown-link"><i class="la la-bullhorn"></i> 교회소식</a></li>
             <li><a href="news.html?tab=jubo" class="dropdown-link"><i class="la la-file-alt"></i> 주보</a></li>
-            <li><a href="news.html?tab=gallery" class="dropdown-link"><i class="la la-image"></i> 포토갤러리</a></li>
+            <li><a href="news.html?tab=gallery&sub=school" class="dropdown-link"><i class="la la-child"></i> 주일학교 포토</a></li>
+            <li><a href="news.html?tab=gallery&sub=event" class="dropdown-link"><i class="la la-calendar-check"></i> 교회행사 포토</a></li>
+            <li><a href="news.html?tab=gallery&sub=newfamily" class="dropdown-link"><i class="la la-user-plus"></i> 새가족등록 포토</a></li>
           </ul>
         </div>
       </nav>
@@ -136,7 +138,9 @@
         <ul class="dropdown-menu mobile-dropdown-menu">
           <li><a href="news.html?tab=news" class="dropdown-link mobile-link">교회소식</a></li>
           <li><a href="news.html?tab=jubo" class="dropdown-link mobile-link">주보</a></li>
-          <li><a href="news.html?tab=gallery" class="dropdown-link mobile-link">포토갤러리</a></li>
+          <li><a href="news.html?tab=gallery&sub=school" class="dropdown-link mobile-link">주일학교 포토</a></li>
+          <li><a href="news.html?tab=gallery&sub=event" class="dropdown-link mobile-link">교회행사 포토</a></li>
+          <li><a href="news.html?tab=gallery&sub=newfamily" class="dropdown-link mobile-link">새가족등록 포토</a></li>
         </ul>
       </div>
     </nav>
@@ -158,7 +162,7 @@
           <button class="filter-btn active" data-filter="all">전체</button>
           <button class="filter-btn" data-filter="news">교회소식</button>
           <button class="filter-btn" data-filter="jubo">주보</button>
-          <button class="filter-btn" data-filter="gallery">포토갤러리</button>
+          <button class="filter-btn" data-filter="gallery">포토갤러리 전체</button>
         </div>
         <!-- 미니멀 글쓰기 버튼 -->
         <button class="btn-news-write-minimal" id="btn-open-news-modal">
@@ -172,7 +176,7 @@
           <thead>
             <tr>
               <th class="col-no" style="width: 70px; text-align: left;">No</th>
-              <th class="col-dept" style="width: 120px; text-align: center;">구분</th>
+              <th class="col-dept" style="width: 130px; text-align: center;">구분</th>
               <th class="col-title" style="text-align: left; padding-left: 20px;">제목</th>
               <th class="col-author" style="width: 120px; text-align: center;">작성자</th>
               <th class="col-date" style="width: 130px; text-align: right;">작성시간</th>
@@ -187,6 +191,13 @@
 
       <!-- 포토갤러리 전용 그리드 뷰 (포토갤러리 탭) -->
       <div class="photo-gallery-grid-wrapper" id="photo-gallery-grid-wrapper" style="display: none; margin-top: 25px;">
+        <!-- 포토갤러리 3개 서브 카테고리 필터 -->
+        <div class="gallery-sub-filters" id="gallery-sub-filters">
+          <button class="sub-filter-btn active" data-sub="all"><i class="la la-border-all"></i> 전체 사진</button>
+          <button class="sub-filter-btn" data-sub="gallery_school"><i class="la la-child"></i> 주일학교</button>
+          <button class="sub-filter-btn" data-sub="gallery_event"><i class="la la-calendar-check"></i> 교회행사</button>
+          <button class="sub-filter-btn" data-sub="gallery_newfamily"><i class="la la-user-plus"></i> 새가족등록</button>
+        </div>
         <div class="photo-gallery-grid" id="photo-gallery-grid">
           <!-- JS에서 동적으로 포토 카드 렌더링 -->
         </div>
@@ -263,7 +274,11 @@
             <select id="news-category" required style="width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem; background-color: #fff;">
               <option value="news">교회소식</option>
               <option value="jubo">주보</option>
-              <option value="gallery">포토갤러리</option>
+              <optgroup label="📷 포토갤러리 카테고리">
+                <option value="gallery_school">포토갤러리 - 주일학교</option>
+                <option value="gallery_event">포토갤러리 - 교회행사</option>
+                <option value="gallery_newfamily">포토갤러리 - 새가족등록</option>
+              </optgroup>
             </select>
           </div>
           <div class="form-group" style="margin-bottom: 20px;">

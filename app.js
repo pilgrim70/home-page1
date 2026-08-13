@@ -537,9 +537,24 @@ document.addEventListener('DOMContentLoaded', () => {
       isPinned: true
     },
     {
+      id: 305,
+      title: '2026년 8월 새가족 환영식 및 등록 성도 기념사진',
+      category: 'gallery_newfamily',
+      author: '새가족부',
+      date: '2026-08-10',
+      content: '복의근원 관유중앙교회의 귀한 새 식구가 되신 성도님들을 예수님의 사랑으로 온 맘 다해 환영합니다.',
+      file: {
+        name: 'new_family_welcome_2026.png',
+        size: '890 KB',
+        type: 'image/png',
+        dataUrl: 'assets/church-banner.png',
+        isImage: true
+      }
+    },
+    {
       id: 304,
       title: '2026 전교인 여름 수련회 은혜의 현장 사진 스케치',
-      category: 'gallery',
+      category: 'gallery_event',
       author: '미디어팀',
       date: '2026-08-05',
       content: '성령의 뜨거운 임재와 은혜로운 교제가 넘쳤던 2026 전교인 여름 수련회 현장 사진입니다.',
@@ -578,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 300,
       title: '주일 대예배 찬양과 은혜로운 예배 모습',
-      category: 'gallery',
+      category: 'gallery_event',
       author: '미디어팀',
       date: '2026-07-27',
       content: '하나님께 영광 올려드리는 주일 대예배와 찬양팀의 아름다운 찬양 모습입니다.',
@@ -609,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 297,
       title: '교회학교 여름성경학교 축복의 순간',
-      category: 'gallery',
+      category: 'gallery_school',
       author: '교회학교',
       date: '2026-07-15',
       content: '어린이들의 웃음과 기도가 가득했던 여름성경학교 은혜의 현장 사진입니다.',
@@ -905,12 +920,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sanitize any data to guarantee category and author exist
     newsData = newsData.map(item => {
       let cat = item.category;
-      if (!cat) {
+      if (!cat || cat === 'gallery') {
         const titleLower = (item.title || '').toLowerCase();
         if (titleLower.includes('주보') || titleLower.includes('순서지')) {
           cat = 'jubo';
+        } else if (titleLower.includes('학교') || titleLower.includes('어린이') || titleLower.includes('유치') || titleLower.includes('초등') || titleLower.includes('중고등')) {
+          cat = 'gallery_school';
+        } else if (titleLower.includes('새가족') || titleLower.includes('환영') || titleLower.includes('등록')) {
+          cat = 'gallery_newfamily';
         } else if (titleLower.includes('사진') || titleLower.includes('수련회') || titleLower.includes('스케치') || (item.file && item.file.isImage)) {
-          cat = 'gallery';
+          cat = 'gallery_event';
         } else {
           cat = 'news';
         }
@@ -918,17 +937,26 @@ document.addEventListener('DOMContentLoaded', () => {
       return {
         ...item,
         category: cat,
-        author: item.author || (cat === 'gallery' ? '미디어팀' : (cat === 'jubo' ? '예배부' : '교회 행정실'))
+        author: item.author || (cat.startsWith('gallery') ? '미디어팀' : (cat === 'jubo' ? '예배부' : '교회 행정실'))
       };
     });
     saveBoardData('news_posts_v3', newsData);
 
-    // Initial Active Tab resolution (supports URL parameters ?tab=news, ?tab=jubo, ?tab=gallery or hash)
+    // Initial Active Tab resolution (supports URL parameters ?tab=news, ?tab=jubo, ?tab=gallery & ?sub=school/event/newfamily)
     let currentNewsTab = 'all';
+    let currentGallerySubTab = 'all';
+
     const urlParams = new URLSearchParams(window.location.search);
     const initialTab = urlParams.get('tab');
-    if (initialTab && ['news', 'jubo', 'gallery', 'all'].includes(initialTab)) {
-      currentNewsTab = initialTab;
+    const initialSub = urlParams.get('sub');
+
+    if (initialTab && ['news', 'jubo', 'gallery', 'all', 'gallery_school', 'gallery_event', 'gallery_newfamily'].includes(initialTab)) {
+      if (initialTab.startsWith('gallery_')) {
+        currentNewsTab = 'gallery';
+        currentGallerySubTab = initialTab;
+      } else {
+        currentNewsTab = initialTab;
+      }
     } else if (window.location.hash) {
       const hash = window.location.hash.replace('#', '');
       if (['news', 'jubo', 'gallery'].includes(hash)) {
@@ -936,12 +964,32 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    if (initialSub) {
+      if (initialSub === 'school') currentGallerySubTab = 'gallery_school';
+      else if (initialSub === 'event') currentGallerySubTab = 'gallery_event';
+      else if (initialSub === 'newfamily') currentGallerySubTab = 'gallery_newfamily';
+    }
+
     function getCategoryKoName(cat) {
       switch(cat) {
         case 'news': return '교회소식';
         case 'jubo': return '주보';
         case 'gallery': return '포토갤러리';
+        case 'gallery_school': return '포토: 주일학교';
+        case 'gallery_event': return '포토: 교회행사';
+        case 'gallery_newfamily': return '포토: 새가족등록';
         default: return '교회소식';
+      }
+    }
+
+    function getCategoryBadgeHtml(cat) {
+      switch(cat) {
+        case 'news': return `<span class="badge badge-news">교회소식</span>`;
+        case 'jubo': return `<span class="badge badge-jubo">주보</span>`;
+        case 'gallery_school': return `<span class="badge badge-gallery_school"><i class="la la-child"></i> 주일학교</span>`;
+        case 'gallery_event': return `<span class="badge badge-gallery_event"><i class="la la-calendar-check"></i> 교회행사</span>`;
+        case 'gallery_newfamily': return `<span class="badge badge-gallery_newfamily"><i class="la la-user-plus"></i> 새가족등록</span>`;
+        default: return `<span class="badge badge-gallery"><i class="la la-image"></i> 포토갤러리</span>`;
       }
     }
 
@@ -1037,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderNews() {
-      // 1. Update filter tab button active state
+      // 1. Update main filter tab button active state
       filterTabBtns.forEach(btn => {
         if (btn.dataset.filter === currentNewsTab) {
           btn.classList.add('active');
@@ -1046,35 +1094,56 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      const filtered = newsData.filter(item => {
-        const cat = item.category || 'news';
-        if (currentNewsTab === 'all') return true;
-        return cat === currentNewsTab;
+      // 2. Update gallery sub-filter button active state
+      const subFilterBtns = document.querySelectorAll('#gallery-sub-filters .sub-filter-btn');
+      subFilterBtns.forEach(btn => {
+        if (btn.dataset.sub === currentGallerySubTab) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
       });
 
-      if (currentNewsTab === 'gallery') {
+      const isGalleryTab = currentNewsTab === 'gallery' || currentNewsTab.startsWith('gallery_');
+
+      if (isGalleryTab) {
         // Show Photo Gallery Grid
         if (tableWrapper) tableWrapper.style.display = 'none';
         if (galleryWrapper) galleryWrapper.style.display = 'block';
+
+        const filteredGallery = newsData.filter(item => {
+          const cat = item.category || 'news';
+          if (!cat.startsWith('gallery')) return false;
+
+          if (currentNewsTab !== 'all' && currentNewsTab !== 'gallery') {
+            return cat === currentNewsTab;
+          }
+          if (currentGallerySubTab === 'all') return true;
+          return cat === currentGallerySubTab;
+        });
+
         if (galleryGrid) {
           galleryGrid.innerHTML = '';
-          if (filtered.length === 0) {
+          if (filteredGallery.length === 0) {
             galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--color-text-muted);">등록된 사진이 없습니다. [글쓰기] 버튼을 눌러 새 사진을 등록해 보세요.</div>`;
             return;
           }
 
-          filtered.slice().sort((a, b) => b.id - a.id).forEach(item => {
+          filteredGallery.slice().sort((a, b) => b.id - a.id).forEach(item => {
             const card = document.createElement('div');
             card.className = 'gallery-card';
             
             const thumbImg = item.file && item.file.isImage && item.file.dataUrl
               ? item.file.dataUrl
               : 'assets/church-banner.png';
+
+            const cat = item.category || 'gallery_event';
+            const badgeHtml = getCategoryBadgeHtml(cat);
             
             card.innerHTML = `
               <div class="gallery-card-thumb">
                 <img src="${thumbImg}" alt="${item.title}" loading="lazy">
-                <span class="gallery-card-badge"><i class="la la-image"></i> 포토갤러리</span>
+                <span class="gallery-card-badge">${badgeHtml}</span>
                 <button type="button" class="gallery-card-delete-btn" title="사진 삭제" data-id="${item.id}">
                   <i class="la la-trash"></i>
                 </button>
@@ -1117,6 +1186,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tableWrapper) tableWrapper.style.display = 'block';
         juboListBody.innerHTML = '';
 
+        const filtered = newsData.filter(item => {
+          const cat = item.category || 'news';
+          if (currentNewsTab === 'all') return true;
+          return cat === currentNewsTab;
+        });
+
         if (filtered.length === 0) {
           juboListBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--color-text-muted);">등록된 게시글이 없습니다.</td></tr>`;
           return;
@@ -1142,7 +1217,7 @@ document.addEventListener('DOMContentLoaded', () => {
           
           tr.innerHTML = `
             <td class="col-no">${noContent}</td>
-            <td class="col-dept" style="text-align: center;"><span class="badge badge-${cat}">${getCategoryKoName(cat)}</span></td>
+            <td class="col-dept" style="text-align: center;">${getCategoryBadgeHtml(cat)}</td>
             <td class="col-title" style="padding-left: 20px;">${item.title}${clipBadge}</td>
             <td class="col-author" style="text-align: center; font-weight: 500;">${item.author || '관리자'}</td>
             <td class="col-date">${item.date}</td>
@@ -1170,6 +1245,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    // 갤러리 서브 필터 버튼 이벤트 처리 (전체 / 주일학교 / 교회행사 / 새가족등록)
+    const gallerySubFilterBtns = document.querySelectorAll('#gallery-sub-filters .sub-filter-btn');
+    gallerySubFilterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentGallerySubTab = btn.dataset.sub;
+        renderNews();
+      });
+    });
+
     if (btnOpenNewsWrite) {
       btnOpenNewsWrite.addEventListener('click', () => {
         editingPostId = null;
@@ -1181,10 +1265,14 @@ document.addEventListener('DOMContentLoaded', () => {
           btnSubmitNewsForm.innerText = '등록하기';
         }
         document.getElementById('news-date').value = new Date().toISOString().substring(0, 10);
-        if (currentNewsTab !== 'all' && document.getElementById('news-category')) {
-          document.getElementById('news-category').value = currentNewsTab;
+        if (document.getElementById('news-category')) {
+          if (currentNewsTab.startsWith('gallery') || currentGallerySubTab !== 'all') {
+            document.getElementById('news-category').value = currentGallerySubTab !== 'all' ? currentGallerySubTab : 'gallery_event';
+          } else if (currentNewsTab !== 'all') {
+            document.getElementById('news-category').value = currentNewsTab;
+          }
         }
-        document.getElementById('news-author').value = currentNewsTab === 'gallery' ? '미디어팀' : '교회 행정실';
+        document.getElementById('news-author').value = currentNewsTab.startsWith('gallery') ? '미디어팀' : '교회 행정실';
         newsUploader.resetAttachedFile();
         openModal(newsModalWrite);
       });

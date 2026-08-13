@@ -2998,9 +2998,57 @@ section {
   color: #1565c0;
 }
 
-.badge-gallery {
+.badge-gallery,
+.badge-gallery_event {
   background-color: #f3e5f5;
   color: #7b1fa2;
+}
+
+.badge-gallery_school {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.badge-gallery_newfamily {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+/* Photo Gallery Sub Filters */
+.gallery-sub-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  padding: 6px 0;
+}
+
+.sub-filter-btn {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sub-filter-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.sub-filter-btn.active {
+  background: var(--color-thelight-green);
+  color: #ffffff;
+  border-color: var(--color-thelight-green);
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(27, 67, 50, 0.2);
 }
 
 /* Photo Gallery Grid & Cards (포토갤러리 전용 뷰) */
