@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   
   // 1. Sticky Header scroll transition
   const header = document.getElementById('header');
@@ -77,10 +77,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
+  // --- Supabase Configuration ---
+  const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+  const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+  const isSupabaseEnabled = SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE';
+  let supabaseClient = null;
+  if (isSupabaseEnabled && window.supabase) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+
   // LocalStorage key
   const SERMON_STORAGE_KEY = 'sermon_posts_v1';
 
-  function getSermonData() {
+  async function getSermonData() {
+    if (isSupabaseEnabled && supabaseClient) {
+      try {
+        const { data, error } = await supabaseClient.from('sermons').select('*').order('date', { ascending: false });
+        if (!error && data) return data;
+      } catch (e) {
+        console.error('Supabase fetch error:', e);
+      }
+    }
+    // Fallback to LocalStorage
     let data = localStorage.getItem(SERMON_STORAGE_KEY);
     if (!data) {
       localStorage.setItem(SERMON_STORAGE_KEY, JSON.stringify(defaultSermons));
@@ -89,7 +107,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return JSON.parse(data);
   }
 
-  function saveSermonData(data) {
+  async function saveSermonData(data) {
+    if (isSupabaseEnabled && supabaseClient) {
+      // For simplicity in this hybrid approach, we will just sync the whole array 
+      // by deleting all and inserting all, or relying on specific insert/update/delete calls.
+      // But since the original logic expects an array save, let's just save to LocalStorage as fallback.
+      // In a real app, you'd replace saveSermonData with explicit add/edit/delete functions.
+      // To keep it simple, we save to local storage, and if Supabase is enabled, we could upsert.
+      try {
+        await supabaseClient.from('sermons').upsert(data);
+      } catch (e) {
+        console.error('Supabase save error:', e);
+      }
+    }
     localStorage.setItem(SERMON_STORAGE_KEY, JSON.stringify(data));
   }
 
@@ -207,9 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Edit button in detail modal
   if (sermonEditBtn) {
-    sermonEditBtn.addEventListener('click', () => {
+    sermonEditBtn.addEventListener('click', async () => {
       if (currentSermonDetailId === null) return;
-      const sermons = getSermonData();
+      const sermons = await getSermonData();
       const item = sermons.find(s => s.id === currentSermonDetailId);
       if (!item) return;
       closeSermonDetail();
@@ -243,14 +273,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (deleteCancelBtn) deleteCancelBtn.addEventListener('click', closeDeleteConfirm);
   if (deleteConfirmBackdrop) deleteConfirmBackdrop.addEventListener('click', closeDeleteConfirm);
   if (deleteOkBtn) {
-    deleteOkBtn.addEventListener('click', () => {
+    deleteOkBtn.addEventListener('click', async () => {
       if (pendingDeleteSermonId !== null) {
-        let sermons = getSermonData();
+        let sermons = await getSermonData();
         sermons = sermons.filter(s => s.id !== pendingDeleteSermonId);
-        saveSermonData(sermons);
+        await saveSermonData(sermons);
         closeDeleteConfirm();
         closeSermonDetail();
-        renderSermonPlaylist();
+        await renderSermonPlaylist();
         showSermonToast('설교가 삭제되었습니다.');
       }
     });
@@ -351,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Form Submit (Create / Update)
   if (sermonWriteForm) {
-    sermonWriteForm.addEventListener('submit', (e) => {
+    sermonWriteForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('sermon-form-title').value.trim();
       const date = document.getElementById('sermon-form-date').value;
@@ -366,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      let sermons = getSermonData();
+      let sermons = await getSermonData();
 
       if (editingSermonId !== null) {
         // Update
@@ -387,9 +417,9 @@ document.addEventListener('DOMContentLoaded', () => {
         showSermonToast('설교가 등록되었습니다.');
       }
 
-      saveSermonData(sermons);
+      await saveSermonData(sermons);
       closeSermonWrite();
-      renderSermonPlaylist();
+      await renderSermonPlaylist();
     });
   }
 
@@ -408,9 +438,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function renderSermonPlaylist() {
+  async function renderSermonPlaylist() {
     if (!sermonPlaylistContainer) return;
-    const allSermons = getSermonData();
+    const allSermons = await getSermonData();
     
     // Filter by currentSermonTab
     const sermons = allSermons.filter(s => currentSermonTab === 'all' || s.series === currentSermonTab);
@@ -670,7 +700,17 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   // Helper function to get data from localStorage or set default
-  function getBoardData(key, defaultData) {
+  async function getBoardData(key, defaultData) {
+    if (isSupabaseEnabled && supabaseClient) {
+      try {
+        // Assume table name matches key
+        const { data, error } = await supabaseClient.from(key).select('*').order('date', { ascending: false });
+        if (!error && data && data.length > 0) return data;
+      } catch (e) {
+        console.error('Supabase fetch error for ' + key + ':', e);
+      }
+    }
+    // Fallback to LocalStorage
     let data = localStorage.getItem(key);
     if (!data) {
       localStorage.setItem(key, JSON.stringify(defaultData));
@@ -679,7 +719,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return JSON.parse(data);
   }
 
-  function saveBoardData(key, data) {
+  async function saveBoardData(key, data) {
+    if (isSupabaseEnabled && supabaseClient) {
+      try {
+        await supabaseClient.from(key).upsert(data);
+      } catch (e) {
+        console.error('Supabase save error for ' + key + ':', e);
+      }
+    }
+    // Fallback to LocalStorage
     try {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (e) {
@@ -1020,7 +1068,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'news-content'
     );
 
-    let newsData = getBoardData('news_posts_v3', defaultNews);
+    let newsData = await getBoardData('news_posts_v3', defaultNews);
 
     // Sanitize any data to guarantee category and author exist
     newsData = newsData.map(item => {
@@ -1045,7 +1093,7 @@ document.addEventListener('DOMContentLoaded', () => {
         author: item.author || (cat.startsWith('gallery') ? '미디어팀' : (cat === 'jubo' ? '예배부' : '교회 행정실'))
       };
     });
-    saveBoardData('news_posts_v3', newsData);
+    await saveBoardData('news_posts_v3', newsData);
 
     // Initial Active Tab resolution (supports URL parameters ?tab=news, ?tab=jubo, ?tab=gallery & ?sub=school/event/newfamily)
     let currentNewsTab = 'all';
@@ -1121,9 +1169,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    function executeDelete(id) {
+    async function executeDelete(id) {
       newsData = newsData.filter(p => String(p.id) !== String(id));
-      saveBoardData('news_posts_v3', newsData);
+      await saveBoardData('news_posts_v3', newsData);
       if (deleteConfirmModal) closeModal(deleteConfirmModal);
       if (newsModalDetail) closeModal(newsModalDetail);
       pendingDeleteId = null;
@@ -1434,7 +1482,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('news-write-backdrop').addEventListener('click', () => closeModal(newsModalWrite));
     document.getElementById('news-detail-backdrop').addEventListener('click', () => closeModal(newsModalDetail));
 
-    newsWriteForm.addEventListener('submit', (e) => {
+    newsWriteForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('news-title').value.trim();
       const category = document.getElementById('news-category').value;
@@ -1476,7 +1524,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newsData.unshift(newPost);
       }
 
-      saveBoardData('news_posts_v3', newsData);
+      await saveBoardData('news_posts_v3', newsData);
       closeModal(newsModalWrite);
       renderNews();
     });
@@ -1517,14 +1565,14 @@ document.addEventListener('DOMContentLoaded', () => {
       'school-content'
     );
 
-    let schoolData = getBoardData('school_posts', defaultSchool);
+    let schoolData = await getBoardData('school_posts', defaultSchool);
     let currentFilter = 'all';
     let currentSchoolDetailId = null;
     let editingSchoolId = null;
 
-    function deleteSchoolPost(id) {
+    async function deleteSchoolPost(id) {
       schoolData = schoolData.filter(post => String(post.id) !== String(id));
-      saveBoardData('school_posts', schoolData);
+      await saveBoardData('school_posts', schoolData);
       if (String(currentSchoolDetailId) === String(id)) {
         closeModal(schoolModalDetail);
         currentSchoolDetailId = null;
@@ -1643,7 +1691,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('school-write-backdrop').addEventListener('click', () => closeModal(schoolModalWrite));
     document.getElementById('school-detail-backdrop').addEventListener('click', () => closeModal(schoolModalDetail));
 
-    schoolWriteForm.addEventListener('submit', (e) => {
+    schoolWriteForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('school-title').value.trim();
       const dept = document.getElementById('school-dept').value;
@@ -1666,7 +1714,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      saveBoardData('school_posts', schoolData);
+      await saveBoardData('school_posts', schoolData);
       editingSchoolId = null;
       closeModal(schoolModalWrite);
       renderSchool();
