@@ -78,8 +78,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   ];
 
   // --- Supabase Configuration ---
-  const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
-  const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+  const SUPABASE_URL = 'https://puvkinmuzvgqafxvqwnj.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_RJ1VLpvyS0Wb-bxg3I7WAg_yutuzcJu';
   const isSupabaseEnabled = SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE';
   let supabaseClient = null;
   if (isSupabaseEnabled && window.supabase) {
