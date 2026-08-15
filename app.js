@@ -39,6 +39,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   styleEl.innerHTML = `body.no-scroll { overflow: hidden; }`;
   document.head.appendChild(styleEl);
 
+  // -- Lightbox Implementation --
+  const lightboxOverlay = document.createElement('div');
+  lightboxOverlay.id = 'lightbox-overlay';
+  document.body.appendChild(lightboxOverlay);
+
+  const lightboxImg = document.createElement('img');
+  lightboxOverlay.appendChild(lightboxImg);
+
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('lightbox-img')) {
+      lightboxImg.src = e.target.src;
+      lightboxOverlay.classList.add('show');
+    } else if (e.target === lightboxOverlay || e.target === lightboxImg) {
+      lightboxOverlay.classList.remove('show');
+      setTimeout(() => { lightboxImg.src = ''; }, 300);
+    }
+  });
+
   // 3. Sermon Board System (LocalStorage-based CRUD)
   const mainVideo = document.getElementById('mainSermonVideo');
   const sermonPlaylistContainer = document.getElementById('sermon-playlist-items');
@@ -1008,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (attachment.isImage) {
       imagePreviewHtml = `
         <div style="margin-bottom: 15px; text-align: center;">
-          <img src="${attachment.dataUrl}" alt="${attachment.name}" style="max-width: 100%; max-height: 400px; border-radius: 4px; border: 1px solid #eee;">
+          <img src="${attachment.dataUrl}" alt="${attachment.name}" class="lightbox-img" style="max-width: 100%; max-height: 400px; border-radius: 4px; border: 1px solid #eee; cursor: zoom-in;">
         </div>
       `;
     }
