@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const modal = document.createElement('div');
     modal.id = 'admin-modal';
-    modal.innerHTML = \`
+    modal.innerHTML = `
       <div class="admin-modal-content">
         <h3 id="admin-modal-title">관리자 로그인</h3>
         <div id="admin-login-form">
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         </div>
       </div>
-    \`;
+    `;
     document.body.appendChild(modal);
 
     const loginForm = modal.querySelector('#admin-login-form');
