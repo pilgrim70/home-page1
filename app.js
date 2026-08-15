@@ -57,6 +57,184 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // --- Admin Configuration & System ---
+  const ADMINS = [
+    { name: '송기운', password: '20114!', role: 'main' },
+    { name: '정해단', password: '1231!', role: 'sub' },
+    { name: '민병희', password: '1231!', role: 'sub' }
+  ];
+
+  function getAdminRole() {
+    return localStorage.getItem('adminRole');
+  }
+
+  function getAdminName() {
+    return localStorage.getItem('adminName');
+  }
+
+  function isAdmin() {
+    return getAdminRole() === 'main' || getAdminRole() === 'sub';
+  }
+
+  function loginAdmin(name, password) {
+    const admin = ADMINS.find(a => a.name === name && a.password === password);
+    if (admin) {
+      localStorage.setItem('adminRole', admin.role);
+      localStorage.setItem('adminName', admin.name);
+      applyAdminPermissions();
+      return true;
+    }
+    return false;
+  }
+
+  function logoutAdmin() {
+    localStorage.removeItem('adminRole');
+    localStorage.removeItem('adminName');
+    applyAdminPermissions();
+  }
+
+  function applyAdminPermissions() {
+    if (isAdmin()) {
+      document.body.classList.add('is-admin');
+    } else {
+      document.body.classList.remove('is-admin');
+    }
+  }
+
+  // --- Admin UI Rendering ---
+  function initAdminUI() {
+    const adminStyle = document.createElement('style');
+    adminStyle.innerHTML = `
+      .admin-only, .admin-only-flex, .admin-only-inline { display: none !important; }
+      body.is-admin .admin-only { display: block !important; }
+      body.is-admin .admin-only-flex { display: flex !important; }
+      body.is-admin .admin-only-inline { display: inline-block !important; }
+
+      #admin-icon-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #333;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        cursor: pointer;
+        z-index: 1000;
+        transition: transform 0.2s;
+        border: none;
+      }
+      #admin-icon-btn:hover { transform: scale(1.1); }
+      
+      #admin-modal {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6);
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      #admin-modal.show { display: flex; }
+      
+      .admin-modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        width: 300px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      }
+      .admin-modal-content h3 { margin-top:0; margin-bottom: 20px; color: var(--color-primary); }
+      .admin-modal-content input {
+        width: 100%; padding: 10px; margin-bottom: 15px;
+        border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
+      }
+      .admin-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    `;
+    document.head.appendChild(adminStyle);
+
+    const btn = document.createElement('button');
+    btn.id = 'admin-icon-btn';
+    btn.innerHTML = '<i class="la la-user-shield"></i>';
+    document.body.appendChild(btn);
+
+    const modal = document.createElement('div');
+    modal.id = 'admin-modal';
+    modal.innerHTML = \`
+      <div class="admin-modal-content">
+        <h3 id="admin-modal-title">관리자 로그인</h3>
+        <div id="admin-login-form">
+          <input type="text" id="admin-name" placeholder="이름 (예: 송기운)">
+          <input type="password" id="admin-password" placeholder="비밀번호">
+          <div class="admin-modal-actions">
+            <button class="btn btn-secondary" id="admin-close-btn">취소</button>
+            <button class="btn btn-primary" id="admin-submit-btn">로그인</button>
+          </div>
+        </div>
+        <div id="admin-logout-form" style="display:none;">
+          <p style="margin-bottom:20px;">현재 <strong id="admin-current-name"></strong> 관리자로 로그인되어 있습니다.</p>
+          <div class="admin-modal-actions">
+            <button class="btn btn-secondary" id="admin-close-btn-2">닫기</button>
+            <button class="btn btn-danger" id="admin-logout-btn">로그아웃</button>
+          </div>
+        </div>
+      </div>
+    \`;
+    document.body.appendChild(modal);
+
+    const loginForm = modal.querySelector('#admin-login-form');
+    const logoutForm = modal.querySelector('#admin-logout-form');
+
+    function updateModalUI() {
+      if (isAdmin()) {
+        loginForm.style.display = 'none';
+        logoutForm.style.display = 'block';
+        modal.querySelector('#admin-modal-title').textContent = '관리자 메뉴';
+        modal.querySelector('#admin-current-name').textContent = getAdminName();
+      } else {
+        loginForm.style.display = 'block';
+        logoutForm.style.display = 'none';
+        modal.querySelector('#admin-modal-title').textContent = '관리자 로그인';
+      }
+    }
+
+    btn.addEventListener('click', () => {
+      updateModalUI();
+      modal.classList.add('show');
+    });
+
+    modal.querySelector('#admin-close-btn').addEventListener('click', () => modal.classList.remove('show'));
+    modal.querySelector('#admin-close-btn-2').addEventListener('click', () => modal.classList.remove('show'));
+    
+    modal.querySelector('#admin-submit-btn').addEventListener('click', () => {
+      const name = modal.querySelector('#admin-name').value.trim();
+      const pwd = modal.querySelector('#admin-password').value;
+      if (loginAdmin(name, pwd)) {
+        alert('로그인 성공!');
+        modal.classList.remove('show');
+        location.reload(); 
+      } else {
+        alert('이름 또는 비밀번호가 일치하지 않습니다.');
+      }
+    });
+
+    modal.querySelector('#admin-logout-btn').addEventListener('click', () => {
+      logoutAdmin();
+      alert('로그아웃 되었습니다.');
+      modal.classList.remove('show');
+      location.reload();
+    });
+
+    applyAdminPermissions();
+  }
+  
+  initAdminUI();
+
   // 3. Sermon Board System (LocalStorage-based CRUD)
   const mainVideo = document.getElementById('mainSermonVideo');
   const sermonPlaylistContainer = document.getElementById('sermon-playlist-items');
@@ -254,8 +432,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Edit button in detail modal
-  if (sermonEditBtn) {
-    sermonEditBtn.addEventListener('click', async () => {
+  const editBtn = document.getElementById('sermon-edit-btn');
+  if (editBtn) {
+    editBtn.classList.add('admin-only-inline');
+    editBtn.addEventListener('click', async () => {
       if (currentSermonDetailId === null) return;
       const sermons = await getSermonData();
       const item = sermons.find(s => s.id === currentSermonDetailId);
@@ -266,8 +446,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Delete button in detail modal
-  if (sermonDeleteBtn) {
-    sermonDeleteBtn.addEventListener('click', () => {
+  const deleteBtn = document.getElementById('sermon-delete-btn');
+  if (deleteBtn) {
+    deleteBtn.classList.add('admin-only-inline');
+    deleteBtn.addEventListener('click', async () => {
       if (currentSermonDetailId === null) return;
       openDeleteConfirm(currentSermonDetailId);
     });
@@ -1033,17 +1215,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     containerEl.innerHTML = `
       ${imagePreviewHtml}
-      <div class="ref-download-guide">첨부된 자료는 아래 파일을 다운로드하세요.</div>
-      <a href="${attachment.dataUrl}" download="${attachment.name}" class="ref-download-bar" title="클릭하여 다운로드">
-        <div class="ref-download-left">
-          <span class="ref-download-bullet">•</span>
-          <div class="ref-download-meta">
-            <div class="ref-download-name">${attachment.name}</div>
-            <div class="ref-download-size">${attachment.size || ''}</div>
+      <div class="admin-only">
+        <div class="ref-download-guide">첨부된 자료는 아래 파일을 다운로드하세요.</div>
+        <a href="${attachment.dataUrl}" download="${attachment.name}" class="ref-download-bar" title="클릭하여 다운로드">
+          <div class="ref-download-left">
+            <span class="ref-download-bullet">•</span>
+            <div class="ref-download-meta">
+              <div class="ref-download-name">${attachment.name}</div>
+              <div class="ref-download-size">${attachment.size || ''}</div>
+            </div>
           </div>
-        </div>
-        <i class="la la-arrow-down ref-download-icon"></i>
-      </a>
+          <i class="la la-arrow-down ref-download-icon"></i>
+        </a>
+      </div>
     `;
     containerEl.style.display = 'block';
   }
@@ -1311,8 +1495,8 @@ document.addEventListener('DOMContentLoaded', async () => {
               <div class="gallery-card-thumb">
                 <img src="${thumbImg}" alt="${item.title}" loading="lazy">
                 <span class="gallery-card-badge">${badgeHtml}</span>
-                <button type="button" class="gallery-card-delete-btn" title="사진 삭제" data-id="${item.id}">
-                  <i class="la la-trash"></i>
+                <button type="button" class="gallery-card-delete-btn admin-only" title="사진 삭제" data-id="${item.id}">
+                  <i class="la la-times"></i>
                 </button>
               </div>
               <div class="gallery-card-content">
@@ -1372,7 +1556,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
           } else {
             if (filteredGallery.length === 0) {
-              galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--color-text-muted);">등록된 사진이 없습니다. [글쓰기] 버튼을 눌러 새 사진을 등록해 보세요.</div>`;
+              galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--color-text-muted);">등록된 사진이 없습니다. <span class="admin-only">[글쓰기] 버튼을 눌러 새 사진을 등록해 보세요.</span></div>`;
               return;
             }
 
@@ -1436,7 +1620,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             <td class="col-author" style="text-align: center; font-weight: 500;">${item.author || '관리자'}</td>
             <td class="col-date">${item.date}</td>
             <td class="col-action">
-              <button type="button" class="btn-delete news-post-delete" data-id="${item.id}" title="삭제" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
+              <div class="news-post-actions admin-only-flex">
+                <button type="button" class="btn-delete news-post-delete" data-id="${item.id}" title="삭제" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
+              </div>
             </td>
           `;
 
@@ -1666,7 +1852,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="col-author" style="text-align: center; font-weight: 500;">${item.author}</td>
           <td class="col-date" style="text-align: right;">${item.date}</td>
           <td class="col-action">
-            <button type="button" class="btn-delete school-post-delete" data-id="${item.id}" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
+            <div class="school-post-actions admin-only-flex">
+              <button type="button" class="btn-delete school-post-delete" data-id="${item.id}" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
+            </div>
           </td>
         `;
 
