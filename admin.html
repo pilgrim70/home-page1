@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 페이지 - 관유중앙교회</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .admin-login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .admin-login-box h2 {
+      margin-top: 0;
+      color: #064E3B;
+      margin-bottom: 30px;
+    }
+    .admin-login-box input {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    .admin-login-box button {
+      width: 100%;
+      padding: 15px;
+      background-color: #064E3B;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .admin-login-box button:hover {
+      background-color: #043326;
+    }
+    .home-link {
+      display: block;
+      margin-top: 20px;
+      color: #666;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-login-box">
+    <h2>관리자 로그인</h2>
+    <input type="text" id="admin-name" placeholder="이름 (예: 송기운)">
+    <input type="password" id="admin-password" placeholder="비밀번호">
+    <button id="admin-login-btn">로그인</button>
+    <a href="index.html" class="home-link">홈페이지로 돌아가기</a>
+  </div>
+
+  <script>
+    const ADMINS = [
+      { name: '송기운', password: '20114!', role: 'main' },
+      { name: '정해단', password: '1231!', role: 'sub' },
+      { name: '민병희', password: '1231!', role: 'sub' }
+    ];
+
+    document.getElementById('admin-login-btn').addEventListener('click', () => {
+      const name = document.getElementById('admin-name').value.trim();
+      const pwd = document.getElementById('admin-password').value;
+      
+      const admin = ADMINS.find(a => a.name === name && a.password === pwd);
+      if (admin) {
+        localStorage.setItem('adminRole', admin.role);
+        localStorage.setItem('adminName', admin.name);
+        alert('로그인 성공! 홈페이지로 이동합니다.');
+        window.location.href = 'index.html?clear=1';
+      } else {
+        alert('이름 또는 비밀번호가 일치하지 않습니다.');
+      }
+    });
+  </script>
+</body>
+</html>
