@@ -113,21 +113,27 @@ document.addEventListener('DOMContentLoaded', async () => {
       #admin-icon-btn {
         position: fixed;
         right: 20px;
-        bottom: 20px;
-        width: 50px;
-        height: 50px;
+        bottom: 90px;
+        width: 65px;
+        height: 65px;
         border-radius: 50%;
-        background-color: #333;
+        background-color: #d32f2f;
         color: white;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        font-size: 28px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         cursor: pointer;
-        z-index: 1000;
+        z-index: 999999;
         transition: transform 0.2s;
-        border: none;
+        border: 3px solid white;
+      }
+      #admin-icon-btn span {
+        font-size: 11px;
+        margin-top: 2px;
+        font-weight: bold;
       }
       #admin-icon-btn:hover { transform: scale(1.1); }
       
@@ -160,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const btn = document.createElement('button');
     btn.id = 'admin-icon-btn';
-    btn.innerHTML = '<i class="la la-user-shield"></i>';
+    btn.innerHTML = '<i class="la la-user-shield"></i><span>관리자</span>';
     document.body.appendChild(btn);
 
     const modal = document.createElement('div');
