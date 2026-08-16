@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const btn = document.createElement('button');
     btn.id = 'manager-icon-btn';
-    btn.innerHTML = '<i class="la la-user-shield"></i><span>admin</span>';
+    btn.innerHTML = '<i class="la la-user-shield"></i><span>관리자</span>';
     document.body.appendChild(btn);
 
     const modal = document.createElement('div');
