@@ -114,28 +114,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         position: fixed;
         right: 20px;
         bottom: 90px;
-        width: 65px;
-        height: 65px;
+        width: 70px;
+        height: 70px;
         border-radius: 50%;
-        background-color: #d32f2f;
-        color: white;
+        background-color: #ffeb3b; /* bright yellow */
+        color: #000; /* black text for contrast */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 28px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        font-size: 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.6);
         cursor: pointer;
         z-index: 999999;
         transition: transform 0.2s;
-        border: 3px solid white;
+        border: 4px solid #fff;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.7); }
+        70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(255, 235, 59, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 235, 59, 0); }
       }
       #manager-icon-btn span {
-        font-size: 11px;
+        font-size: 13px;
         margin-top: 2px;
-        font-weight: bold;
+        font-weight: 900;
+        letter-spacing: 1px;
       }
-      #manager-icon-btn:hover { transform: scale(1.1); }
+      #manager-icon-btn:hover { transform: scale(1.15); animation: none; }
       
       #manager-modal {
         position: fixed;
@@ -166,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const btn = document.createElement('button');
     btn.id = 'manager-icon-btn';
-    btn.innerHTML = '<i class="la la-user-shield"></i><span>관리자</span>';
+    btn.innerHTML = '<i class="la la-user-shield"></i><span>admin</span>';
     document.body.appendChild(btn);
 
     const modal = document.createElement('div');
