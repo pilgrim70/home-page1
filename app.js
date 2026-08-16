@@ -221,6 +221,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       modal.classList.add('show');
     });
 
+    const footerAdminLogin = document.getElementById('footer-admin-login');
+    if (footerAdminLogin) {
+      footerAdminLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        updateModalUI();
+        modal.classList.add('show');
+      });
+    }
+
     modal.querySelector('#manager-close-btn').addEventListener('click', () => modal.classList.remove('show'));
     modal.querySelector('#manager-close-btn-2').addEventListener('click', () => modal.classList.remove('show'));
     
