@@ -283,12 +283,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // LocalStorage key
-  const SERMON_STORAGE_KEY = 'sermon_posts_v1';
+  const SERMON_STORAGE_KEY = 'sermon_posts_v2';
 
   async function getSermonData() {
     if (isSupabaseEnabled && supabaseClient) {
       try {
-        const { data, error } = await supabaseClient.from('sermons').select('*').order('date', { ascending: false });
+        const { data, error } = await supabaseClient.from('sermons_v2').select('*').order('date', { ascending: false });
         if (!error && data) return data;
       } catch (e) {
         console.error('Supabase fetch error:', e);
@@ -305,13 +305,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function saveSermonData(data) {
     if (isSupabaseEnabled && supabaseClient) {
-      // For simplicity in this hybrid approach, we will just sync the whole array 
-      // by deleting all and inserting all, or relying on specific insert/update/delete calls.
-      // But since the original logic expects an array save, let's just save to LocalStorage as fallback.
-      // In a real app, you'd replace saveSermonData with explicit add/edit/delete functions.
-      // To keep it simple, we save to local storage, and if Supabase is enabled, we could upsert.
       try {
-        await supabaseClient.from('sermons').upsert(data);
+        await supabaseClient.from('sermons_v2').upsert(data);
       } catch (e) {
         console.error('Supabase save error:', e);
       }
@@ -1270,7 +1265,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       'news-content'
     );
 
-    let newsData = await getBoardData('news_posts_v3', defaultNews);
+    let newsData = await getBoardData('news_posts_v4', defaultNews);
 
     // Sanitize any data to guarantee category and author exist
     newsData = newsData.map(item => {
@@ -1295,7 +1290,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         author: item.author || (cat.startsWith('gallery') ? '미디어팀' : (cat === 'jubo' ? '예배부' : '교회 행정실'))
       };
     });
-    await saveBoardData('news_posts_v3', newsData);
+    await saveBoardData('news_posts_v4', newsData);
 
     // Initial Active Tab resolution (supports URL parameters ?tab=news, ?tab=jubo, ?tab=gallery & ?sub=school/event/newfamily)
     let currentNewsTab = 'all';
@@ -1373,7 +1368,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function executeDelete(id) {
       newsData = newsData.filter(p => String(p.id) !== String(id));
-      await saveBoardData('news_posts_v3', newsData);
+      await saveBoardData('news_posts_v4', newsData);
       if (deleteConfirmModal) closeModal(deleteConfirmModal);
       if (newsModalDetail) closeModal(newsModalDetail);
       pendingDeleteId = null;
@@ -1728,7 +1723,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         newsData.unshift(newPost);
       }
 
-      await saveBoardData('news_posts_v3', newsData);
+      await saveBoardData('news_posts_v4', newsData);
       closeModal(newsModalWrite);
       renderNews();
     });
@@ -1769,14 +1764,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       'school-content'
     );
 
-    let schoolData = await getBoardData('school_posts', defaultSchool);
+    let schoolData = await getBoardData('school_posts_v2', defaultSchool);
     let currentFilter = 'all';
     let currentSchoolDetailId = null;
     let editingSchoolId = null;
 
     async function deleteSchoolPost(id) {
       schoolData = schoolData.filter(post => String(post.id) !== String(id));
-      await saveBoardData('school_posts', schoolData);
+      await saveBoardData('school_posts_v2', schoolData);
       if (String(currentSchoolDetailId) === String(id)) {
         closeModal(schoolModalDetail);
         currentSchoolDetailId = null;
