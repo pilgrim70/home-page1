@@ -105,10 +105,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   function initAdminUI() {
     const adminStyle = document.createElement('style');
     adminStyle.innerHTML = `
-      .manager-only, .manager-only-flex, .manager-only-inline { display: none !important; }
+      .manager-only, .manager-only-flex, .manager-only-inline, .manager-only-inline-flex { display: none !important; }
       body.is-manager .manager-only { display: block !important; }
       body.is-manager .manager-only-flex { display: flex !important; }
       body.is-manager .manager-only-inline { display: inline-block !important; }
+      body.is-manager .manager-only-inline-flex { display: inline-flex !important; }
 
       #manager-icon-btn {
         position: fixed;
@@ -257,9 +258,88 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   initAdminUI();
 
-  // 3. Sermon Board System (LocalStorage-based CRUD)
+  // 3. Sermon Board System (Dual Video Support: YouTube Link & Direct Video File)
   const mainVideo = document.getElementById('mainSermonVideo');
+  const mainVideoFile = document.getElementById('mainSermonVideoFile');
   const sermonPlaylistContainer = document.getElementById('sermon-playlist-items');
+
+  // IndexedDB for storing large local sermon video files
+  const SERMON_DB_NAME = 'ChurchSermonDB';
+  const SERMON_DB_VERSION = 1;
+  const SERMON_STORE_NAME = 'sermon_videos';
+
+  function openSermonDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(SERMON_DB_NAME, SERMON_DB_VERSION);
+      request.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(SERMON_STORE_NAME)) {
+          db.createObjectStore(SERMON_STORE_NAME, { keyPath: 'id' });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async function saveSermonVideoFile(id, fileBlob) {
+    try {
+      const db = await openSermonDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(SERMON_STORE_NAME, 'readwrite');
+        const store = tx.objectStore(SERMON_STORE_NAME);
+        store.put({ id, blob: fileBlob, name: fileBlob.name, type: fileBlob.type, date: new Date().toISOString() });
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (e) {
+      console.warn('IndexedDB save failed:', e);
+      return false;
+    }
+  }
+
+  async function getSermonVideoFile(id) {
+    try {
+      const db = await openSermonDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(SERMON_STORE_NAME, 'readonly');
+        const store = tx.objectStore(SERMON_STORE_NAME);
+        const req = store.get(id);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    } catch (e) {
+      console.warn('IndexedDB get failed:', e);
+      return null;
+    }
+  }
+
+  async function deleteSermonVideoFile(id) {
+    try {
+      const db = await openSermonDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(SERMON_STORE_NAME, 'readwrite');
+        const store = tx.objectStore(SERMON_STORE_NAME);
+        store.delete(id);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (e) {
+      console.warn('IndexedDB delete failed:', e);
+      return false;
+    }
+  }
+
+  // In-memory cache for Object URLs to avoid memory leaks
+  const videoBlobUrlCache = new Map();
+
+  function formatBytes(bytes) {
+    if (!bytes || bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  }
 
   // Default sermon data (초기 데이터)
   const defaultSermons = [
@@ -270,6 +350,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       preacher: '담임목사 송기운',
       scripture: '창세기 12:1-3',
       series: '주일낮예배',
+      videoSource: 'link',
       videoId: 'z5D_B9I7l1Y',
       youtubeUrl: 'https://www.youtube.com/watch?v=z5D_B9I7l1Y'
     },
@@ -280,6 +361,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       preacher: '담임목사 송기운',
       scripture: '시편 133:1-3',
       series: '주일낮예배',
+      videoSource: 'link',
       videoId: '8fD5PjS5tQ4',
       youtubeUrl: 'https://www.youtube.com/watch?v=8fD5PjS5tQ4'
     },
@@ -290,6 +372,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       preacher: '담임목사 송기운',
       scripture: '이사야 61:1-3',
       series: '주일낮예배',
+      videoSource: 'link',
       videoId: 'W8744U1mE6Q',
       youtubeUrl: 'https://www.youtube.com/watch?v=W8744U1mE6Q'
     }
@@ -311,7 +394,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (isSupabaseEnabled && supabaseClient) {
       try {
         const { data, error } = await supabaseClient.from('sermons_v2').select('*').order('date', { ascending: false });
-        if (!error && data) return data;
+        if (!error && data && data.length > 0) return data;
       } catch (e) {
         console.error('Supabase fetch error:', e);
       }
@@ -322,7 +405,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       localStorage.setItem(SERMON_STORAGE_KEY, JSON.stringify(defaultSermons));
       return [...defaultSermons];
     }
-    return JSON.parse(data);
+    try {
+      return JSON.parse(data);
+    } catch (e) {
+      return [...defaultSermons];
+    }
   }
 
   async function saveSermonData(data) {
@@ -340,22 +427,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   function extractYouTubeId(url) {
     if (!url) return null;
     url = url.trim();
-    // youtu.be/ID
     let match = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
     if (match) return match[1];
-    // youtube.com/watch?v=ID
     match = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
     if (match) return match[1];
-    // youtube.com/embed/ID
     match = url.match(/embed\/([a-zA-Z0-9_-]{11})/);
     if (match) return match[1];
-    // youtube.com/shorts/ID
     match = url.match(/shorts\/([a-zA-Z0-9_-]{11})/);
     if (match) return match[1];
-    // youtube.com/live/ID
     match = url.match(/live\/([a-zA-Z0-9_-]{11})/);
     if (match) return match[1];
-    // 직접 ID만 입력한 경우 (11자리)
     if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
     return null;
   }
@@ -372,12 +453,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     toast.classList.add('show');
     setTimeout(() => {
       toast.classList.remove('show');
-    }, 2500);
+    }, 2800);
+  }
+
+  // Main player video setter (YouTube iframe vs HTML5 video file)
+  async function setMainSermonVideo(sermon) {
+    if (!sermon) {
+      if (mainVideo) mainVideo.src = '';
+      if (mainVideoFile) {
+        mainVideoFile.pause();
+        mainVideoFile.src = '';
+        mainVideoFile.style.display = 'none';
+      }
+      return;
+    }
+
+    if (sermon.videoSource === 'file' || (!sermon.videoId && (sermon.videoUrl || sermon.videoFileName))) {
+      // File mode
+      if (mainVideo) {
+        mainVideo.style.display = 'none';
+        mainVideo.src = '';
+      }
+      if (mainVideoFile) {
+        mainVideoFile.style.display = 'block';
+        let playUrl = videoBlobUrlCache.get(sermon.id);
+        if (!playUrl) {
+          const fileRecord = await getSermonVideoFile(sermon.id);
+          if (fileRecord && fileRecord.blob) {
+            playUrl = URL.createObjectURL(fileRecord.blob);
+            videoBlobUrlCache.set(sermon.id, playUrl);
+          } else if (sermon.videoUrl) {
+            playUrl = sermon.videoUrl;
+          }
+        }
+        if (playUrl) {
+          mainVideoFile.src = playUrl;
+        }
+      }
+    } else {
+      // YouTube mode
+      if (mainVideoFile) {
+        mainVideoFile.pause();
+        mainVideoFile.src = '';
+        mainVideoFile.style.display = 'none';
+      }
+      if (mainVideo) {
+        mainVideo.style.display = 'block';
+        if (sermon.videoId) {
+          mainVideo.src = `https://www.youtube.com/embed/${sermon.videoId}?rel=0`;
+        }
+      }
+    }
   }
 
   // -- Sermon Detail Modal --
   const sermonModal = document.getElementById('sermon-detail-modal');
   const sermonDetailVideo = document.getElementById('sermonDetailVideo');
+  const sermonDetailVideoFile = document.getElementById('sermonDetailVideoFile');
   const sermonDetailTitle = document.getElementById('sermon-detail-title');
   const sermonDetailSeries = document.getElementById('sermon-detail-series');
   const sermonDetailPreacher = document.getElementById('sermon-detail-preacher');
@@ -392,22 +524,57 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let currentSermonDetailId = null;
 
-  function openSermonDetail(sermonItem) {
+  async function openSermonDetail(sermonItem) {
     if (!sermonModal) return;
     currentSermonDetailId = sermonItem.id;
 
-    if (sermonDetailVideo) {
-      sermonDetailVideo.src = `https://www.youtube.com/embed/${sermonItem.videoId}?rel=0&autoplay=1`;
-    }
     if (sermonDetailTitle) sermonDetailTitle.textContent = sermonItem.title;
     if (sermonDetailSeries) sermonDetailSeries.textContent = sermonItem.series || '';
     if (sermonDetailPreacher) sermonDetailPreacher.textContent = sermonItem.preacher || '';
     if (sermonDetailScripture) sermonDetailScripture.textContent = sermonItem.scripture || '';
     if (sermonDetailDate) sermonDetailDate.textContent = sermonItem.date || '';
-    if (sermonYtLink) {
-      sermonYtLink.href = `https://www.youtube.com/watch?v=${sermonItem.videoId}`;
+
+    if (sermonItem.videoSource === 'file' || (!sermonItem.videoId && (sermonItem.videoUrl || sermonItem.videoFileName))) {
+      // Video File mode
+      if (sermonDetailVideo) {
+        sermonDetailVideo.style.display = 'none';
+        sermonDetailVideo.src = '';
+      }
+      if (sermonDetailVideoFile) {
+        sermonDetailVideoFile.style.display = 'block';
+        let playUrl = videoBlobUrlCache.get(sermonItem.id);
+        if (!playUrl) {
+          const fileRecord = await getSermonVideoFile(sermonItem.id);
+          if (fileRecord && fileRecord.blob) {
+            playUrl = URL.createObjectURL(fileRecord.blob);
+            videoBlobUrlCache.set(sermonItem.id, playUrl);
+          } else if (sermonItem.videoUrl) {
+            playUrl = sermonItem.videoUrl;
+          }
+        }
+        if (playUrl) {
+          sermonDetailVideoFile.src = playUrl;
+        }
+      }
+      if (sermonYtLink) sermonYtLink.style.display = 'none';
+    } else {
+      // YouTube mode
+      if (sermonDetailVideoFile) {
+        sermonDetailVideoFile.pause();
+        sermonDetailVideoFile.src = '';
+        sermonDetailVideoFile.style.display = 'none';
+      }
+      if (sermonDetailVideo) {
+        sermonDetailVideo.style.display = 'block';
+        sermonDetailVideo.src = `https://www.youtube.com/embed/${sermonItem.videoId}?rel=0&autoplay=1`;
+      }
+      if (sermonYtLink) {
+        sermonYtLink.style.display = 'inline-flex';
+        sermonYtLink.href = `https://www.youtube.com/watch?v=${sermonItem.videoId}`;
+      }
     }
-    sermonModal.setAttribute('data-current-video-id', sermonItem.videoId);
+
+    sermonModal.setAttribute('data-current-video-id', sermonItem.videoId || '');
     sermonModal.classList.add('show');
     document.body.style.overflow = 'hidden';
   }
@@ -417,6 +584,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     sermonModal.classList.remove('show');
     document.body.style.overflow = '';
     if (sermonDetailVideo) sermonDetailVideo.src = '';
+    if (sermonDetailVideoFile) {
+      sermonDetailVideoFile.pause();
+      sermonDetailVideoFile.src = '';
+    }
     currentSermonDetailId = null;
   }
 
@@ -433,7 +604,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (sermonShareBtn) {
     sermonShareBtn.addEventListener('click', () => {
       const videoId = sermonModal ? sermonModal.getAttribute('data-current-video-id') : '';
-      const url = `https://www.youtube.com/watch?v=${videoId}`;
+      const url = videoId ? `https://www.youtube.com/watch?v=${videoId}` : window.location.href;
       navigator.clipboard.writeText(url).then(() => {
         showSermonToast('링크가 클립보드에 복사되었습니다!');
       }).catch(() => {
@@ -493,6 +664,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     deleteOkBtn.addEventListener('click', async () => {
       if (pendingDeleteSermonId !== null) {
         let sermons = await getSermonData();
+        const target = sermons.find(s => s.id === pendingDeleteSermonId);
+        if (target && target.videoSource === 'file') {
+          await deleteSermonVideoFile(pendingDeleteSermonId);
+          videoBlobUrlCache.delete(pendingDeleteSermonId);
+        }
         sermons = sermons.filter(s => s.id !== pendingDeleteSermonId);
         await saveSermonData(sermons);
         closeDeleteConfirm();
@@ -503,7 +679,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // -- Sermon Write/Edit Modal --
+  // -- Sermon Write/Edit Modal & Dual Source Setup --
   const sermonWriteModal = document.getElementById('sermon-write-modal');
   const sermonWriteBackdrop = document.getElementById('sermon-write-backdrop');
   const sermonWriteClose = document.getElementById('sermon-write-close');
@@ -512,13 +688,150 @@ document.addEventListener('DOMContentLoaded', async () => {
   const sermonFormCancel = document.getElementById('sermon-form-cancel');
   const sermonFormSubmit = document.getElementById('sermon-form-submit');
   const btnSermonWrite = document.getElementById('btn-sermon-write');
+  const btnSermonAddTop = document.getElementById('btn-sermon-add-top');
+
+  // Mode Tabs & Panels
+  const tabSourceLink = document.getElementById('tab-source-link');
+  const tabSourceFile = document.getElementById('tab-source-file');
+  const panelSourceLink = document.getElementById('panel-source-link');
+  const panelSourceFile = document.getElementById('panel-source-file');
+
+  // Video Link Elements
   const youtubeInput = document.getElementById('sermon-form-youtube');
   const youtubePreview = document.getElementById('youtube-preview');
+  const btnFetchYt = document.getElementById('btn-fetch-yt');
+
+  // Video File Elements
+  const sermonFileDropzone = document.getElementById('sermon-file-dropzone');
+  const sermonFormFile = document.getElementById('sermon-form-file');
+  const sermonFileInfoBox = document.getElementById('sermon-file-info-box');
+  const sermonFileName = document.getElementById('sermon-file-name');
+  const sermonFileSize = document.getElementById('sermon-file-size');
+  const btnRemoveSermonFile = document.getElementById('btn-remove-sermon-file');
+  const sermonFormVideoPlayer = document.getElementById('sermon-form-video-player');
 
   let editingSermonId = null;
+  let currentVideoSource = 'link'; // 'link' | 'file'
+  let selectedVideoFile = null;
+  let capturedThumbnailDataUrl = null;
 
-  function openSermonWrite(editItem) {
+  function setSermonSourceMode(mode) {
+    currentVideoSource = mode;
+    if (mode === 'link') {
+      if (tabSourceLink) tabSourceLink.classList.add('active');
+      if (tabSourceFile) tabSourceFile.classList.remove('active');
+      if (panelSourceLink) panelSourceLink.style.display = 'block';
+      if (panelSourceFile) panelSourceFile.style.display = 'none';
+    } else {
+      if (tabSourceFile) tabSourceFile.classList.add('active');
+      if (tabSourceLink) tabSourceLink.classList.remove('active');
+      if (panelSourceFile) panelSourceFile.style.display = 'block';
+      if (panelSourceLink) panelSourceLink.style.display = 'none';
+    }
+  }
+
+  if (tabSourceLink) {
+    tabSourceLink.addEventListener('click', () => setSermonSourceMode('link'));
+  }
+  if (tabSourceFile) {
+    tabSourceFile.addEventListener('click', () => setSermonSourceMode('file'));
+  }
+
+  // Handle Video File Selection
+  function handleSelectedVideoFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith('video/')) {
+      alert('영상 파일(MP4, WebM, MOV 등)만 선택할 수 있습니다.');
+      return;
+    }
+
+    selectedVideoFile = file;
+    capturedThumbnailDataUrl = null;
+
+    // Auto-fill title if empty or placeholder
+    const titleInput = document.getElementById('sermon-form-title');
+    if (titleInput && (!titleInput.value.trim() || titleInput.value.trim().startsWith('예:'))) {
+      const cleanName = file.name.replace(/\.[^/.]+$/, "");
+      titleInput.value = cleanName;
+    }
+
+    if (sermonFileName) sermonFileName.textContent = file.name;
+    if (sermonFileSize) sermonFileSize.textContent = formatBytes(file.size);
+    if (sermonFileInfoBox) sermonFileInfoBox.style.display = 'block';
+
+    // Preview in local HTML5 video
+    const objectUrl = URL.createObjectURL(file);
+    if (sermonFormVideoPlayer) {
+      sermonFormVideoPlayer.src = objectUrl;
+      sermonFormVideoPlayer.onloadeddata = () => {
+        // Seek to 1s to capture clean frame
+        sermonFormVideoPlayer.currentTime = Math.min(1, Math.max(0.2, (sermonFormVideoPlayer.duration || 2) / 4));
+      };
+      sermonFormVideoPlayer.onseeked = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = 480;
+          canvas.height = 270;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(sermonFormVideoPlayer, 0, 0, canvas.width, canvas.height);
+          capturedThumbnailDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        } catch (err) {
+          console.warn('Canvas thumbnail capture warning:', err);
+        }
+      };
+    }
+  }
+
+  // File Dropzone Events
+  if (sermonFileDropzone) {
+    sermonFileDropzone.addEventListener('click', () => {
+      if (sermonFormFile) sermonFormFile.click();
+    });
+    sermonFileDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      sermonFileDropzone.classList.add('dragover');
+    });
+    sermonFileDropzone.addEventListener('dragleave', () => {
+      sermonFileDropzone.classList.remove('dragover');
+    });
+    sermonFileDropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      sermonFileDropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleSelectedVideoFile(e.dataTransfer.files[0]);
+      }
+    });
+  }
+
+  if (sermonFormFile) {
+    sermonFormFile.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleSelectedVideoFile(e.target.files[0]);
+      }
+    });
+  }
+
+  if (btnRemoveSermonFile) {
+    btnRemoveSermonFile.addEventListener('click', () => {
+      selectedVideoFile = null;
+      capturedThumbnailDataUrl = null;
+      if (sermonFormFile) sermonFormFile.value = '';
+      if (sermonFormVideoPlayer) sermonFormVideoPlayer.src = '';
+      if (sermonFileInfoBox) sermonFileInfoBox.style.display = 'none';
+      if (sermonFormFile) sermonFormFile.click(); // immediately let user pick another file
+    });
+  }
+
+  // Open Sermon Write Modal
+  async function openSermonWrite(editItem) {
     if (!sermonWriteModal) return;
+
+    selectedVideoFile = null;
+    capturedThumbnailDataUrl = null;
+    if (sermonFormFile) sermonFormFile.value = '';
+    if (sermonFormVideoPlayer) sermonFormVideoPlayer.src = '';
+    if (sermonFileInfoBox) sermonFileInfoBox.style.display = 'none';
+
     if (editItem) {
       // Edit mode
       editingSermonId = editItem.id;
@@ -529,8 +842,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('sermon-form-series').value = editItem.series || '주일낮예배';
       document.getElementById('sermon-form-preacher').value = editItem.preacher || '';
       document.getElementById('sermon-form-scripture').value = editItem.scripture || '';
-      document.getElementById('sermon-form-youtube').value = editItem.youtubeUrl || `https://www.youtube.com/watch?v=${editItem.videoId}`;
-      updateYoutubePreview(editItem.videoId);
+
+      if (editItem.videoSource === 'file' || editItem.videoFileName) {
+        setSermonSourceMode('file');
+        if (sermonFileInfoBox) sermonFileInfoBox.style.display = 'block';
+        if (sermonFileName) sermonFileName.textContent = editItem.videoFileName || '등록된 설교 영상 파일';
+        if (sermonFileSize) sermonFileSize.textContent = editItem.videoFileSize || '';
+        const fileRecord = await getSermonVideoFile(editItem.id);
+        if (fileRecord && fileRecord.blob) {
+          let playUrl = videoBlobUrlCache.get(editItem.id) || URL.createObjectURL(fileRecord.blob);
+          videoBlobUrlCache.set(editItem.id, playUrl);
+          if (sermonFormVideoPlayer) sermonFormVideoPlayer.src = playUrl;
+        }
+      } else {
+        setSermonSourceMode('link');
+        const ytUrl = editItem.youtubeUrl || (editItem.videoId ? `https://www.youtube.com/watch?v=${editItem.videoId}` : '');
+        if (youtubeInput) youtubeInput.value = ytUrl;
+        updateYoutubePreview(editItem.videoId);
+      }
     } else {
       // New mode
       editingSermonId = null;
@@ -540,7 +869,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('sermon-form-date').value = new Date().toISOString().substring(0, 10);
       document.getElementById('sermon-form-preacher').value = '담임목사 송기운';
       clearYoutubePreview();
+      setSermonSourceMode('link');
     }
+
     sermonWriteModal.classList.add('show');
     document.body.style.overflow = 'hidden';
   }
@@ -559,13 +890,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       <div class="youtube-preview-frame">
         <iframe src="https://www.youtube.com/embed/${videoId}?rel=0" allowfullscreen></iframe>
       </div>
-      <p class="youtube-preview-ok"><i class="la la-check-circle"></i> 영상이 확인되었습니다. (ID: ${videoId})</p>
+      <p class="youtube-preview-ok"><i class="la la-check-circle"></i> YouTube 영상이 확인되었습니다. (ID: ${videoId})</p>
     `;
   }
 
   function clearYoutubePreview() {
     if (!youtubePreview) return;
-    youtubePreview.innerHTML = `<p class="youtube-preview-msg"><i class="la la-info-circle"></i> YouTube 링크를 입력하면 미리보기가 표시됩니다.</p>`;
+    youtubePreview.innerHTML = `<p class="youtube-preview-msg"><i class="la la-info-circle"></i> YouTube 링크를 입력하면 미리보기가 자동으로 표시됩니다.</p>`;
   }
 
   // YouTube 링크 입력 시 실시간 미리보기
@@ -586,12 +917,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Open Write Modal
-  if (btnSermonWrite) {
-    btnSermonWrite.addEventListener('click', () => openSermonWrite(null));
+  if (btnFetchYt && youtubeInput) {
+    btnFetchYt.addEventListener('click', () => {
+      const videoId = extractYouTubeId(youtubeInput.value);
+      if (videoId) {
+        updateYoutubePreview(videoId);
+        showSermonToast('영상 링크가 확인되었습니다!');
+      } else {
+        alert('올바른 YouTube 영상 주소를 입력해주세요.');
+      }
+    });
   }
 
-  // Close Write Modal
+  // Authentication check before opening write modal
+  function handleSermonUploadClick() {
+    if (!isAdmin()) {
+      const managerModal = document.getElementById('manager-modal');
+      if (managerModal) {
+        sessionStorage.setItem('openSermonAfterLogin', 'true');
+        const title = managerModal.querySelector('#manager-modal-title');
+        if (title) title.textContent = '설교 올리기 - 관리자 로그인';
+        managerModal.classList.add('show');
+        showSermonToast('설교를 등록하시려면 관리자(목사님) 로그인이 필요합니다.');
+      } else {
+        openSermonWrite(null);
+      }
+      return;
+    }
+    openSermonWrite(null);
+  }
+
+  if (btnSermonWrite) {
+    btnSermonWrite.addEventListener('click', handleSermonUploadClick);
+  }
+  if (btnSermonAddTop) {
+    btnSermonAddTop.addEventListener('click', handleSermonUploadClick);
+  }
+
+  // Close Write Modal Events
   if (sermonWriteClose) sermonWriteClose.addEventListener('click', closeSermonWrite);
   if (sermonWriteBackdrop) sermonWriteBackdrop.addEventListener('click', closeSermonWrite);
   if (sermonFormCancel) sermonFormCancel.addEventListener('click', closeSermonWrite);
@@ -605,21 +968,67 @@ document.addEventListener('DOMContentLoaded', async () => {
       const series = document.getElementById('sermon-form-series').value;
       const preacher = document.getElementById('sermon-form-preacher').value.trim();
       const scripture = document.getElementById('sermon-form-scripture').value.trim();
-      const youtubeUrl = document.getElementById('sermon-form-youtube').value.trim();
-      const videoId = extractYouTubeId(youtubeUrl);
 
-      if (!title || !date || !videoId) {
-        showSermonToast('제목, 날짜, 유효한 YouTube 링크를 입력해주세요.');
+      if (!title || !date) {
+        showSermonToast('제목과 날짜를 입력해주세요.');
         return;
       }
 
       let sermons = await getSermonData();
+      let videoId = null;
+      let youtubeUrl = null;
+      let videoSource = currentVideoSource;
+      let videoFileName = null;
+      let videoFileSize = null;
+      let thumbnail = null;
+
+      if (currentVideoSource === 'link') {
+        youtubeUrl = youtubeInput ? youtubeInput.value.trim() : '';
+        videoId = extractYouTubeId(youtubeUrl);
+        if (!videoId) {
+          showSermonToast('유효한 YouTube 영상 주소를 입력해주세요.');
+          return;
+        }
+      } else {
+        // Video file source
+        if (editingSermonId !== null) {
+          const old = sermons.find(s => s.id === editingSermonId);
+          if (old) {
+            videoFileName = old.videoFileName;
+            videoFileSize = old.videoFileSize;
+            thumbnail = old.thumbnail;
+          }
+        }
+        if (selectedVideoFile) {
+          videoFileName = selectedVideoFile.name;
+          videoFileSize = formatBytes(selectedVideoFile.size);
+          thumbnail = capturedThumbnailDataUrl || null;
+        } else if (!videoFileName) {
+          showSermonToast('설교 영상 파일을 선택해주세요.');
+          return;
+        }
+      }
 
       if (editingSermonId !== null) {
         // Update
+        const targetId = editingSermonId;
+        if (selectedVideoFile) {
+          await saveSermonVideoFile(targetId, selectedVideoFile);
+          videoBlobUrlCache.set(targetId, URL.createObjectURL(selectedVideoFile));
+        }
+
         sermons = sermons.map(s => {
-          if (s.id === editingSermonId) {
-            return { ...s, title, date, series, preacher, scripture, videoId, youtubeUrl };
+          if (s.id === targetId) {
+            return {
+              ...s,
+              title, date, series, preacher, scripture,
+              videoSource,
+              videoId: videoSource === 'link' ? videoId : null,
+              youtubeUrl: videoSource === 'link' ? youtubeUrl : null,
+              videoFileName: videoSource === 'file' ? videoFileName : null,
+              videoFileSize: videoSource === 'file' ? videoFileSize : null,
+              thumbnail: thumbnail || s.thumbnail || null
+            };
           }
           return s;
         });
@@ -627,9 +1036,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         // Create
         const newId = sermons.length > 0 ? Math.max(...sermons.map(s => s.id)) + 1 : 1;
+        if (selectedVideoFile) {
+          await saveSermonVideoFile(newId, selectedVideoFile);
+          videoBlobUrlCache.set(newId, URL.createObjectURL(selectedVideoFile));
+        }
+
         sermons.unshift({
           id: newId,
-          title, date, series, preacher, scripture, videoId, youtubeUrl
+          title, date, series, preacher, scripture,
+          videoSource,
+          videoId: videoSource === 'link' ? videoId : null,
+          youtubeUrl: videoSource === 'link' ? youtubeUrl : null,
+          videoFileName: videoSource === 'file' ? videoFileName : null,
+          videoFileSize: videoSource === 'file' ? videoFileSize : null,
+          thumbnail: thumbnail || null
         });
         showSermonToast('설교가 등록되었습니다.');
       }
@@ -669,48 +1089,66 @@ document.addEventListener('DOMContentLoaded', async () => {
       sermonPlaylistContainer.innerHTML = `
         <div style="text-align: center; padding: 40px 20px; color: var(--color-text-muted);">
           <i class="la la-video" style="font-size: 2.5rem; display: block; margin-bottom: 12px; opacity: 0.4;"></i>
-          등록된 설교가 없습니다.<br>[글쓰기] 버튼을 눌러 설교를 등록해 보세요.
+          등록된 설교가 없습니다.<br>[설교 올리기] 버튼을 눌러 설교를 등록해 보세요.
         </div>`;
-      if (mainVideo) mainVideo.src = '';
+      await setMainSermonVideo(null);
       return;
     }
 
-    // Set main video to the first sermon
-    if (mainVideo && sermons[0].videoId) {
-      mainVideo.src = `https://www.youtube.com/embed/${sermons[0].videoId}?rel=0`;
-    }
+    // Set main video to the first sermon in list
+    await setMainSermonVideo(sermons[0]);
 
     sermonPlaylistContainer.innerHTML = '';
     sermons.forEach((sermon, index) => {
       const item = document.createElement('div');
       item.className = 'playlist-item' + (index === 0 ? ' active' : '');
+
+      let thumbHtml = '';
+      if (sermon.thumbnail) {
+        thumbHtml = `<img src="${sermon.thumbnail}" alt="설교 썸네일" loading="lazy">`;
+      } else if (sermon.videoId) {
+        thumbHtml = `<img src="https://img.youtube.com/vi/${sermon.videoId}/hqdefault.jpg" alt="설교 썸네일" loading="lazy">`;
+      } else {
+        thumbHtml = `
+          <div class="playlist-thumb-placeholder">
+            <i class="la la-file-video"></i>
+            <span>영상 파일</span>
+          </div>`;
+      }
+
+      const typeBadge = sermon.videoSource === 'file' || (!sermon.videoId && sermon.videoFileName)
+        ? `<span class="sermon-type-badge file"><i class="la la-file-video"></i> 파일</span>`
+        : `<span class="sermon-type-badge yt"><i class="la la-youtube"></i> 유튜브</span>`;
+
       item.innerHTML = `
         <div class="playlist-thumb">
-          <img src="https://img.youtube.com/vi/${sermon.videoId}/hqdefault.jpg" alt="설교 썸네일" loading="lazy">
+          ${thumbHtml}
         </div>
         <div class="playlist-info">
           <h4 class="playlist-title">[${sermon.series || '설교'}] ${sermon.title}</h4>
-          <span class="playlist-date">${sermon.date}</span>
+          <span class="playlist-date">${sermon.date} ${typeBadge}</span>
         </div>
       `;
-      item.addEventListener('click', () => {
-        // Update active state
+
+      item.addEventListener('click', async () => {
         sermonPlaylistContainer.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
         item.classList.add('active');
-        // Update main player
-        if (mainVideo && sermon.videoId) {
-          mainVideo.src = `https://www.youtube.com/embed/${sermon.videoId}?rel=0&autoplay=1`;
-        }
-        // Open detail modal
+        await setMainSermonVideo(sermon);
         openSermonDetail(sermon);
       });
       sermonPlaylistContainer.appendChild(item);
     });
   }
 
-  // Initial render
+  // Initial render & auto-open on login redirect
   if (sermonPlaylistContainer) {
     renderSermonPlaylist();
+    if (isAdmin() && sessionStorage.getItem('openSermonAfterLogin') === 'true') {
+      sessionStorage.removeItem('openSermonAfterLogin');
+      setTimeout(() => {
+        openSermonWrite(null);
+      }, 350);
+    }
   }
 
   // 4. Multi-page GNB Active Handler (Based on URL pathname)
@@ -1638,7 +2076,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <td class="col-date">${item.date}</td>
             <td class="col-action">
               <div class="news-post-actions manager-only-flex">
-                <button type="button" class="btn-delete news-post-delete" data-id="${item.id}" title="삭제" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
+                <button type="button" class="btn-delete news-post-delete manager-only-inline-flex" data-id="${item.id}" title="삭제" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
               </div>
             </td>
           `;
@@ -1872,7 +2310,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td class="col-date" style="text-align: right;">${item.date}</td>
           <td class="col-action">
             <div class="school-post-actions manager-only-flex">
-              <button type="button" class="btn-delete school-post-delete" data-id="${item.id}" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
+              <button type="button" class="btn-delete school-post-delete manager-only-inline-flex" data-id="${item.id}" aria-label="게시글 삭제"><i class="la la-trash"></i></button>
             </div>
           </td>
         `;

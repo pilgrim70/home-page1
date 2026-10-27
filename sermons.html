@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="assets/icon.png?v=4">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
   <!-- LineAwesome Icons for Premium feel -->
   <link rel="stylesheet"
     href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
@@ -241,8 +241,8 @@
         <p class="section-desc">주일 대예배에 선포된 생명력 있는 은혜의 말씀을 다시 들을 수 있습니다.<br>설교를 클릭하면 말씀을 바로 들으실 수 있습니다.</p>
       </div>
 
-      <!-- Sermon Category Filters -->
-      <div class="notice-toolbar" style="margin-bottom: 30px; justify-content: center;">
+      <!-- Sermon Category Filters & Action Bar -->
+      <div class="notice-toolbar sermon-toolbar" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
         <div class="notice-filters" id="sermon-tab-filters">
           <button class="filter-btn active" data-filter="all">전체</button>
           <button class="filter-btn" data-filter="주일낮예배">주일낮예배</button>
@@ -250,22 +250,26 @@
           <button class="filter-btn" data-filter="마사흐 찬양팀">마사흐 찬양팀</button>
           <button class="filter-btn" data-filter="호산나 찬양대">호산나 찬양대</button>
         </div>
+        <button class="btn btn-primary btn-sermon-add-prominent" id="btn-sermon-add-top" title="설교 영상 등록 (링크 또는 파일)">
+          <i class="la la-cloud-upload-alt"></i> 설교 올리기 (링크 / 영상 파일)
+        </button>
       </div>
 
       <div class="sermon-player-container reveal">
-        <!-- Main Video Frame -->
+        <!-- Main Video Frame (YouTube iframe & HTML5 Video file support) -->
         <div class="sermon-video-wrapper">
           <iframe id="mainSermonVideo" src="" title="주일대예배 설교"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen></iframe>
+          <video id="mainSermonVideoFile" controls playsinline style="display: none; width: 100%; height: 100%; object-fit: contain; background: #000;"></video>
         </div>
 
         <!-- Playlist sidebar (dynamically rendered) -->
         <div class="sermon-playlist">
           <div class="sermon-playlist-header">
-            <h3 class="sermon-playlist-title">최근 설교 목록</h3>
-            <button class="btn-sermon-write manager-only" id="btn-sermon-write" title="설교 등록">
-              <i class="la la-plus"></i> 글쓰기
+            <h3 class="sermon-playlist-title"><i class="la la-play-circle"></i> 최근 설교 목록</h3>
+            <button class="btn-sermon-write" id="btn-sermon-write" title="설교 영상 등록">
+              <i class="la la-plus-circle"></i> 설교 올리기
             </button>
           </div>
           <div id="sermon-playlist-items">
@@ -314,13 +318,71 @@
             <input type="text" id="sermon-form-scripture" placeholder="예: 창세기 12:1-3">
           </div>
         </div>
+
+        <!-- Video Source Selection Mode Tabs -->
         <div class="sermon-form-group">
-          <label for="sermon-form-youtube"><i class="la la-youtube"></i> YouTube 링크</label>
-          <input type="text" id="sermon-form-youtube" placeholder="YouTube 영상 URL을 붙여넣으세요" required>
-          <div class="youtube-preview" id="youtube-preview">
-            <p class="youtube-preview-msg"><i class="la la-info-circle"></i> YouTube 링크를 입력하면 미리보기가 표시됩니다.</p>
+          <label><i class="la la-video"></i> 설교 영상 불러오기 방식 선택</label>
+          <div class="sermon-source-tabs">
+            <button type="button" class="sermon-source-tab active" data-source="link" id="tab-source-link">
+              <i class="la la-link"></i> 영상 링크 불러오기 (YouTube)
+            </button>
+            <button type="button" class="sermon-source-tab" data-source="file" id="tab-source-file">
+              <i class="la la-file-video"></i> 설교 영상 파일 불러오기 (PC/폰)
+            </button>
           </div>
         </div>
+
+        <!-- Panel 1: Video Link Source -->
+        <div class="sermon-source-panel" id="panel-source-link">
+          <div class="sermon-form-group">
+            <label for="sermon-form-youtube"><i class="la la-youtube"></i> YouTube / 영상 링크 주소</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="sermon-form-youtube" placeholder="YouTube 영상 주소를 입력하거나 붙여넣으세요 (예: https://youtu.be/...)" style="flex: 1;">
+              <button type="button" class="btn btn-outline" id="btn-fetch-yt" style="white-space: nowrap; padding: 0 16px;">
+                <i class="la la-search"></i> 링크 확인
+              </button>
+            </div>
+            <div class="youtube-preview" id="youtube-preview">
+              <p class="youtube-preview-msg"><i class="la la-info-circle"></i> YouTube 링크를 입력하면 미리보기가 자동으로 표시됩니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Video File Upload Source -->
+        <div class="sermon-source-panel" id="panel-source-file" style="display: none;">
+          <div class="sermon-form-group">
+            <label><i class="la la-cloud-upload-alt"></i> 내 컴퓨터 / 휴대폰 영상 파일 선택</label>
+            <div class="sermon-file-dropzone" id="sermon-file-dropzone">
+              <i class="la la-file-video dropzone-icon"></i>
+              <p class="dropzone-text"><strong>클릭하여 설교 영상 파일 선택</strong> 또는 파일을 여기로 끌어다 놓으세요</p>
+              <span class="dropzone-hint">지원 포맷: MP4, MOV, WebM, AVI (권장: MP4)</span>
+              <input type="file" id="sermon-form-file" accept="video/mp4,video/webm,video/ogg,video/quicktime,video/*" style="display: none;">
+            </div>
+
+            <!-- File Selected Status & Preview -->
+            <div id="sermon-file-info-box" style="display: none; margin-top: 12px;">
+              <div class="sermon-file-selected-bar">
+                <div class="sermon-file-meta">
+                  <i class="la la-video file-meta-icon"></i>
+                  <div>
+                    <span id="sermon-file-name" class="sermon-file-name"></span>
+                    <span id="sermon-file-size" class="sermon-file-size"></span>
+                  </div>
+                </div>
+                <button type="button" id="btn-remove-sermon-file" class="btn-sermon-file-remove" title="파일 다시 선택">
+                  <i class="la la-sync-alt"></i> 변경
+                </button>
+              </div>
+              <div class="sermon-video-file-preview-wrapper" style="margin-top: 10px;">
+                <video id="sermon-form-video-player" controls playsinline style="width: 100%; max-height: 220px; border-radius: var(--radius-sm); background: #000;"></video>
+                <p style="font-size: 0.82rem; color: #2b8a3e; margin: 6px 0 0; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                  <i class="la la-check-circle"></i> 영상 파일이 정상적으로 불러와졌습니다.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="sermon-form-actions">
           <button type="button" class="btn btn-outline" id="sermon-form-cancel">취소</button>
           <button type="submit" class="btn btn-primary" id="sermon-form-submit"><i class="la la-check"></i> 등록하기</button>
@@ -335,11 +397,12 @@
     <div class="sermon-detail-content">
       <button class="sermon-detail-close" id="sermon-detail-close" aria-label="닫기"><i class="la la-times"></i></button>
 
-      <!-- Embedded YouTube Video -->
+      <!-- Embedded Video (YouTube or Video File) -->
       <div class="sermon-detail-video">
         <iframe id="sermonDetailVideo" src="" title="설교 영상"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen></iframe>
+        <video id="sermonDetailVideoFile" controls playsinline style="display: none; width: 100%; height: 100%; object-fit: contain; background: #000;"></video>
       </div>
 
       <!-- Sermon Info -->
@@ -443,7 +506,7 @@
     </div>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=19"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

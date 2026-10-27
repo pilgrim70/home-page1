@@ -3839,6 +3839,227 @@ section {
   border: none;
 }
 
+/* Sermon Top Prominent Button */
+.btn-sermon-add-prominent {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: 30px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(27, 67, 50, 0.25);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-sermon-add-prominent:hover {
+  background: var(--color-primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(27, 67, 50, 0.35);
+}
+
+.btn-sermon-add-prominent i {
+  font-size: 1.25rem;
+}
+
+/* Sermon Source Tabs (Link vs File) */
+.sermon-source-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: rgba(27, 67, 50, 0.05);
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.sermon-source-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: var(--font-ko);
+}
+
+.sermon-source-tab:hover {
+  color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.sermon-source-tab.active {
+  background: #ffffff;
+  color: var(--color-primary);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.sermon-source-tab i {
+  font-size: 1.15rem;
+}
+
+/* Dropzone for Video Files */
+.sermon-file-dropzone {
+  border: 2px dashed #a7d0b8;
+  background: rgba(27, 67, 50, 0.03);
+  border-radius: var(--radius-sm);
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sermon-file-dropzone:hover,
+.sermon-file-dropzone.dragover {
+  border-color: var(--color-primary);
+  background: rgba(27, 67, 50, 0.08);
+  transform: scale(1.01);
+}
+
+.dropzone-icon {
+  font-size: 2.8rem;
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: 8px;
+  opacity: 0.85;
+}
+
+.dropzone-text {
+  font-size: 0.95rem;
+  color: var(--color-text-dark);
+  margin-bottom: 4px;
+}
+
+.dropzone-text strong {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.dropzone-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* File selected bar */
+.sermon-file-selected-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  border-radius: var(--radius-sm);
+}
+
+.sermon-file-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.file-meta-icon {
+  font-size: 1.6rem;
+  color: #2e7d32;
+}
+
+.sermon-file-name {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #1b5e20;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.sermon-file-size {
+  display: block;
+  font-size: 0.78rem;
+  color: #558b2f;
+}
+
+.btn-sermon-file-remove {
+  background: white;
+  border: 1px solid #c8e6c9;
+  color: #2e7d32;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-sermon-file-remove:hover {
+  background: #ffebee;
+  border-color: #ffcdd2;
+  color: #c62828;
+}
+
+/* Playlist Thumbnail & Type Badges */
+.playlist-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1b4332, #2d6a4f);
+  color: #ffffff;
+  border-radius: 6px;
+}
+
+.playlist-thumb-placeholder i {
+  font-size: 1.8rem;
+  margin-bottom: 2px;
+}
+
+.playlist-thumb-placeholder span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.sermon-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.sermon-type-badge.yt {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.sermon-type-badge.file {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
 /* ============================================ */
 /* Sermon Delete Confirm Modal                  */
 /* ============================================ */
